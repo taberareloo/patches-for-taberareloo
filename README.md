@@ -16,7 +16,7 @@ Here is a patch repository for [Taberareloo](https://github.com/Constellation/ta
 	// , "include"     : ["background", "content"]
 	// , "match"       : ["https://*/*"]
 	// , "version"     : "1.0"
-	// , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/patch_file_name.tbrl.js"
+	// , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/patches/patch_file_name.tbrl.js"
 	// }
 	// ==/Taberareloo==
 
@@ -30,13 +30,13 @@ Here is a patch repository for [Taberareloo](https://github.com/Constellation/ta
 	"content"    : A page context opened in a browser tab
 * "match"       : An array of target page patterns, if "include" has "content".  
 	The match patterns are equivalent of [Match Patterms of Google Chrome](http://developer.chrome.com/extensions/match_patterns.html).  
-	If "include" has only "background", it's optional.
+	If "include" has only "background", it's ignored.
 * "version"     : The version of a patch (optional)
 * "downloadURL" : A URL where a patch can be found and installed (optional)
 
 ## Installation
 
-* A patch can be installed from the options page of Taberareloo or by selecting the menu "Patch - Install this" in the Taberareloo context menu at "downloadURL".
+* A patch can be installed from a local file at the options page of Taberareloo, or by selecting "Patch - Install this" in the Taberareloo context menu on a remote file pointed by "downloadURL".
 
 ![](https://lh6.googleusercontent.com/-OFMtZgk4yqk/UUu63gOPurI/AAAAAAAAHyU/VIqb--1IMNY/s782/Taberareloo+Option+2013-03-21+18-57-36.jpg)
 ![](https://lh4.googleusercontent.com/-FLTw9_8eUPY/UUu64q4-zyI/AAAAAAAAHyc/lN9pqKA3LIw/s438/%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%BC%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%83%E3%83%88+2013-03-21+6.57.55+PM.png)
