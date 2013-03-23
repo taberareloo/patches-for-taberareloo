@@ -7,3 +7,6 @@ Model とは、Taberareloo から投稿する先のウェブ・サービス及�
 
 * [model.twittaw.tbrl.js](https://raw.github.com/YungSang/patches-for-taberareloo/master/models/model.twittaw.tbrl.js)  
 	[http://twittaw.com](http://twittaw.com) 用モデル (サンプルも兼ねて)
+
+* [model.zootool.tbrl.js](https://raw.github.com/YungSang/patches-for-taberareloo/master/models/model.zootool.tbrl.js)  
+  [http://zootool.com](http://zootool.com) 用モデル (画像のみサポート)
