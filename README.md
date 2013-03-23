@@ -1,13 +1,16 @@
 # Patches for Taberareloo
 
-Here is a patch repository for [Taberareloo](https://github.com/Constellation/taberareloo).
+ここは、[Taberareloo](https://github.com/Constellation/taberareloo) のパッチ・レポジトリです。
 
-## Filename
+## ファイル名
 
-* A patch for Taberareloo must have an extension ".tbrl.js". Otherwise, it won't be installed.
-* The file name is a key in the Taberareloo patch system, so it must be unique in the entire system.
+Taberareloo 用のパッチ・ファイルは、`.tbrl.js` の拡張子が必要です。これ以外の拡張子はインストールされません。
 
-## Metadata
+現在の Taberareloo のパッチ機構は、ファイル名がキーになっているので、インストールするファイル名は拡張内でユニークである必要があります。
+
+## メタデータ
+
+パッチ・ファイルに先頭には、以下のようなパッチに関するメタデータが必要です。
 
 	// ==Taberareloo==
 	// {
@@ -20,23 +23,38 @@ Here is a patch repository for [Taberareloo](https://github.com/Constellation/ta
 	// }
 	// ==/Taberareloo==
 
-* A patch must have a metadata about its patch.
-* The metadata area in a patch must start with "// ==Taberareloo==" line and end with "// ==/Taberareloo==" line.
-* The metadata is a JSON format led by "//" at each line and commented out.
-* "name"        : The name of a patch (optional)
-* "description" : The description of a patch (optional)
-* "include"     : An array of target contexts ("background" and/or "content")  
-	"background" : The background context of Taberareloo  
-	"content"    : A page context opened in a browser tab
-* "match"       : An array of target page patterns, if "include" has "content".  
-	The match patterns are equivalent of [Match Patterms of Google Chrome](http://developer.chrome.com/extensions/match_patterns.html).  
-	If "include" has only "background", it's ignored.
-* "version"     : The version of a patch (optional)
-* "downloadURL" : A URL where a patch can be found and installed (optional)
+* メタデータの領域は、`// ==Taberareloo==` の行で始まり、`// ==/Taberareloo==` で終了しなければなりません。
+* メタデータは、行の先頭を `//` でコメントアウトされた JSON フォーマットです。
+* JSON のそれぞれのキーや値は、ダブルクォート `""` で囲まれていなければなりません。
 
-## Installation
+* `"name"`        : パッチの名前 (省略可、その場合はファイル名が名前になります)
 
-* A patch can be installed from a local file at the options page of Taberareloo, or by selecting "Patch - Install this" in the Taberareloo context menu on a remote file pointed by "downloadURL".
+* `"description"` : パッチの説明 (省略可)
 
-![](https://lh6.googleusercontent.com/-OFMtZgk4yqk/UUu63gOPurI/AAAAAAAAHyU/VIqb--1IMNY/s782/Taberareloo+Option+2013-03-21+18-57-36.jpg)
+* `"include"`     : パッチが適用されるページを配列で指定します ("background" または "content"、またはその両方)  
+	"background" : Taberareloo 拡張本体の Background ページ  
+	"content"    : ブラウザのタブで開かれたページ
+
+* `"match"`       : `"include"` に "content" が指定された場合に、適用されるページの URL のパターンを配列で指定します。  
+	マッチングに使われるパターンの記法は、[Match Patterms of Google Chrome](http://developer.chrome.com/extensions/match_patterns.html) に準拠します。  
+	`"include"` が "background" のみの場合は、無視されます。
+
+* `"version"`     : パッチのバージョン (省略可)
+
+* `"downloadURL"` : パッチの提供元であるインストール可能なパッチ・ファイルへの URL を指定します。 (省略可)
+
+## インストール
+
+パッチは、`"downloadURL"` で示されるようなリモートのパッチ・ファイル上で右クリックから `Patch - Install this` を選択することでインストール出来ます。
+また、Taberareloo のオプション・ページのパッチ・タブでローカル・ファイルからもインストール出来ます。
+
 ![](https://lh4.googleusercontent.com/-FLTw9_8eUPY/UUu64q4-zyI/AAAAAAAAHyc/lN9pqKA3LIw/s438/%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%BC%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%83%E3%83%88+2013-03-21+6.57.55+PM.png)
+![](https://lh6.googleusercontent.com/-OFMtZgk4yqk/UUu63gOPurI/AAAAAAAAHyU/VIqb--1IMNY/s782/Taberareloo+Option+2013-03-21+18-57-36.jpg)
+
+## 参加の仕方
+
+1. フォークして、
+1. ブランチを作って、 (git checkout -b my_patch)
+1. パッチをコミットして、 (git commit -am "Added My Patch")
+1. ブランチをプッシュして、 (git push origin my_patch)
+1. Pull Request して下さい
