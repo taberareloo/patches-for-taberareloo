@@ -2,6 +2,11 @@
 
 Here is a patch repository for [Taberareloo](https://github.com/Constellation/taberareloo).
 
+## Requirements
+
+* [Chromium](http://www.chromium.org/Home) 23+ and/or Chromium-compatible browsers ([Google Chrome](http://www.google.com/chrome), [SRWare Iron](http://www.srware.net/en/software_srware_iron.php), [CoolNovo](http://coolnovo.com/) and so on)
+* [Taberareloo](https://chrome.google.com/webstore/detail/taberareloo/ldcnohnnlpgglecmkldelbmiokgmikno) 2.0.78+
+
 ## Filename
 
 A patch for Taberareloo must have an extension `.tbrl.js`. Otherwise, it won't be installed.

@@ -2,6 +2,11 @@
 
 ここは、[Taberareloo](https://github.com/Constellation/taberareloo) のパッチ・レポジトリです。
 
+## 必要なもの
+
+* [Chromium](http://www.chromium.org/Home) 23+ 及びその互換ブラウザ ([Google Chrome](http://www.google.com/chrome), [SRWare Iron](http://www.srware.net/en/software_srware_iron.php), [CoolNovo](http://coolnovo.com/) 等)
+* [Taberareloo](https://chrome.google.com/webstore/detail/taberareloo/ldcnohnnlpgglecmkldelbmiokgmikno) 2.0.78+
+
 ## ファイル名
 
 Taberareloo 用のパッチ・ファイルは、`.tbrl.js` の拡張子が必要です。これ以外の拡張子はインストールされません。
