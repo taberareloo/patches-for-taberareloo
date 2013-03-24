@@ -1,12 +1,12 @@
 // ==Taberareloo==
-//{
-//  "name"        : "Twittaw Model"
-//, "namespace"   : "http://yungsang.com/"
-//, "description" : "Post to twittaw.com"
-//, "include"     : ["background"]
-//, "version"     : "1.2"
-//, "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/models/model.twittaw.tbrl.js"
-//}
+// {
+//   "name"        : "Twittaw Model"
+// , "namespace"   : "http://yungsang.com/"
+// , "description" : "Post to twittaw.com"
+// , "include"     : ["background"]
+// , "version"     : "1.2"
+// , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/models/model.twittaw.tbrl.js"
+// }
 // ==/Taberareloo==
 
 (function() {

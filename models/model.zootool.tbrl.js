@@ -1,11 +1,11 @@
 // ==Taberareloo==
-//{
-//  "name"        : "Zootool Model"
-//, "description" : "Post an image to zootool.com"
-//, "include"     : ["background"]
-//, "version"     : "1.0"
-//, "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/models/model.zootool.tbrl.js"
-//}
+// {
+//   "name"        : "Zootool Model"
+// , "description" : "Post an image to zootool.com"
+// , "include"     : ["background"]
+// , "version"     : "1.0"
+// , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/models/model.zootool.tbrl.js"
+// }
 // ==/Taberareloo==
 
 (function() {
