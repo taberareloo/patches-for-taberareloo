@@ -4,8 +4,8 @@
 //, "namespace"   : "https://github.com/YungSang/patches-for-taberareloo"
 //, "description" : "Omit to check HTTPS"
 //, "include"     : ["background", "content"]
-//, "match"       : ["https://*/*"]
-//, "version"     : "1.4"
+//, "match"       : ["*://*/*"]
+//, "version"     : "1.5"
 //, "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/patches/util.checkhttps.tbrl.js"
 //}
 // ==/Taberareloo==
