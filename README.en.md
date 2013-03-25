@@ -44,16 +44,25 @@ A patch must have a metadata about its patch.
 	The match patterns are equivalent of [Match Patterms of Google Chrome](http://developer.chrome.com/extensions/match_patterns.html).  
 	If `"include"` has only "background", it's ignored.
 
-* `"version"`     : The version of a patch (optional)
+* `"version"`     : The version of a patch (optional)  
+	The version format is equivalent of [Version for Chrome Extension](http://developer.chrome.com/extensions/manifest.html#version).
 
-* `"downloadURL"` : A URL where a patch can be found and installed (optional)
+* `"downloadURL"` : A URL where a patch can be found and installed (optional)  
+	Taberareloo uses this URL and `"version"` to check updates of its patch and notifies it to you.
 
 ## Installation
 
-A patch can be installed by right-clicking and selecting `Patch - Install this` in the Taberareloo context menu on a remote file like `"downloadURL"`, or from a local file at the options page of Taberareloo.
+A patch can be installed by right-clicking and selecting `Patch - Install this` in the Taberareloo context menu on a remote file like `"downloadURL"`, or from a local file at the Patch tab in the options page of Taberareloo.
 
 ![](https://lh4.googleusercontent.com/-FLTw9_8eUPY/UUu64q4-zyI/AAAAAAAAHyc/lN9pqKA3LIw/s438/%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%BC%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%83%E3%83%88+2013-03-21+6.57.55+PM.png)
-![](https://lh6.googleusercontent.com/-OFMtZgk4yqk/UUu63gOPurI/AAAAAAAAHyU/VIqb--1IMNY/s782/Taberareloo+Option+2013-03-21+18-57-36.jpg)
+![](https://lh3.googleusercontent.com/-koY3LCYhYOM/UVC90pxmniI/AAAAAAAAH4I/6vIrq62wKHA/s752/Taberareloo+Option+2013-03-25+14-10-38.jpg)
+
+## Updates Notification
+
+If the metadata in a patch has `"downloadURL"` and `"version"`, Taberareloo will check updates of its patch automatically by comparing `"version"` in `"downloadURL"` and `"version"` in the installed patch.
+And also users can check manually by clicking the button "Check Updates" at the Patch tab in the options page of Taberareloo.
+
+![](https://lh4.googleusercontent.com/-VjdXrFsoAUI/UVC91jfTkNI/AAAAAAAAH4Q/6O4wwEqWi7A/s752/Taberareloo+Option+2013-03-25+14-11-00.jpg)
 
 ## Contributing
 

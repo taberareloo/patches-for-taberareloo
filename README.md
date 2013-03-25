@@ -44,9 +44,11 @@ Taberareloo 用のパッチ・ファイルは、`.tbrl.js` の拡張子が必要
 	マッチングに使われるパターンの記法は、[Match Patterms of Google Chrome](http://developer.chrome.com/extensions/match_patterns.html) に準拠します。  
 	`"include"` が "background" のみの場合は、無視されます。
 
-* `"version"`     : パッチのバージョン (省略可)
+* `"version"`     : パッチのバージョン (省略可)  
+	バージョンの記法は、[Version for Chrome Extension](http://developer.chrome.com/extensions/manifest.html#version) に準拠します。
 
-* `"downloadURL"` : パッチの提供元であるインストール可能なパッチ・ファイルへの URL を指定します。 (省略可)
+* `"downloadURL"` : パッチの提供元であるインストール可能なパッチ・ファイルへの URL を指定します。 (省略可)  
+	Taberareloo は、この URL で示されるファイルのメタ・データの `"version"` とインストール済みの `"version"` を比較して更新の通知を行います。
 
 ## インストール
 
@@ -54,7 +56,15 @@ Taberareloo 用のパッチ・ファイルは、`.tbrl.js` の拡張子が必要
 また、Taberareloo のオプション・ページのパッチ・タブでローカル・ファイルからもインストール出来ます。
 
 ![](https://lh4.googleusercontent.com/-FLTw9_8eUPY/UUu64q4-zyI/AAAAAAAAHyc/lN9pqKA3LIw/s438/%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%BC%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%83%E3%83%88+2013-03-21+6.57.55+PM.png)
-![](https://lh6.googleusercontent.com/-OFMtZgk4yqk/UUu63gOPurI/AAAAAAAAHyU/VIqb--1IMNY/s782/Taberareloo+Option+2013-03-21+18-57-36.jpg)
+![](https://lh3.googleusercontent.com/-koY3LCYhYOM/UVC90pxmniI/AAAAAAAAH4I/6vIrq62wKHA/s752/Taberareloo+Option+2013-03-25+14-10-38.jpg)
+
+## 更新の通知
+
+メタ・データに `"downloadURL"` と `"version"` がある場合、`"downloadURL"` で示されるファイルの `"version"` とインストール済みの `"version"` を比較して自動的に更新の通知を行います。
+また、Taberareloo のオプション・ページのパッチ・タブで手動にて、「更新を確認」することも出来ます。
+
+![](https://lh4.googleusercontent.com/-VjdXrFsoAUI/UVC91jfTkNI/AAAAAAAAH4Q/6O4wwEqWi7A/s752/Taberareloo+Option+2013-03-25+14-11-00.jpg)
+
 
 ## 参加の仕方
 
