@@ -5,7 +5,7 @@ Here is a patch repository for [Taberareloo](https://github.com/Constellation/ta
 ## Requirements
 
 * [Chromium](http://www.chromium.org/Home) 23+ and/or Chromium-compatible browsers ([Google Chrome](http://www.google.com/chrome), [SRWare Iron](http://www.srware.net/en/software_srware_iron.php), [CoolNovo](http://coolnovo.com/) and so on)
-* [Taberareloo](https://chrome.google.com/webstore/detail/taberareloo/ldcnohnnlpgglecmkldelbmiokgmikno) 2.0.78+
+* [Taberareloo](https://chrome.google.com/webstore/detail/taberareloo/ldcnohnnlpgglecmkldelbmiokgmikno) 2.0.79+, 3.0+
 
 ## Filename
 
@@ -45,7 +45,7 @@ A patch must have a metadata about its patch.
 	If `"include"` has only "background", it's ignored.
 
 * `"version"`     : The version of a patch (optional)  
-	The version format is equivalent of [Version for Chrome Extension](http://developer.chrome.com/extensions/manifest.html#version).
+	The version format uses [Semantic Versioning](http://semver.org/).
 
 * `"downloadURL"` : A URL where a patch can be found and installed (optional)  
 	Taberareloo uses this URL and `"version"` to check updates of its patch and notifies it to you.

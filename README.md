@@ -5,7 +5,7 @@
 ## 必要なもの
 
 * [Chromium](http://www.chromium.org/Home) 23+ 及びその互換ブラウザ ([Google Chrome](http://www.google.com/chrome), [SRWare Iron](http://www.srware.net/en/software_srware_iron.php), [CoolNovo](http://coolnovo.com/) 等)
-* [Taberareloo](https://chrome.google.com/webstore/detail/taberareloo/ldcnohnnlpgglecmkldelbmiokgmikno) 2.0.78+
+* [Taberareloo](https://chrome.google.com/webstore/detail/taberareloo/ldcnohnnlpgglecmkldelbmiokgmikno) 2.0.79+, 3.0+
 
 ## ファイル名
 
@@ -45,7 +45,7 @@ Taberareloo 用のパッチ・ファイルは、`.tbrl.js` の拡張子が必要
 	`"include"` が "background" のみの場合は、無視されます。
 
 * `"version"`     : パッチのバージョン (省略可)  
-	バージョンの記法は、[Version for Chrome Extension](http://developer.chrome.com/extensions/manifest.html#version) に準拠します。
+	バージョンの記法は、[Semantic Versioning](http://semver.org/) に準拠します。
 
 * `"downloadURL"` : パッチの提供元であるインストール可能なパッチ・ファイルへの URL を指定します。 (省略可)  
 	Taberareloo は、この URL で示されるファイルのメタ・データの `"version"` とインストール済みの `"version"` を比較して更新の通知を行います。
