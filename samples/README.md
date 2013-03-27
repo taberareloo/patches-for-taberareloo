@@ -6,3 +6,6 @@
 
 * [model.model_name.tbrl.js](https://raw.github.com/YungSang/patches-for-taberareloo/master/samples/model.model_name.tbrl.js)  
 	新規モデル用サンプル
+
+* [userscript.googleplus.nicovideo.tbrl.js](https://raw.github.com/YungSang/patches-for-taberareloo/master/samples/userscript.googleplus.nicovideo.tbrl.js)  
+	作ってみるも、nicovideo のプレーヤーが HTTPS でないので弾かれる。
