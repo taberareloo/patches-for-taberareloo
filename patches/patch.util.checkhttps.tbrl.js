@@ -6,7 +6,7 @@
 // , "include"     : ["background", "content"]
 // , "match"       : ["*://*/*"]
 // , "version"     : "1.5"
-// , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/patches/util.checkhttps.tbrl.js"
+// , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/patches/patch.util.checkhttps.tbrl.js"
 // }
 // ==/Taberareloo==
 

@@ -5,7 +5,7 @@
 // , "description" : "Move a long selection from body to description on quote"
 // , "include"     : ["background"]
 // , "version"     : "1.0"
-// , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/patches/model.googleplus.quote.tbrl.js"
+// , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/patches/patch.model.googleplus.quote.tbrl.js"
 // }
 // ==/Taberareloo==
 
