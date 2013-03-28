@@ -4,8 +4,8 @@ Here is a patch repository for [Taberareloo](https://github.com/Constellation/ta
 
 ## Requirements
 
-* [Chromium](http://www.chromium.org/Home) 23+ and/or Chromium-compatible browsers ([Google Chrome](http://www.google.com/chrome), [SRWare Iron](http://www.srware.net/en/software_srware_iron.php), [CoolNovo](http://coolnovo.com/) and so on)
-* [Taberareloo](https://chrome.google.com/webstore/detail/taberareloo/ldcnohnnlpgglecmkldelbmiokgmikno) 2.0.79+, 3.0+
+* [Google Chrome](http://www.google.com/chrome) 26+
+* [Taberareloo](https://chrome.google.com/webstore/detail/taberareloo/ldcnohnnlpgglecmkldelbmiokgmikno) 2.0.79+
 
 ## Filename
 
