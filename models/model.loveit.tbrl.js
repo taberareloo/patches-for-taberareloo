@@ -3,7 +3,7 @@
 //   "name"        : "LoveIt Model"
 // , "description" : "Post to loveit.com"
 // , "include"     : ["background"]
-// , "version"     : "1.0.0"
+// , "version"     : "1.0.2"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/models/model.loveit.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -45,13 +45,14 @@
         var doc = createHTML(res.responseText);
         var collections = [];
         $X('id("fancy_board_id")/option', doc).forEach(function(option) {
-          collections.push({
-            id   : $X('./@value', option)[0],
-            name : $X('./text()', option)[0]
-          });
+          if ($X('./@value', option)[0] !== 'create_new') {
+            collections.push({
+              id   : $X('./@value', option)[0],
+              name : $X('./text()', option)[0]
+            });
+          }
         });
-        self.collections = collections;
-        return self.collections;
+        return collections;
       });
     },
 
