@@ -4,7 +4,7 @@
 // , "description" : "Extract a tweet on a dashboard"
 // , "include"     : ["content"]
 // , "match"       : ["*://twitter.com/*"]
-// , "version"     : "1.1"
+// , "version"     : "1.2"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/extractors/extractor.quote.twitter.dashboard.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -30,9 +30,11 @@
           selection = ctx.selection;
         }
       }
+      ctx.title = 'Twitter / ' + username;
+      ctx.href  = link.href;
       return {
         type     : 'photo',
-        item     : 'Twitter / ' + username,
+        item     : ctx.title,
         itemUrl  : ctx.target.src,
         body     : selection.raw,
         flavors  : {
@@ -68,9 +70,11 @@
       if (ctx.selection) {
         selection = ctx.selection;
       }
+      ctx.title = 'Twitter / ' + username;
+      ctx.href  = link.href;
       return {
         type     : 'quote',
-        item     : 'Twitter / ' + username,
+        item     : ctx.title,
         itemUrl  : link.href,
         body     : selection.raw,
         flavors  : {
