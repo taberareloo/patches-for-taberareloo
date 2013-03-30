@@ -11,6 +11,9 @@ Model とは、Taberareloo から投稿する先のウェブ・サービス及�
 * [model.loveit.tbrl.js](https://raw.github.com/YungSang/patches-for-taberareloo/master/models/model.loveit.tbrl.js)  
   [http://loveit.com](http://loveit.com) 用モデル
 
+* [model.plurk.tbrl.js](https://raw.github.com/YungSang/patches-for-taberareloo/master/models/model.plurk.tbrl.js)  
+  [http://plurk.com](http://plurk.com) 用モデル
+
 * [model.twittaw.tbrl.js](https://raw.github.com/YungSang/patches-for-taberareloo/master/models/model.twittaw.tbrl.js)  
 	[http://twittaw.com](http://twittaw.com) 用モデル (サンプルも兼ねて)
 
