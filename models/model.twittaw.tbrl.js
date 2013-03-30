@@ -4,7 +4,7 @@
 // , "namespace"   : "http://yungsang.com/"
 // , "description" : "Post to twittaw.com"
 // , "include"     : ["background"]
-// , "version"     : "1.2"
+// , "version"     : "1.2.0"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/models/model.twittaw.tbrl.js"
 // }
 // ==/Taberareloo==

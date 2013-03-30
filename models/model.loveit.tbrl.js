@@ -3,7 +3,7 @@
 //   "name"        : "LoveIt Model"
 // , "description" : "Post to loveit.com"
 // , "include"     : ["background"]
-// , "version"     : "1.0"
+// , "version"     : "1.0.0"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/models/model.loveit.tbrl.js"
 // }
 // ==/Taberareloo==

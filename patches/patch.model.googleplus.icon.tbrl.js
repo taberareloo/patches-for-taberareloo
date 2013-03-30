@@ -4,7 +4,7 @@
 // , "namespace"   : "https://github.com/YungSang/patches-for-taberareloo"
 // , "description" : "Use new Google+ icon"
 // , "include"     : ["background"]
-// , "version"     : "1.1"
+// , "version"     : "1.1.0"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/patches/patch.model.googleplus.icon.tbrl.js"
 // }
 // ==/Taberareloo==

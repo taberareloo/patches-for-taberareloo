@@ -4,7 +4,7 @@
 // , "description" : "Extract a tweet on a dashboard"
 // , "include"     : ["content"]
 // , "match"       : ["*://twitter.com/*"]
-// , "version"     : "1.2"
+// , "version"     : "1.2.0"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/extractors/extractor.quote.twitter.dashboard.tbrl.js"
 // }
 // ==/Taberareloo==

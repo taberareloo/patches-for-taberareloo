@@ -4,7 +4,7 @@
 // , "description" : "Convert a nicovideo link to an embedded video"
 // , "include"     : ["background", "content"]
 // , "match"       : ["https://plus.google.com/*"]
-// , "version"     : "1.0"
+// , "version"     : "1.0.0"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/samples/userscript.googleplus.nicovideo.tbrl.js"
 // }
 // ==/Taberareloo==

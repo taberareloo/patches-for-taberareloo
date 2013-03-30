@@ -3,7 +3,7 @@
 //   "name"        : "App.Net Model"
 // , "description" : "Post to alpha.app.net"
 // , "include"     : ["background"]
-// , "version"     : "1.0"
+// , "version"     : "1.0.0"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/models/model.appdotnet.tbrl.js"
 // }
 // ==/Taberareloo==

@@ -2,7 +2,7 @@
 // {
 //   "name"        : "Sample Patch"
 // , "description" : "Sample patch for new model with minimal metadata"
-// , "version"     : "1.0"
+// , "version"     : "1.0.0"
 // , "include"     : ["background"]
 // }
 // ==/Taberareloo==
