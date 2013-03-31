@@ -55,14 +55,14 @@ A patch must have a metadata about its patch.
 A patch can be installed by right-clicking and selecting `Patch - Install this` in the Taberareloo context menu on a remote file like `"downloadURL"`, or from a local file at the Patch tab in the options page of Taberareloo.
 
 ![](https://lh4.googleusercontent.com/-FLTw9_8eUPY/UUu64q4-zyI/AAAAAAAAHyc/lN9pqKA3LIw/s438/%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%BC%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%83%E3%83%88+2013-03-21+6.57.55+PM.png)
-![](https://lh3.googleusercontent.com/-koY3LCYhYOM/UVC90pxmniI/AAAAAAAAH4I/6vIrq62wKHA/s752/Taberareloo+Option+2013-03-25+14-10-38.jpg)
+![](https://lh4.googleusercontent.com/-W4ccbC3XZ2w/UVet7riNt9I/AAAAAAAAICE/x2JwC6F-czg/s782/Taberareloo+Option+2013-03-30+20-30-13.jpg)
 
 ## Updates Notification
 
 If the metadata in a patch has `"downloadURL"` and `"version"`, Taberareloo will check updates of its patch automatically by comparing `"version"` in `"downloadURL"` and `"version"` in the installed patch.
 And also users can check manually by clicking the button "Check Updates" at the Patch tab in the options page of Taberareloo.
 
-![](https://lh4.googleusercontent.com/-VjdXrFsoAUI/UVC91jfTkNI/AAAAAAAAH4Q/6O4wwEqWi7A/s752/Taberareloo+Option+2013-03-25+14-11-00.jpg)
+![](https://lh6.googleusercontent.com/-18SdpKcMTAI/UVet-Sc0w1I/AAAAAAAAICM/c-r-ajgv18E/s782/Taberareloo+Option+2013-03-30+20-30-34.jpg)
 
 ## Contributing
 
