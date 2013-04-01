@@ -3,7 +3,7 @@
 //   "name"        : "Zootool Model"
 // , "description" : "Post an image to zootool.com"
 // , "include"     : ["background"]
-// , "version"     : "1.1.0"
+// , "version"     : "1.2.0"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/models/model.zootool.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -19,7 +19,7 @@
     POST_URL  : 'http://zootool.com/post/actions/',
 
     check : function(ps) {
-      return (/(photo|quote|link)/).test(ps.type) && !ps.file;
+      return (/(photo|quote|link|video)/).test(ps.type) && !ps.file;
     },
 
     getAuthCookie: function() {
@@ -60,6 +60,8 @@
             ps.description,
             ps.body ? '“' + ps.body + '”' : null
           ], "\n\n");
+          params.tags   = ps.tags ? ps.tags.join(',') : '';
+          params.public = ps.private ? 'n' : 'y';
 
           return request(self.POST_URL, {
             sendContent : params,
