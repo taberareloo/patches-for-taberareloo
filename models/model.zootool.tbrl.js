@@ -3,7 +3,7 @@
 //   "name"        : "Zootool Model"
 // , "description" : "Post an image to zootool.com"
 // , "include"     : ["background"]
-// , "version"     : "1.0.0"
+// , "version"     : "1.1.0"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/models/model.zootool.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -19,7 +19,7 @@
     POST_URL  : 'http://zootool.com/post/actions/',
 
     check : function(ps) {
-      return (/(photo)/).test(ps.type) && !ps.file;
+      return (/(photo|quote|link)/).test(ps.type) && !ps.file;
     },
 
     getAuthCookie: function() {
@@ -42,28 +42,24 @@
       return this.getAuthCookie().addCallback(function(zoo) {
         return request(self.ITEM_URL + '?' + queryString({
           iframe  : 'true',
-          url     : ps.itemUrl,
+          url     : ps.itemUrl || ps.pageUrl,
           title   : ps.item || ps.page,
           referer : ps.pageUrl
         })).addCallback(function(res) {
-          var doc = createHTML(res.responseText);
-          params = {};
-          $X('id("dropdown-tab-add")//input', doc).forEach(function(input) {
-            var name = $X('./@name', input)[0];
-            if (name) {
-              params[name] = $X('./@value', input)[0] || '';
-            }
-          });
-          $X('id("dropdown-tab-add")//textarea', doc).forEach(function(input) {
-            var name = $X('./@name', input)[0];
-            if (name) {
-              params[name] = $X('./text()', input)[0] | '';
-            }
-          });
-          if (!params.id) {
+          var doc  = createHTML(res.responseText);
+          var form = doc.getElementById('dropdown-tab-add');
+          var params = {};
+          if (form) {
+            params = formContents(form, true);
+          }
+          else {
             throw new Error('It has already been collected.');
           }
-          params.description = ps.description;
+
+          params.description = joinText([
+            ps.description,
+            ps.body ? '“' + ps.body + '”' : null
+          ], "\n\n");
 
           return request(self.POST_URL, {
             sendContent : params,
