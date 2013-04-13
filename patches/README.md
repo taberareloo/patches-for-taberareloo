@@ -4,6 +4,8 @@
 
 ## パッチ一覧
 
+* [patch.extractor.video.dailymotion.tbrl.js](https://raw.github.com/YungSang/patches-for-taberareloo/master/patches/patch.extractor.video.dailymotion.tbrl.js)  
+
 * [patch.model.googleplus.icon.tbrl.js](https://raw.github.com/YungSang/patches-for-taberareloo/master/patches/patch.model.googleplus.icon.tbrl.js)  
 	Taberareloo 内で使用されている [Google+](https://plus.google.com) アイコンを現行の新規のものに差し替えます。
 
