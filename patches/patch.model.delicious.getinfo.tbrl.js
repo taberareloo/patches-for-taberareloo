@@ -5,7 +5,7 @@
 // , "description" : "Fix login check for Delicious"
 // , "include"     : ["background", "content"]
 // , "match"       : ["https://delicious.com/"]
-// , "version"     : "1.0.0"
+// , "version"     : "1.1.0"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/patches/patch.model.delicious.getinfo.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -29,19 +29,33 @@
                   request : 'getLocalStorageItem',
                   key     : 'user'
                 }, function(res) {
+                  chrome.tabs.remove(tab_id);
                   if (!res || !res.value) {
-                    deferred.callback({
-                      is_logged_in : false
-                    });
+                    deferred.callback({is_logged_in : false});
                   }
                   else {
                     var json = JSON.parse(res.value);
-                    deferred.callback({
+                    var info = {
                       is_logged_in       : json.isLoggedIn,
                       logged_in_username : json.username
-                    });
+                    };
+                    if (json.isLoggedIn) {
+                      request('https://avosapi.delicious.com/api/v1/account/webloginhash/' +
+                        json.username + '/' + json.password_hash + '?_=' + (new Date()).getTime())
+                      .addCallback(function(res) {
+                        var json = JSON.parse(res.responseText);
+                        if (json.status === 'success') {
+                          deferred.callback(info);
+                        }
+                        else {
+                          deferred.callback({is_logged_in : false});
+                        }
+                      });
+                    }
+                    else {
+                      deferred.callback(info);
+                    }
                   }
-                  chrome.tabs.remove(tab_id);
                 });
               }
             }
