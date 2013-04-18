@@ -4,7 +4,7 @@
 // , "description" : "Post without the popup window"
 // , "include"     : ["background", "content"]
 // , "match"       : ["*://*/*"]
-// , "version"     : "0.1.0"
+// , "version"     : "0.2.0"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/others/menu.taberareloo.no-popup.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -22,17 +22,17 @@
         });
       }
     }, null, 'Taberareloo');
+    Menus._register({
+      type     : 'separator',
+      contexts : ['all']
+    }, null, 'Taberareloo');
 
     Menus.create();
 
     onRequestsHandlers.updateContextMenu = function(req, sender, func) {
-      var menu_id = Menus[name].id;
-      var title   = 'Taberareloo - ' + req.extractor.name;
-      chrome.contextMenus.update(menu_id, {
-        title : title
-      }, function() {
-        func({});
-      });
+      chrome.contextMenus.update(Menus[name].id, {
+        title : 'Taberareloo - ' + req.extractor
+      }, function() {});
     };
 
     return;
@@ -100,9 +100,8 @@
 
     chrome.extension.sendMessage(TBRL.id, {
       request   : "updateContextMenu",
-      extractor : extractor
-    }, function(res){
-    });
+      extractor : extractor.name
+    }, function(res) {});
   }
 
   window.addEventListener("mousedown", function(event) {
