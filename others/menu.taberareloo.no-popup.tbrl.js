@@ -4,7 +4,7 @@
 // , "description" : "Post without the popup window"
 // , "include"     : ["background", "content"]
 // , "match"       : ["*://*/*"]
-// , "version"     : "0.2.0"
+// , "version"     : "0.3.0"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/others/menu.taberareloo.no-popup.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -109,16 +109,16 @@
       updateContextMenu(event);
     }
   }, true);
-  document.addEventListener("mousedown", function(event) {
-    if (event.button === 2) {
-      updateContextMenu(event);
-    }
-  }, true);
 
   window.addEventListener("contextmenu", function(event) {
-    updateContextMenu(event);
-  }, true);
-  document.addEventListener("contextmenu", function(event) {
-    updateContextMenu(event);
-  }, true);
+    busyWait(50);
+  }, false);
+
+  function busyWait(waitMilliSeconds) {
+    var now = new Date().getTime();
+    var end = now + waitMilliSeconds;
+    while (now < end) {
+      now = new Date().getTime();
+    }
+  }
 })();
