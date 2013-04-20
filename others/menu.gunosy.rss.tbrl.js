@@ -3,7 +3,7 @@
 //   "name"        : "Gunosy RSS"
 // , "description" : "URL Generator for Gunosy RSS"
 // , "include"     : ["background"]
-// , "version"     : "0.1.0"
+// , "version"     : "0.1.1"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/others/menu.gunosy.rss.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -22,8 +22,8 @@
     onclick  : function(info, tab) {
       request('http://gunosy.com/edit/profile').addCallback(function(res) {
         var doc = createHTML(res.responseText);
- 
-        var user_name = $X('id("usre_name")/@value', doc)[0];
+
+        var user_name = $X('//input[@name="user[name]"]/@value', doc)[0];
         if (!user_name) {
           return alert(chrome.i18n.getMessage('error_notLoggedin', NAME));
         }
