@@ -4,7 +4,7 @@
 // , "description" : "Extract an FC2 video"
 // , "include"     : ["content"]
 // , "match"       : ["http://video.fc2.com/content/*"]
-// , "version"     : "1.0.0"
+// , "version"     : "1.1.0"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/extractors/extractor.video.fc2.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -20,10 +20,13 @@
     extract : function(ctx) {
       var tag = this.getTag(ctx);
 
+      ctx.title = $X('//meta[@itemprop="name"]/@content', ctx.document)[0];
+      ctx.href  = $X('//meta[@itemprop="url"]/@content', ctx.document)[0];
+
       return {
         type      : 'video',
-        item      : $X('//meta[@itemprop="name"]/@content', ctx.document)[0],
-        itemUrl   : $X('//meta[@itemprop="url"]/@content', ctx.document)[0],
+        item      : ctx.title,
+        itemUrl   : ctx.href,
         body      : tag.extract(/(<object.+object>)/)
       };
     },
