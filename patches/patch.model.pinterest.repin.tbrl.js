@@ -5,7 +5,7 @@
 // , "description" : "Repin at Pinterest"
 // , "include"     : ["background", "content"]
 // , "match"       : ["http://pinterest.com/*"]
-// , "version"     : "0.1.0"
+// , "version"     : "0.2.0"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/patches/patch.model.pinterest.repin.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -110,7 +110,7 @@
           type        : 'photo',
           item        : ctx.title,
           itemUrl     : json.page.meta['og:image'],
-          description : json.page.meta['og:description'],
+          body        : json.page.meta['og:description'],
           favorite    : {
             name      : 'Pinterest',
             id        : pin_id
