@@ -5,7 +5,7 @@
 // , "description" : "Repin at Pinterest"
 // , "include"     : ["background", "content"]
 // , "match"       : ["http://pinterest.com/*"]
-// , "version"     : "0.2.0"
+// , "version"     : "0.3.0"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/patches/patch.model.pinterest.repin.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -28,7 +28,7 @@
                   options : {
                     board_id    : boards[0].id,
                     description : ps.description,
-                    link        : ps.pageUrl,
+                    link        : ps.favorite.source,
                     is_video    : false,
                     pin_id      : pin_id
                   },
@@ -104,16 +104,17 @@
         var json = JSON.parse(res.responseText);
 
         ctx.title = json.page.title;
-        ctx.href  = json.page.meta['pinterestapp:source'];
+        ctx.href  = json.page.meta['og:url'];
 
         return {
-          type        : 'photo',
-          item        : ctx.title,
-          itemUrl     : json.page.meta['og:image'],
-          body        : json.page.meta['og:description'],
-          favorite    : {
-            name      : 'Pinterest',
-            id        : pin_id
+          type     : 'photo',
+          item     : ctx.title,
+          itemUrl  : json.page.meta['og:image'],
+          body     : json.page.meta['og:description'],
+          favorite : {
+            name   : 'Pinterest',
+            id     : pin_id,
+            source : json.page.meta['pinterestapp:source']
           }
         };
       });
