@@ -1,10 +1,10 @@
 // ==Taberareloo==
 // {
 //   "name"        : "Post without the popup window"
-// , "description" : "Post without the popup window"
+// , "description" : "Create a context menu dynamically to post without the popup window"
 // , "include"     : ["background", "content"]
 // , "match"       : ["*://*/*"]
-// , "version"     : "0.3.0"
+// , "version"     : "0.4.0"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/others/menu.taberareloo.no-popup.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -104,10 +104,8 @@
     }, function(res) {});
   }
 
-  window.addEventListener("mousedown", function(event) {
-    if (event.button === 2) {
-      updateContextMenu(event);
-    }
+  window.addEventListener("contextmenu", function(event) {
+    updateContextMenu(event);
   }, true);
 
   window.addEventListener("contextmenu", function(event) {
