@@ -5,12 +5,14 @@
 // , "description" : "Repin at Pinterest"
 // , "include"     : ["background", "content"]
 // , "match"       : ["http://pinterest.com/*"]
-// , "version"     : "0.3.1"
+// , "version"     : "0.4.0"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/patches/patch.model.pinterest.repin.tbrl.js"
 // }
 // ==/Taberareloo==
 
 (function() {
+  var app_version = "8022";
+
   if (TBRL.ID) { // Is it in the background context?
     update(Models['Pinterest'], {
       favor : function(ps) {
@@ -33,7 +35,7 @@
                     pin_id      : pin_id
                   },
                   context : {
-                    app_version : "8022"
+                    app_version : app_version
                   }
                 }),
                 source_url  : '/pin/' + pin_id + '/',
@@ -45,6 +47,8 @@
                 'X-Requested-With' : 'XMLHttpRequest'
               }
             }).addCallback(function(res) {
+              var json = JSON.parse(res.responseText);
+              app_version = json.context.app_version;
             });
           });
         });
@@ -89,7 +93,7 @@
               append : false
             },
             context : {
-              app_version : "8022"
+              app_version : app_version
             }
           }),
           source_url  : '/pin/' + pin_id + '/',
@@ -103,6 +107,7 @@
         }
       }).addCallback(function(res) {
         var json = JSON.parse(res.responseText);
+        app_version = json.context.app_version;
 
         ctx.title = json.page.title;
         ctx.href  = json.page.meta['og:url'];
