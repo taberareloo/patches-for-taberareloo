@@ -5,7 +5,7 @@
 // , "description" : "Repin at Pinterest"
 // , "include"     : ["background", "content"]
 // , "match"       : ["http://pinterest.com/*"]
-// , "version"     : "0.3.0"
+// , "version"     : "0.3.1"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/patches/patch.model.pinterest.repin.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -27,17 +27,17 @@
                 data : JSON.stringify({
                   options : {
                     board_id    : boards[0].id,
-                    description : ps.description,
+                    description : ps.description || '',
                     link        : ps.favorite.source,
                     is_video    : false,
                     pin_id      : pin_id
                   },
                   context : {
-                    app_version : "8f81"
-                  },
-                  source_url : '/pin/' + pin_id + '/',
-                  module_path : 'App()>Closeup(resource=PinResource(id=' + pin_id + ', view_type=detailed))>PinActionBar(resource=PinResource(id=' + pin_id + ', view_type=detailed))>ShowModalButton(color=primary, submodule=[object Object], tagName=button, class_name=repin leftRounded, has_icon=true, show_text=false, ga_category=repin_create_closeup, require_auth=true, size=medium)#Modal(module=PinCreate(resource=PinResource(id=' + pin_id + ')))'
-                })
+                    app_version : "8022"
+                  }
+                }),
+                source_url  : '/pin/' + pin_id + '/',
+                module_path : 'App()>Closeup(resource=PinResource(id=' + pin_id + ', view_type=detailed))>PinActionBar(resource=PinResource(id=' + pin_id + ', view_type=detailed))>ShowModalButton(color=primary, submodule=[object Object], tagName=button, class_name=repin leftRounded, has_icon=true, show_text=false, ga_category=repin_create_closeup, require_auth=true, size=medium)#Modal(module=PinCreate(resource=PinResource(id=' + pin_id + ')))'
               },
               headers : {
                 'X-CSRFToken'      : csrftoken,
@@ -69,7 +69,7 @@
 
       return request(this.GET_PIN_URL, {
         queryString : {
-          data        : JSON.stringify({
+          data : JSON.stringify({
             options : {
               id        : pin_id,
               view_type : "closeup_content"
@@ -79,7 +79,7 @@
               options : {
                 id       : "content",
                 resource : {
-                  name : "PinResource",
+                  name    : "PinResource",
                   options : {
                     id        : pin_id,
                     view_type : "closeup_content"
@@ -88,10 +88,11 @@
               },
               append : false
             },
-            context:{
-              app_version : "8f81"
+            context : {
+              app_version : "8022"
             }
           }),
+          source_url  : '/pin/' + pin_id + '/',
           module_path : 'App()>FeedPage()>Grid(resource=CategoryFeedResource(feed=everything))>Pin(show_pinner=true, show_pinned_from=false, show_board=true, show_via=false, pin_id=' + pin_id + ', resource=PinResource(id=' + pin_id + '))',
           '_' : new Date().getTime()
         },
