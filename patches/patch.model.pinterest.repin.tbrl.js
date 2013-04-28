@@ -5,7 +5,7 @@
 // , "description" : "Repin at Pinterest"
 // , "include"     : ["background", "content"]
 // , "match"       : ["http://pinterest.com/*"]
-// , "version"     : "0.4.0"
+// , "version"     : "0.4.2"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/patches/patch.model.pinterest.repin.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -141,8 +141,24 @@
       return false;
     },
 
-    getLocalCookie : function(key) {
-      return unescape(document.cookie.replace(new RegExp("(?:^|.*;\\s*)" + unescape(key).replace(/[\-\.\+\*]/g, "\\$&") + "\\s*\\=\\s*((?:[^;](?!;))*[^;]?).*"), "$1"));
+    getLocalCookie : function(c_name) {
+      var c_value = document.cookie;
+      var c_start = c_value.indexOf(" " + c_name + "=");
+      if (c_start == -1) {
+        c_start = c_value.indexOf(c_name + "=");
+      }
+      if (c_start == -1) {
+        c_value = null;
+      }
+      else {
+        c_start = c_value.indexOf("=", c_start) + 1;
+        var c_end = c_value.indexOf(";", c_start);
+        if (c_end == -1) {
+         c_end = c_value.length;
+        }
+        c_value = unescape(c_value.substring(c_start,c_end));
+      }
+      return c_value;
     }
 
   }, 'ReBlog');
