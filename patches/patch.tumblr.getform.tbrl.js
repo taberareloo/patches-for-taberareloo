@@ -5,14 +5,16 @@
 // , "description" : "Set 'Send to Twitter/Facebook' automatically"
 // , "include"     : ["background", "content"]
 // , "match"       : ["*://*/*"]
-// , "version"     : "1.1.0"
+// , "version"     : "1.2.0"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/patches/patch.tumblr.getform.tbrl.js"
 // }
 // ==/Taberareloo==
 
 (function() {
-  function getShareOptions() {
-    return request('http://www.tumblr.com/dashboard').addCallback(function(res) {
+  function getShareOptions(template) {
+    return (
+      template ? succeed({responseText : template}) : request('http://www.tumblr.com/dashboard')
+    ).addCallback(function(res) {
       var html = res.responseText.replace(/\s+/g, ' ');
       var selectbox = html.extract(/\{\{else\}\} (<div id="tumblelog_choices".*<\/ul> <\/div> <\/div> <\/div>) \{\{\/if\}\}/);
       var doc = createHTML(selectbox);
@@ -87,8 +89,13 @@
   }
 
   addAround(Extractors['ReBlog'], 'getForm', function(proceed, args, target, methodName) {
+    var ctx = args[0];
+    var template = $X('id("base_template")')[0];
+    if (template) {
+      template = template.textContent;
+    }
     return proceed(args).addCallback(function(form) {
-      return getShareOptions().addCallback(function(options) {
+      return getShareOptions(template).addCallback(function(options) {
         form = update(form, {
           send_to_twitter : options[form.channel_id].twitter ? 'on' : '',
           send_to_fbog    : options[form.channel_id].facebook ? 'on' : ''
@@ -96,5 +103,23 @@
         return form;
       });
     });
+  });
+
+  update(Extractors['ReBlog - Dashboard'], {
+    extract : function(ctx) {
+      var li = $X('./ancestor-or-self::li[starts-with(normalize-space(@class), "post")]', ctx.target)[0];
+
+      ctx.title      = $X('.//a[@class="post_avatar"]/@title', li)[0];
+      ctx.href       = $X('.//a[@class="permalink"]/@href', li)[0];
+      ctx.form_key   = $X('.//input[@name="form_key"]/@value', li)[0];
+      ctx.reblog_id  = li.getAttribute('data-post-id');
+      ctx.reblog_key = li.getAttribute('data-reblog-key');
+      ctx.post_type  = li.getAttribute('data-type');
+
+      var that = Extractors['ReBlog'];
+      return that.getFormKeyAndChannelId(ctx).addCallback(function() {
+        return that.extractByEndpoint(ctx, that.TUMBLR_URL + 'reblog/' + ctx.reblog_id + '/' + ctx.reblog_key);
+      });
+    }
   });
 })();

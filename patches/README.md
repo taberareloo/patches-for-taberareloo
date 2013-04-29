@@ -21,7 +21,7 @@
 	Pinterestのダッシュボードのサムネイル表示から直接投稿する為のパッチ。
 
 * [patch.tumblr.getform.tbrl.js](https://raw.github.com/YungSang/patches-for-taberareloo/master/patches/patch.tumblr.getform.tbrl.js)  
-	Tumblr への投稿で Twitter/Facebook への共有を有効にしている場合、Taberareloo のオプションに関わらず、自動的にTumblrでの設定を使用する為のパッチ。
+	Tumblr への投稿で Twitter/Facebook への共有を有効にしている場合、Taberareloo のオプションに関わらず、自動的にTumblrでの設定を使用する為のパッチ。ダッシュボードでの高速化も追加。
 
 * [patch.util.checkhttps.tbrl.js](https://raw.github.com/YungSang/patches-for-taberareloo/master/patches/patch.util.checkhttps.tbrl.js)  
 	URL が HTTPS で始まるページや画像を投稿しようとすると、投稿ポップアップ画面にワーニングが表示されますが、それを抑制するパッチ。
