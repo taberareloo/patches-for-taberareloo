@@ -4,43 +4,41 @@
 // , "namespace"   : "https://github.com/YungSang/patches-for-taberareloo"
 // , "description" : "Set 'Send to Twitter/Facebook' automatically"
 // , "include"     : ["background", "content"]
-// , "match"       : ["*://*/*"]
-// , "version"     : "1.3.0"
+// , "match"       : ["http://www.tumblr.com/dashboard/*"]
+// , "version"     : "1.4.0"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/patches/patch.tumblr.getform.tbrl.js"
 // }
 // ==/Taberareloo==
 
 (function() {
-  function getShareOption(channel_id, template) {
-    return (
-      template ? succeed({responseText : template}) : request('http://www.tumblr.com/dashboard')
-    ).addCallback(function(res) {
-      var html = res.responseText.replace(/\s+/g, ' ');
-      var selectbox = html.extract(/\{\{else\}\} (<div id="tumblelog_choices".*<\/ul> <\/div> <\/div> <\/div>) \{\{\/if\}\}/);
-      var doc = createHTML(selectbox);
-
-      var div;
-      if (channel_id) {
-        div = $X('//li/div[@data-option-value="' + channel_id + '"]', doc)[0];
-      }
-      else {
-        div = $X('//li/div', doc)[0];
-      }
-
-      var twitter     = div.getAttribute('data-twitter') === 'true';
-      var twitter_on  = div.getAttribute('data-twitter-on') === 'true';
-      var facebook    = div.getAttribute('data-facebook') === 'true';
-      var facebook_on = div.getAttribute('data-facebook-on') === 'true';
-
-      return {
-        id       : div.getAttribute('data-option-value'),
-        twitter  : twitter && twitter_on,
-        facebook : facebook && facebook_on
-      };
-    });
-  }
-
   if (TBRL.ID) { // Is it in the background context?
+    function getShareOption(channel_id) {
+      return request('http://www.tumblr.com/dashboard').addCallback(function(res) {
+        var html = res.responseText.replace(/\s+/g, ' ');
+        var selectbox = html.extract(/\{\{else\}\} (<div id="tumblelog_choices".*<\/ul> <\/div> <\/div> <\/div>) \{\{\/if\}\}/);
+        var doc = createHTML(selectbox);
+
+        var div;
+        if (channel_id) {
+          div = $X('//li/div[@data-option-value="' + channel_id + '"]', doc)[0];
+        }
+        else {
+          div = $X('//li/div', doc)[0];
+        }
+
+        var twitter     = div.getAttribute('data-twitter')     === 'true';
+        var twitter_on  = div.getAttribute('data-twitter-on')  === 'true';
+        var facebook    = div.getAttribute('data-facebook')    === 'true';
+        var facebook_on = div.getAttribute('data-facebook-on') === 'true';
+
+        return {
+          id       : div.getAttribute('data-option-value'),
+          twitter  : twitter && twitter_on,
+          facebook : facebook && facebook_on
+        };
+      });
+    }
+
     addAround(Models['Tumblr'], 'getForm', function(proceed, args, target, methodName) {
       return proceed(args).addCallback(function(form) {
         return getShareOption(form.channel_id).addCallback(function(option) {
@@ -79,6 +77,7 @@
 
         return getShareOption(form.channel_id).addCallback(function(option) {
           form = update(form, {
+            channel_id      : option.id,
             send_to_twitter : option.twitter  ? 'on' : '',
             send_to_fbog    : option.facebook ? 'on' : ''
           });
@@ -94,24 +93,6 @@
     });
     return;
   }
-
-  addAround(Extractors['ReBlog'], 'getForm', function(proceed, args, target, methodName) {
-    var ctx = args[0];
-    var template = $X('id("base_template")')[0];
-    if (template) {
-      template = template.textContent;
-    }
-    return proceed(args).addCallback(function(form) {
-      return getShareOption(form.channel_id, template).addCallback(function(option) {
-        form = update(form, {
-          channel_id      : option.id,
-          send_to_twitter : option.twitter  ? 'on' : '',
-          send_to_fbog    : option.facebook ? 'on' : ''
-        });
-        return form;
-      });
-    });
-  });
 
   update(Extractors['ReBlog - Dashboard'], {
     extract : function(ctx) {
