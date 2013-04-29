@@ -5,75 +5,82 @@
 // , "description" : "Set 'Send to Twitter/Facebook' automatically"
 // , "include"     : ["background", "content"]
 // , "match"       : ["*://*/*"]
-// , "version"     : "1.2.0"
+// , "version"     : "1.3.0"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/patches/patch.tumblr.getform.tbrl.js"
 // }
 // ==/Taberareloo==
 
 (function() {
-  function getShareOptions(template) {
+  function getShareOption(channel_id, template) {
     return (
       template ? succeed({responseText : template}) : request('http://www.tumblr.com/dashboard')
     ).addCallback(function(res) {
       var html = res.responseText.replace(/\s+/g, ' ');
       var selectbox = html.extract(/\{\{else\}\} (<div id="tumblelog_choices".*<\/ul> <\/div> <\/div> <\/div>) \{\{\/if\}\}/);
       var doc = createHTML(selectbox);
-      var options = {};
-      $X('//li/div', doc).forEach(function(div) {
-        var id          = div.getAttribute('data-option-value');
-        var twitter     = div.getAttribute('data-twitter') === 'true';
-        var twitter_on  = div.getAttribute('data-twitter-on') === 'true';
-        var facebook    = div.getAttribute('data-facebook') === 'true';
-        var facebook_on = div.getAttribute('data-facebook-on') === 'true';
-        options[id] = {
-          twitter  : twitter && twitter_on,
-          facebook : facebook && facebook_on
-        };
-      });
-      return options;
+
+      var div;
+      if (channel_id) {
+        div = $X('//li/div[@data-option-value="' + channel_id + '"]', doc)[0];
+      }
+      else {
+        div = $X('//li/div', doc)[0];
+      }
+
+      var twitter     = div.getAttribute('data-twitter') === 'true';
+      var twitter_on  = div.getAttribute('data-twitter-on') === 'true';
+      var facebook    = div.getAttribute('data-facebook') === 'true';
+      var facebook_on = div.getAttribute('data-facebook-on') === 'true';
+
+      return {
+        id       : div.getAttribute('data-option-value'),
+        twitter  : twitter && twitter_on,
+        facebook : facebook && facebook_on
+      };
     });
   }
 
   if (TBRL.ID) { // Is it in the background context?
     addAround(Models['Tumblr'], 'getForm', function(proceed, args, target, methodName) {
       return proceed(args).addCallback(function(form) {
-        return getShareOptions().addCallback(function(options) {
+        return getShareOption(form.channel_id).addCallback(function(option) {
           form = update(form, {
-            send_to_twitter : options[form.channel_id].twitter ? 'on' : '',
-            send_to_fbog    : options[form.channel_id].facebook ? 'on' : ''
+            channel_id      : option.id,
+            send_to_twitter : option.twitter  ? 'on' : '',
+            send_to_fbog    : option.facebook ? 'on' : ''
           });
           return form;
         });
       });
     });
     addAround(Models['Tumblr'], 'favor', function(proceed, args, target, methodName) {
-      return getShareOptions().addCallback(function(options) {
-        var ps   = args[0];
-        var form = ps.favorite.form;
-        var that = target;
+      var ps   = args[0];
+      var form = ps.favorite.form;
+      var that = target;
 
-        that.trimReblogInfo(form);
+      that.trimReblogInfo(form);
 
-        return Tumblr[ps.type.capitalize()].convertToForm({
-          description : ps.description
-        }).addCallback(function(res) {
-          items(res).forEach(function(item) {
-            var name = item[0], value = item[1];
-            if (!value) {
-              return;
-            }
-            if (form[name]) {
-              form[name] += '\n\n' + value;
-            }
-            else {
-              form[name] = value;
-            }
-          });
-          that.appendTags(form, ps);
+      return Tumblr[ps.type.capitalize()].convertToForm({
+        description : ps.description
+      }).addCallback(function(res) {
+        items(res).forEach(function(item) {
+          var name = item[0], value = item[1];
+          if (!value) {
+            return;
+          }
+          if (form[name]) {
+            form[name] += '\n\n' + value;
+          }
+          else {
+            form[name] = value;
+          }
+        });
+        that.appendTags(form, ps);
 
+        return getShareOption(form.channel_id).addCallback(function(option) {
           form = update(form, {
-            send_to_twitter : options[form.channel_id].twitter ? 'on' : '',
-            send_to_fbog    : options[form.channel_id].facebook ? 'on' : ''
+            send_to_twitter : option.twitter  ? 'on' : '',
+            send_to_fbog    : option.facebook ? 'on' : ''
           });
 
           return that.postForm(function(){
@@ -95,10 +102,11 @@
       template = template.textContent;
     }
     return proceed(args).addCallback(function(form) {
-      return getShareOptions(template).addCallback(function(options) {
+      return getShareOption(form.channel_id, template).addCallback(function(option) {
         form = update(form, {
-          send_to_twitter : options[form.channel_id].twitter ? 'on' : '',
-          send_to_fbog    : options[form.channel_id].facebook ? 'on' : ''
+          channel_id      : option.id,
+          send_to_twitter : option.twitter  ? 'on' : '',
+          send_to_fbog    : option.facebook ? 'on' : ''
         });
         return form;
       });
