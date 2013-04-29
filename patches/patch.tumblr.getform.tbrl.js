@@ -5,7 +5,7 @@
 // , "description" : "Set 'Send to Twitter/Facebook' automatically"
 // , "include"     : ["background", "content"]
 // , "match"       : ["http://www.tumblr.com/dashboard/*"]
-// , "version"     : "1.4.0"
+// , "version"     : "1.4.1"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/patches/patch.tumblr.getform.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -41,7 +41,9 @@
 
     addAround(Models['Tumblr'], 'getForm', function(proceed, args, target, methodName) {
       return proceed(args).addCallback(function(form) {
-        return getShareOption(form.channel_id).addCallback(function(option) {
+        var dmy_form = {};
+        target.appendTags(dmy_form, {});
+        return getShareOption(dmy_form.channel_id).addCallback(function(option) {
           form = update(form, {
             channel_id      : option.id,
             send_to_twitter : option.twitter  ? 'on' : '',
