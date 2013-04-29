@@ -5,7 +5,7 @@
 // , "description" : "Set 'Send to Twitter/Facebook' automatically"
 // , "include"     : ["background", "content"]
 // , "match"       : ["*://*/*"]
-// , "version"     : "1.0.0"
+// , "version"     : "1.1.0"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/patches/patch.tumblr.getform.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -34,7 +34,6 @@
 
   if (TBRL.ID) { // Is it in the background context?
     addAround(Models['Tumblr'], 'getForm', function(proceed, args, target, methodName) {
-      var self = Models['Tumblr'];
       return proceed(args).addCallback(function(form) {
         return getShareOptions().addCallback(function(options) {
           form = update(form, {
@@ -45,11 +44,49 @@
         });
       });
     });
+    addAround(Models['Tumblr'], 'favor', function(proceed, args, target, methodName) {
+      return getShareOptions().addCallback(function(options) {
+        var ps   = args[0];
+        var form = ps.favorite.form;
+        var that = target;
+
+        that.trimReblogInfo(form);
+
+        return Tumblr[ps.type.capitalize()].convertToForm({
+          description : ps.description
+        }).addCallback(function(res) {
+          items(res).forEach(function(item) {
+            var name = item[0], value = item[1];
+            if (!value) {
+              return;
+            }
+            if (form[name]) {
+              form[name] += '\n\n' + value;
+            }
+            else {
+              form[name] = value;
+            }
+          });
+          that.appendTags(form, ps);
+
+          form = update(form, {
+            send_to_twitter : options[form.channel_id].twitter ? 'on' : '',
+            send_to_fbog    : options[form.channel_id].facebook ? 'on' : ''
+          });
+
+          return that.postForm(function(){
+            return request(Tumblr.TUMBLR_URL + 'svc/post/update', {
+              headers: {'Content-Type': 'application/json'},
+              sendContent: JSON.stringify(form)
+            });
+          });
+        });
+      });
+    });
     return;
   }
 
   addAround(Extractors['ReBlog'], 'getForm', function(proceed, args, target, methodName) {
-    var self = Extractors['ReBlog'];
     return proceed(args).addCallback(function(form) {
       return getShareOptions().addCallback(function(options) {
         form = update(form, {
