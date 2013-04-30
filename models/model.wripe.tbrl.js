@@ -3,7 +3,7 @@
 //   "name"        : "wri.pe Model"
 // , "description" : "Post to wri.pe"
 // , "include"     : ["background"]
-// , "version"     : "0.1.0"
+// , "version"     : "0.1.1"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/models/model.wripe.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -21,7 +21,7 @@
     YOUTUBE_REGEX : /http(?:s)?:\/\/(?:.*\.)?youtube.com\/watch\?v=([a-zA-Z0-9_-]+)[-_.!~*'()a-zA-Z0-9;\/?:@&=+\$,%#]*/g,
 
     check : function(ps) {
-      return /regular|photo|quote|link|video/.test(ps.type);
+      return /regular|photo|quote|link|video/.test(ps.type) && !ps.file;;
     },
 
     post : function(ps) {
