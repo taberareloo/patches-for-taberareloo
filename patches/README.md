@@ -18,10 +18,13 @@
   Quote ポストの場合に、[Google+](https://plus.google.com) に長い引用を投稿すると、200 文字でカットされてしまうのを、本文欄に移すことによって全文引用を可能にしるパッチ。
 
 * [patch.model.pinterest.repin.tbrl.js](https://raw.github.com/YungSang/patches-for-taberareloo/master/patches/patch.model.pinterest.repin.tbrl.js)  
-	Pinterestのダッシュボードのサムネイル表示から直接投稿する為のパッチ。
+	[Pinterest](http://pinterest.com) のダッシュボードのサムネイル表示から直接投稿する為のパッチ。
+
+* [patch.model.twitter.createstatus.tbrl.js](https://raw.github.com/YungSang/patches-for-taberareloo/master/patches/patch.model.twitter.createstatus.tbrl.js)  
+	[Twitter](https://twitter.com) への投稿で文字数オーバーを避ける為のパッチ。
 
 * [patch.tumblr.getform.tbrl.js](https://raw.github.com/YungSang/patches-for-taberareloo/master/patches/patch.tumblr.getform.tbrl.js)  
-	Tumblr への投稿で Twitter/Facebook への共有を有効にしている場合、Taberareloo のオプションに関わらず、自動的にTumblrでの設定を使用する為のパッチ。ダッシュボードでの高速化も追加。
+	[Tumblr](http://www.tumblr.com) への投稿で Twitter/Facebook への共有を有効にしている場合、Taberareloo のオプションに関わらず、自動的にTumblrでの設定を使用する為のパッチ。ダッシュボードでの高速化も追加。
 
 * [patch.util.checkhttps.tbrl.js](https://raw.github.com/YungSang/patches-for-taberareloo/master/patches/patch.util.checkhttps.tbrl.js)  
 	URL が HTTPS で始まるページや画像を投稿しようとすると、投稿ポップアップ画面にワーニングが表示されますが、それを抑制するパッチ。
