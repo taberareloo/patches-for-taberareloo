@@ -3,7 +3,7 @@
 //   "name"        : "Zootool Model"
 // , "description" : "Post an image to zootool.com"
 // , "include"     : ["background"]
-// , "version"     : "1.2.0"
+// , "version"     : "1.2.1"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/models/model.zootool.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -45,9 +45,8 @@
           url     : ps.itemUrl || ps.pageUrl,
           title   : ps.item || ps.page,
           referer : ps.pageUrl
-        })).addCallback(function(res) {
-          var doc  = createHTML(res.responseText);
-          var form = doc.getElementById('dropdown-tab-add');
+        }), { responseType: 'document' }).addCallback(function(res) {
+          var form = res.response.getElementById('dropdown-tab-add');
           var params = {};
           if (form) {
             params = formContents(form, true);

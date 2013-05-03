@@ -3,7 +3,7 @@
 //   "name"        : "wri.pe Model"
 // , "description" : "Post to wri.pe"
 // , "include"     : ["background"]
-// , "version"     : "0.1.1"
+// , "version"     : "0.1.2"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/models/model.wripe.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -28,7 +28,7 @@
       var self = this;
 
       var body = '';
-      if (ps.type !== 'video') { 
+      if (ps.type !== 'video') {
         body = joinText([
           ps.description,
           (ps.type === 'photo') ? "![" + ps.item + "](" + ps.itemUrl + ")" : '',
@@ -47,9 +47,9 @@
           'via ( [' + ps.page + '](' + ps.pageUrl + ") )"
         ], "  \n");
       }
- 
-      return request(this.NEW_URL).addCallback(function(res) {
-        var doc = createHTML(res.responseText);
+
+      return request(this.NEW_URL, { responseType: 'document' }).addCallback(function(res) {
+        var doc = res.response;
 
         var csrf_token = $X('//meta[@name="csrf-token"]/@content', doc)[0];
         var form       = $X('id("edit_page")', doc)[0];
@@ -65,7 +65,7 @@
           'page[lock_version]'    : 0,
           'page[title]'           : ps.item || ps.page,
           'page[body]'            : body,
-          'page[read_permission]' : 10 
+          'page[read_permission]' : 10
         };
 
         return request(post_url, {

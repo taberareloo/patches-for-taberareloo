@@ -3,7 +3,7 @@
 //   "name"        : "LoveIt Model"
 // , "description" : "Post to loveit.com"
 // , "include"     : ["background"]
-// , "version"     : "1.0.2"
+// , "version"     : "1.0.3"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/models/model.loveit.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -29,9 +29,8 @@
       var self = this;
       return getCookies('loveit.com', 'au').addCallback(function(cookies) {
         if (cookies.length) {
-          return request(self.LINK).addCallback(function(res) {
-            var doc = createHTML(res.responseText);
-            return $X('//meta[@name="csrf-token"]/@content', doc)[0];
+          return request(self.LINK, { responseType: 'document' }).addCallback(function(res) {
+            return $X('//meta[@name="csrf-token"]/@content', res.response)[0];
           });
         } else {
           throw new Error(chrome.i18n.getMessage('error_notLoggedin', self.name));
@@ -41,10 +40,9 @@
 
     getCollections : function() {
       var self = this;
-      return request(this.FORM_URL).addCallback(function(res) {
-        var doc = createHTML(res.responseText);
+      return request(this.FORM_URL, { responseType : 'document' }).addCallback(function(res) {
         var collections = [];
-        $X('id("fancy_board_id")/option', doc).forEach(function(option) {
+        $X('id("fancy_board_id")/option', res.response).forEach(function(option) {
           if ($X('./@value', option)[0] !== 'create_new') {
             collections.push({
               id   : $X('./@value', option)[0],

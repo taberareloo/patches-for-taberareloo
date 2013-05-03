@@ -3,7 +3,7 @@
 //   "name"        : "Gunosy RSS"
 // , "description" : "URL Generator for Gunosy RSS"
 // , "include"     : ["background"]
-// , "version"     : "0.1.1"
+// , "version"     : "0.1.2"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/others/menu.gunosy.rss.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -20,8 +20,8 @@
     title    : 'Generate URL for Gunosy RSS',
     contexts : ['all'],
     onclick  : function(info, tab) {
-      request('http://gunosy.com/edit/profile').addCallback(function(res) {
-        var doc = createHTML(res.responseText);
+      request('http://gunosy.com/edit/profile', { responseType: 'document' }).addCallback(function(res) {
+        var doc = res.response;
 
         var user_name = $X('//input[@name="user[name]"]/@value', doc)[0];
         if (!user_name) {
