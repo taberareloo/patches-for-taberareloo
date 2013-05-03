@@ -5,7 +5,7 @@
 ## 必要なもの
 
 * [Google Chrome](http://www.google.com/chrome) 26+
-* [Taberareloo](https://chrome.google.com/webstore/detail/taberareloo/ldcnohnnlpgglecmkldelbmiokgmikno) 2.0.79+
+* [Taberareloo](https://chrome.google.com/webstore/detail/taberareloo/ldcnohnnlpgglecmkldelbmiokgmikno) 3.0.0+
 
 ## ファイル名
 
