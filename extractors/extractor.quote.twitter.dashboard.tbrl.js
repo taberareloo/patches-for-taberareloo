@@ -4,7 +4,7 @@
 // , "description" : "Extract a tweet on a dashboard"
 // , "include"     : ["content"]
 // , "match"       : ["*://twitter.com/*"]
-// , "version"     : "1.2.0"
+// , "version"     : "1.3.0"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/extractors/extractor.quote.twitter.dashboard.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -22,7 +22,8 @@
       var node      = this.saved_node;
       var link      = $X('.//a[contains(concat(" ",@class," ")," details ")]', node)[0];
       var username  = $X('.//strong[contains(concat(" ",@class," ")," fullname ")]/text()', node)[0];
-      var selection = createFlavoredString($X('.//p[@class="js-tweet-text"]', node)[0]);
+
+      var selection = null;
       if (ctx.selection) {
         var node2 = ctx.window.getSelection().anchorNode;
         node2 = $X('./ancestor-or-self::li[starts-with(@id, "stream-item-tweet-")]', node2)[0];
@@ -30,6 +31,17 @@
           selection = ctx.selection;
         }
       }
+      if (!selection) {
+        var elm = $X('.//p[@class="js-tweet-text"]', node)[0];
+        var cloneElm = elm.cloneNode(true);
+        $A(cloneElm.getElementsByClassName('tco-ellipsis')).forEach(
+          function(target){
+            target.parentNode.removeChild(target);
+          }
+        );
+        selection = createFlavoredString(cloneElm);
+      }
+
       ctx.title = 'Twitter / ' + username;
       ctx.href  = link.href;
       return {
@@ -66,10 +78,22 @@
       var node      = this.saved_node;
       var link      = $X('.//a[contains(concat(" ",@class," ")," details ")]', node)[0];
       var username  = $X('.//strong[contains(concat(" ",@class," ")," fullname ")]/text()', node)[0];
-      var selection = createFlavoredString($X('.//p[@class="js-tweet-text"]', node)[0]);
+
+      var selection;
       if (ctx.selection) {
         selection = ctx.selection;
       }
+      else {
+        var elm = $X('.//p[@class="js-tweet-text"]', node)[0];
+        var cloneElm = elm.cloneNode(true);
+        $A(cloneElm.getElementsByClassName('tco-ellipsis')).forEach(
+          function(target){
+            target.parentNode.removeChild(target);
+          }
+        );
+        selection = createFlavoredString(cloneElm);
+      }
+
       ctx.title = 'Twitter / ' + username;
       ctx.href  = link.href;
       return {
