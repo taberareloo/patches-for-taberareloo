@@ -23,7 +23,7 @@ Taberareloo 用のパッチ・ファイルは、`.tbrl.js` の拡張子が必要
 	// , "description" : "Patch Description"
 	// , "include"     : ["background", "content"]
 	// , "match"       : ["https://*/*"]
-	// , "version"     : "1.0"
+	// , "version"     : "1.0.0"
 	// , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/patches/patch_file_name.tbrl.js"
 	// }
 	// ==/Taberareloo==
