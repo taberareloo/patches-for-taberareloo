@@ -14,5 +14,9 @@
 	選択した画像を [TinEye](http://www.tineye.com) で検索するパッチ
 	https://github.com/to/tombloo/blob/master/patches/action.TinEye.js から移植。
 
+* [menu.preset.models.tbrl.js](https://raw.github.com/YungSang/patches-for-taberareloo/master/others/menu.preset.models.tbrl.js)  
+	予めプロセットした投稿先に振り分けて投稿する為のメニューを追加するパッチ。(実験中。Experimental)  
+	ダウンロードしてから、PRESET_MODELS (14−15行目) の部分を自分の好きな投稿先に変更してオプションページよりインストールして下さい。
+
 * [menu.taberareloo.no-popup.tbrl.js](https://raw.github.com/YungSang/patches-for-taberareloo/master/others/menu.taberareloo.no-popup.tbrl.js)  
 	Tombloo のようにコンテキストに合わせたメニューを動的に生成しつつ、ポップアップ画面無しで投稿できるようにするパッチ(実験中。Experimental)
