@@ -4,7 +4,7 @@
 // , "description" : "Post to preset models"
 // , "include"     : ["background", "content"]
 // , "match"       : ["*://*/*"]
-// , "version"     : "0.1.0"
+// , "version"     : "0.2.0"
 // }
 // ==/Taberareloo==
 
@@ -21,9 +21,8 @@
       onclick: function(info, tab) {
         chrome.tabs.sendMessage(tab.id, {
           request : 'contextMenusPreset',
-          content : info
-        }, function(res) {
-          postToPresetModels(res, 0);
+          content : info,
+          preset  : 0
         });
       }
     }, null, 'Taberareloo');
@@ -33,9 +32,8 @@
       onclick: function(info, tab) {
         chrome.tabs.sendMessage(tab.id, {
           request : 'contextMenusPreset',
-          content : info
-        }, function(res) {
-          postToPresetModels(res, 1);
+          content : info,
+          preset  : 1
         });
       }
     }, null, 'Taberareloo');
@@ -47,9 +45,9 @@
 
     Menus.create();
 
-    function postToPresetModels(res, index) {
-      constructPsInBackground(res.content).addCallback(function(ps) {
-        var models = PRESET_MODELS[index].filter(function(name) {
+    onRequestsHandlers.postToPresetModels = function (req, sender, func) {
+      constructPsInBackground(req.content).addCallback(function(ps) {
+        var models = PRESET_MODELS[req.preset].filter(function(name) {
           return Models.values.some(function(model) {
             return model.name === name;
           });
@@ -66,7 +64,19 @@
           TBRL.Service.post(ps, posters);
         }
       });
-    }
+    };
+
+    var CHROME_GESTURES = 'jpkfjicglakibpenojifdiepckckakgk';
+    var CHROME_KEYCONFIG = 'okneonigbfnolfkmfgjmaeniipdjkgkl';
+    var action = {
+      group: 'Taberareloo',
+      actions: [
+        {name: 'Taberareloo.preset_1'},
+        {name: 'Taberareloo.preset_2'}
+      ]
+    };
+    chrome.extension.sendMessage(CHROME_GESTURES, action, function(res) {});
+    chrome.extension.sendMessage(CHROME_KEYCONFIG, action, function(res) {});
     return;
   }
 
@@ -111,12 +121,41 @@
     update(ctx, TBRL.createContext((query && document.querySelector(query)) || TBRL.getContextMenuTarget()));
 
     TBRL.extract(ctx, Extractors.check(ctx)[0]).addCallback(function(ps) {
-      func({
+      chrome.extension.sendMessage(TBRL.id, {
+        request : "postToPresetModels",
         content : checkHttps(update({
           page    : ctx.title,
           pageUrl : ctx.href
-        }, ps))
+        }, ps)),
+        preset : req.preset
       });
     });
   };
+
+  function postToPresetModels(preset) {
+    var ctx = TBRL.createContext();
+    TBRL.extract(ctx, Extractors.check(ctx)[0]).addCallback(function(ps) {
+      chrome.extension.sendMessage(TBRL.id, {
+        request : "postToPresetModels",
+        content : checkHttps(update({
+          page    : ctx.title,
+          pageUrl : ctx.href
+        }, ps)),
+        preset : preset
+      });
+    });
+  }
+
+  function preset_1() {
+    postToPresetModels(0);
+  }
+  function preset_2() {
+    postToPresetModels(1);
+  }
+  document.addEventListener('unload', function() {
+    window.removeEventListener('Taberareloo.preset_1', preset_1, false);
+    window.removeEventListener('Taberareloo.preset_2', preset_2, false);
+  }, false);
+  window.addEventListener('Taberareloo.preset_1', preset_1, false);
+  window.addEventListener('Taberareloo.preset_2', preset_2, false);
 })();
