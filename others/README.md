@@ -21,3 +21,8 @@
 
 * [menu.taberareloo.no-popup.tbrl.js](https://raw.github.com/YungSang/patches-for-taberareloo/master/others/menu.taberareloo.no-popup.tbrl.js)  
 	Tombloo のようにコンテキストに合わせたメニューを動的に生成しつつ、ポップアップ画面無しで投稿できるようにするパッチ(実験中。Experimental)
+
+* [menu.view.tumblr.dashboard.tbrl.js](https://raw.github.com/YungSang/patches-for-taberareloo/master/others/menu.view.tumblr.dashboard.tbrl.js)  
+	Tumblr のアーカイブ(個別)ページからそのページを含む DashBoard のページを表示する為のパッチ(実験中。Experimental)  
+	※) Custom Domain では動作しません。Follow 中でないもの(DashBoardに元々無いもの)はうまくいかないようです。  
+	https://github.com/polygonplanet/tombloo/blob/master/tombloo.model.tumblr.view.dashboard.by.permalink.js から一部を移植。
