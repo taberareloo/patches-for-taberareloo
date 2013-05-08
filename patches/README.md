@@ -15,7 +15,7 @@
 	[Google+](https://plus.google.com) への全ての画像投稿を「Upload from cache」と同様にアップロードしてフルサイズの画像を投稿するパッチ。
 
 * [patch.model.googleplus.quote.tbrl.js](https://raw.github.com/YungSang/patches-for-taberareloo/master/patches/patch.model.googleplus.quote.tbrl.js)  
-  Quote ポストの場合に、[Google+](https://plus.google.com) に長い引用を投稿すると、200 文字でカットされてしまうのを、本文欄に移すことによって全文引用を可能にしるパッチ。
+  [Google+](https://plus.google.com) に長い引用を投稿すると、200 文字でカットされてしまうのを、本文欄に移すことによって全文引用を可能にしるパッチ。
 
 * [patch.model.pinterest.repin.tbrl.js](https://raw.github.com/YungSang/patches-for-taberareloo/master/patches/patch.model.pinterest.repin.tbrl.js)  
 	[Pinterest](http://pinterest.com) のダッシュボードのサムネイル表示から直接投稿する為のパッチ。
