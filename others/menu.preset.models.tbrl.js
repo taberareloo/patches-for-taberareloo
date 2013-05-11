@@ -4,7 +4,7 @@
 // , "description" : "Post to preset models"
 // , "include"     : ["background", "content"]
 // , "match"       : ["*://*/*"]
-// , "version"     : "0.3.0"
+// , "version"     : "0.4.0"
 // }
 // ==/Taberareloo==
 
@@ -48,24 +48,23 @@
     chrome.extension.onMessage.addListener(function (req, sender, func) {
       if (req.request !== 'postToPresetModels') return;
 
-      constructPsInBackground(req.content).addCallback(function(ps) {
-        var models = PRESET_MODELS[req.preset].filter(function(name) {
-          return Models.values.some(function(model) {
-            return model.name === name;
-          });
+      var ps = req.content;
+      var models = PRESET_MODELS[req.preset].filter(function(name) {
+        return Models.values.some(function(model) {
+          return model.name === name;
         });
-        var posters = models.map(function(name) {
-          return Models[name];
-        });
-        posters = posters.filter(function(m) {
-          return (ps.favorite && ps.favorite.name === (m.typeName || m.name)) || (m.check && m.check(ps));
-        });
-        if (!posters.length) {
-          alert(chrome.i18n.getMessage('error_noPoster', ps.type.capitalize()));
-        } else {
-          TBRL.Service.post(ps, posters);
-        }
       });
+      var posters = models.map(function(name) {
+        return Models[name];
+      });
+      posters = posters.filter(function(m) {
+        return (ps.favorite && ps.favorite.name === (m.typeName || m.name)) || (m.check && m.check(ps));
+      });
+      if (!posters.length) {
+        alert(chrome.i18n.getMessage('error_noPoster', ps.type.capitalize()));
+      } else {
+        TBRL.Service.post(ps, posters);
+      }
     });
 
     var CHROME_GESTURES = 'jpkfjicglakibpenojifdiepckckakgk';
