@@ -5,13 +5,13 @@
 // , "description" : "Repin at Pinterest"
 // , "include"     : ["background", "content"]
 // , "match"       : ["http://pinterest.com/*"]
-// , "version"     : "0.4.2"
+// , "version"     : "0.5.0"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/patches/patch.model.pinterest.repin.tbrl.js"
 // }
 // ==/Taberareloo==
 
 (function() {
-  var app_version = "8022";
+  var app_version = "46ab";
 
   if (TBRL.ID) { // Is it in the background context?
     update(Models['Pinterest'], {
@@ -19,10 +19,9 @@
         var REPIN_URL = 'http://pinterest.com/resource/RepinResource/create/';
         var self = this;
         var pin_id = ps.favorite.id;
-        return (ps.pinboard
-          ? succeed([{id : ps.pinboard}])
-          : self._getBoards(true))
-        .addCallback(function(boards) {
+        return (
+          ps.pinboard ? succeed([{id : ps.pinboard}]) : self._getBoards(true)
+        ).addCallback(function(boards) {
           return self.getCSRFToken().addCallback(function(csrftoken) {
             return request(REPIN_URL, {
               sendContent : {
@@ -97,7 +96,7 @@
             }
           }),
           source_url  : '/pin/' + pin_id + '/',
-          module_path : 'App()>FeedPage()>Grid(resource=CategoryFeedResource(feed=everything))>Pin(show_pinner=true, show_pinned_from=false, show_board=true, show_via=false, pin_id=' + pin_id + ', resource=PinResource(id=' + pin_id + '))',
+          module_path : 'App()>FeedPage()>Grid(resource=CategoryFeedResource(feed=everything))>GridItems(resource=CategoryFeedResource(feed=everything))>Pin(show_pinner=true, show_pinned_from=false, show_board=true, show_via=false, pin_id=' + pin_id + ', resource=PinResource(id=' + pin_id + '))',
           '_' : new Date().getTime()
         },
         headers : {
@@ -115,7 +114,7 @@
         return {
           type     : 'photo',
           item     : ctx.title,
-          itemUrl  : json.page.meta['og:image'],
+          itemUrl  : json.module.tree.children[0].children[0].children[0].options.src,
           body     : json.page.meta['og:description'],
           favorite : {
             name   : 'Pinterest',
