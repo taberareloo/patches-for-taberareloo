@@ -4,39 +4,45 @@
 // , "description" : "Post to preset models"
 // , "include"     : ["background", "content"]
 // , "match"       : ["*://*/*"]
-// , "version"     : "0.4.0"
+// , "version"     : "0.5.0"
 // }
 // ==/Taberareloo==
 
 (function() {
-  if (TBRL.ID) { // Is it in the background context?
-    var PRESET_MODELS = [
-      ['Tumblr', 'Google+'],
-      ['Tumblr - Another Blog', 'GimmeBar']
-    ];
+  var PRESET_MODELS = {
+    1 : ['Tumblr', 'Google+'],
+    2 : ['Tumblr - Another Blog', 'GimmeBar']
+  };
 
-    Menus._register({
-      title    : 'Preset 1 (' + PRESET_MODELS[0].join(', ') + ')',
-      contexts : ['all'],
-      onclick: function(info, tab) {
-        chrome.tabs.sendMessage(tab.id, {
-          request : 'contextMenusPreset',
-          content : info,
-          preset  : 0
-        });
+  var PRESET_EVENTS  = {};
+  var PRESET_ACTIONS = [];
+  Object.keys(PRESET_MODELS).forEach(function(i) {
+    PRESET_EVENTS[i] = {
+      name  : 'Taberareloo.preset_' + i,
+      title : 'Preset ' + i + ' (' + PRESET_MODELS[i].join(', ') + ')',
+      func  : function(ev) {
+        postToPresetModels(i);
       }
-    }, null, 'Taberareloo');
-    Menus._register({
-      title    : 'Preset 2 (' + PRESET_MODELS[1].join(', ') + ')',
-      contexts : ['all'],
-      onclick: function(info, tab) {
-        chrome.tabs.sendMessage(tab.id, {
-          request : 'contextMenusPreset',
-          content : info,
-          preset  : 1
-        });
-      }
-    }, null, 'Taberareloo');
+    };
+    PRESET_ACTIONS.push({
+      name: PRESET_EVENTS[i].name
+    });
+  });
+
+  if (TBRL.ID) { // Is it in the background context?
+    Object.keys(PRESET_MODELS).forEach(function(i) {
+      Menus._register({
+        title    : PRESET_EVENTS[i].title,
+        contexts : ['all'],
+        onclick: function(info, tab) {
+          chrome.tabs.sendMessage(tab.id, {
+            request : 'contextMenusPreset',
+            content : info,
+            preset  : i
+          });
+        }
+      }, null, 'Taberareloo');
+    });
 
     Menus._register({
       type     : 'separator',
@@ -67,14 +73,11 @@
       }
     });
 
-    var CHROME_GESTURES = 'jpkfjicglakibpenojifdiepckckakgk';
+    var CHROME_GESTURES  = 'jpkfjicglakibpenojifdiepckckakgk';
     var CHROME_KEYCONFIG = 'okneonigbfnolfkmfgjmaeniipdjkgkl';
     var action = {
-      group: 'Taberareloo',
-      actions: [
-        {name: 'Taberareloo.preset_1'},
-        {name: 'Taberareloo.preset_2'}
-      ]
+      group   : 'Taberareloo',
+      actions : PRESET_ACTIONS
     };
     chrome.extension.sendMessage(CHROME_GESTURES, action, function(res) {});
     chrome.extension.sendMessage(CHROME_KEYCONFIG, action, function(res) {});
@@ -149,16 +152,13 @@
     });
   }
 
-  function preset_1() {
-    postToPresetModels(0);
-  }
-  function preset_2() {
-    postToPresetModels(1);
-  }
+  Object.keys(PRESET_EVENTS).forEach(function(i) {
+    window.addEventListener(PRESET_EVENTS[i].name, PRESET_EVENTS[i].func, false);
+  });
+
   document.addEventListener('unload', function() {
-    window.removeEventListener('Taberareloo.preset_1', preset_1, false);
-    window.removeEventListener('Taberareloo.preset_2', preset_2, false);
+    Object.keys(PRESET_EVENTS).forEach(function(i) {
+      window.removeEventListener(PRESET_EVENTS[i].name, PRESET_EVENTS[i].func, false);
+    });
   }, false);
-  window.addEventListener('Taberareloo.preset_1', preset_1, false);
-  window.addEventListener('Taberareloo.preset_2', preset_2, false);
 })();
