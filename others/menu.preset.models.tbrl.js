@@ -4,7 +4,7 @@
 // , "description" : "Post to preset models"
 // , "include"     : ["background", "content"]
 // , "match"       : ["*://*/*"]
-// , "version"     : "0.2.0"
+// , "version"     : "0.3.0"
 // }
 // ==/Taberareloo==
 
@@ -45,7 +45,9 @@
 
     Menus.create();
 
-    onRequestsHandlers.postToPresetModels = function (req, sender, func) {
+    chrome.extension.onMessage.addListener(function (req, sender, func) {
+      if (req.request !== 'postToPresetModels') return;
+
       constructPsInBackground(req.content).addCallback(function(ps) {
         var models = PRESET_MODELS[req.preset].filter(function(name) {
           return Models.values.some(function(model) {
@@ -64,7 +66,7 @@
           TBRL.Service.post(ps, posters);
         }
       });
-    };
+    });
 
     var CHROME_GESTURES = 'jpkfjicglakibpenojifdiepckckakgk';
     var CHROME_KEYCONFIG = 'okneonigbfnolfkmfgjmaeniipdjkgkl';
@@ -80,7 +82,9 @@
     return;
   }
 
-  onRequestHandlers.contextMenusPreset = function(req, sender, func) {
+  chrome.extension.onMessage.addListener(function (req, sender, func) {
+    if (req.request !== 'contextMenusPreset') return;
+
     var content = req.content;
     var ctx = {};
     var query = null;
@@ -130,7 +134,7 @@
         preset : req.preset
       });
     });
-  };
+  });
 
   function postToPresetModels(preset) {
     var ctx = TBRL.createContext();

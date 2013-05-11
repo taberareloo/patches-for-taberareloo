@@ -4,7 +4,7 @@
 // , "description" : "Create a context menu dynamically to post without the popup window"
 // , "include"     : ["background", "content"]
 // , "match"       : ["*://*/*"]
-// , "version"     : "0.4.0"
+// , "version"     : "0.5.0"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/others/menu.taberareloo.no-popup.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -29,16 +29,20 @@
 
     Menus.create();
 
-    onRequestsHandlers.updateContextMenu = function(req, sender, func) {
+    chrome.extension.onMessage.addListener(function (req, sender, func) {
+      if (req.request !== 'updateContextMenu') return;
+
       chrome.contextMenus.update(Menus[name].id, {
         title : 'Taberareloo - ' + req.extractor
       }, function() {});
-    };
+    });
 
     return;
   }
 
-  onRequestHandlers.contextMenusNoPopup = function(req, sender, func) {
+  chrome.extension.onMessage.addListener(function (req, sender, func) {
+    if (req.request !== 'contextMenusNoPopup') return;
+
     func({});
     var content = req.content;
     var ctx = {};
@@ -79,7 +83,7 @@
     }
     update(ctx, TBRL.createContext((query && document.querySelector(query)) || TBRL.getContextMenuTarget()));
     TBRL.share(ctx, Extractors.check(ctx)[0], false);
-  };
+  });
 
   function updateContextMenu(event) {
     var ctx = {};
