@@ -4,11 +4,19 @@
 // , "description" : "Post to preset models"
 // , "include"     : ["background", "content"]
 // , "match"       : ["*://*/*"]
-// , "version"     : "0.5.0"
+// , "version"     : "0.6.0"
 // }
 // ==/Taberareloo==
 
 (function() {
+  var onRequestsHandlers = {};
+  var requestsHandler = function (req, sender, func) {
+    var handler = onRequestsHandlers[req.request];
+    if (handler) {
+      handler.apply(this, arguments);
+    }
+  };
+
   var PRESET_MODELS = {
     1 : ['Tumblr', 'Google+'],
     2 : ['Tumblr - Another Blog', 'GimmeBar']
@@ -51,9 +59,7 @@
 
     Menus.create();
 
-    chrome.extension.onMessage.addListener(function (req, sender, func) {
-      if (req.request !== 'postToPresetModels') return;
-
+    onRequestsHandlers.postToPresetModels = function (req, sender, func) {
       var ps = req.content;
       var models = PRESET_MODELS[req.preset].filter(function(name) {
         return Models.values.some(function(model) {
@@ -71,7 +77,9 @@
       } else {
         TBRL.Service.post(ps, posters);
       }
-    });
+    };
+
+    chrome.runtime.onMessage.addListener(requestsHandler);
 
     var CHROME_GESTURES  = 'jpkfjicglakibpenojifdiepckckakgk';
     var CHROME_KEYCONFIG = 'okneonigbfnolfkmfgjmaeniipdjkgkl';
@@ -79,14 +87,12 @@
       group   : 'Taberareloo',
       actions : PRESET_ACTIONS
     };
-    chrome.extension.sendMessage(CHROME_GESTURES, action, function(res) {});
-    chrome.extension.sendMessage(CHROME_KEYCONFIG, action, function(res) {});
+    chrome.runtime.sendMessage(CHROME_GESTURES, action, function(res) {});
+    chrome.runtime.sendMessage(CHROME_KEYCONFIG, action, function(res) {});
     return;
   }
 
-  chrome.extension.onMessage.addListener(function (req, sender, func) {
-    if (req.request !== 'contextMenusPreset') return;
-
+  onRequestsHandlers.contextMenusPreset = function (req, sender, func) {
     var content = req.content;
     var ctx = {};
     var query = null;
@@ -127,7 +133,7 @@
     update(ctx, TBRL.createContext((query && document.querySelector(query)) || TBRL.getContextMenuTarget()));
 
     TBRL.extract(ctx, Extractors.check(ctx)[0]).addCallback(function(ps) {
-      chrome.extension.sendMessage(TBRL.id, {
+      chrome.runtime.sendMessage(TBRL.id, {
         request : "postToPresetModels",
         content : checkHttps(update({
           page    : ctx.title,
@@ -136,12 +142,14 @@
         preset : req.preset
       });
     });
-  });
+  };
+
+  chrome.runtime.onMessage.addListener(requestsHandler);
 
   function postToPresetModels(preset) {
     var ctx = TBRL.createContext();
     TBRL.extract(ctx, Extractors.check(ctx)[0]).addCallback(function(ps) {
-      chrome.extension.sendMessage(TBRL.id, {
+      chrome.runtime.sendMessage(TBRL.id, {
         request : "postToPresetModels",
         content : checkHttps(update({
           page    : ctx.title,

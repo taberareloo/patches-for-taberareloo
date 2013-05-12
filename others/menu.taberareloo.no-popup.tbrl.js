@@ -4,12 +4,20 @@
 // , "description" : "Create a context menu dynamically to post without the popup window"
 // , "include"     : ["background", "content"]
 // , "match"       : ["*://*/*"]
-// , "version"     : "0.5.0"
+// , "version"     : "0.6.0"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/others/menu.taberareloo.no-popup.tbrl.js"
 // }
 // ==/Taberareloo==
 
 (function() {
+  var onRequestsHandlers = {};
+  var requestsHandler = function (req, sender, func) {
+    var handler = onRequestsHandlers[req.request];
+    if (handler) {
+      handler.apply(this, arguments);
+    }
+  };
+
   if (TBRL.ID) { // Is it in the background context?
     var name = 'Taberareloo - Taberareloo';
     Menus._register({
@@ -29,21 +37,18 @@
 
     Menus.create();
 
-    chrome.extension.onMessage.addListener(function (req, sender, func) {
-      if (req.request !== 'updateContextMenu') return;
-
+    onRequestsHandlers.updateContextMenu = function (req, sender, func) {
       chrome.contextMenus.update(Menus[name].id, {
         title : 'Taberareloo - ' + req.extractor
       }, function() {});
-    });
+    };
+
+    chrome.runtime.onMessage.addListener(requestsHandler);
 
     return;
   }
 
-  chrome.extension.onMessage.addListener(function (req, sender, func) {
-    if (req.request !== 'contextMenusNoPopup') return;
-
-    func({});
+  onRequestsHandlers.contextMenusNoPopup = function (req, sender, func) {
     var content = req.content;
     var ctx = {};
     var query = null;
@@ -83,7 +88,9 @@
     }
     update(ctx, TBRL.createContext((query && document.querySelector(query)) || TBRL.getContextMenuTarget()));
     TBRL.share(ctx, Extractors.check(ctx)[0], false);
-  });
+  };
+
+  chrome.runtime.onMessage.addListener(requestsHandler);
 
   function updateContextMenu(event) {
     var ctx = {};
@@ -102,7 +109,7 @@
 
     var extractor = Extractors.check(ctx)[0];
 
-    chrome.extension.sendMessage(TBRL.id, {
+    chrome.runtime.sendMessage(TBRL.id, {
       request   : "updateContextMenu",
       extractor : extractor.name
     }, function(res) {});

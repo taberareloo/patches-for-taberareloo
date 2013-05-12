@@ -4,12 +4,19 @@
 // , "description" : "Convert a nicovideo link to an embedded video"
 // , "include"     : ["background", "content"]
 // , "match"       : ["https://plus.google.com/*"]
-// , "version"     : "1.0.0"
+// , "version"     : "1.1.0"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/samples/userscript.googleplus.nicovideo.tbrl.js"
 // }
 // ==/Taberareloo==
 
 (function() {
+  var onRequestsHandlers = {};
+  var requestsHandler = function (req, sender, func) {
+    var handler = onRequestsHandlers[req.request];
+    if (handler) {
+      handler.apply(this, arguments);
+    }
+  };
 
   if (TBRL.ID) { // Is it in the background context?
     onRequestsHandlers.executeNicoVideoScript = function(req, sender, func) {
@@ -25,6 +32,8 @@
         }, function(res) {});
       });
     };
+
+    chrome.runtime.onMessage.addListener(requestsHandler);
     return;
   }
 
@@ -39,7 +48,7 @@
       url = url.replace(/\$2/g, seq);
 
       setTimeout(function() {
-        chrome.extension.sendMessage(TBRL.id, {
+        chrome.runtime.sendMessage(TBRL.id, {
           request  : "executeNicoVideoScript",
           sequence : seq,
           url      : url
