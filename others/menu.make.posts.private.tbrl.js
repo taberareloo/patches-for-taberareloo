@@ -3,7 +3,7 @@
 //   "name"        : "Make Posts Private Checkbox"
 // , "description" : "Make posts private"
 // , "include"     : ["background"]
-// , "version"     : "1.0.1"
+// , "version"     : "1.0.2"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/others/menu.make.posts.private.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -17,7 +17,7 @@
   });
   Menus._register({
     type     : 'checkbox',
-    title    : 'Make Posts Private',
+    title    : 'Option - Make Posts Private',
     checked  : private,
     contexts : ['all'],
     onclick  : function(info, tab) {
