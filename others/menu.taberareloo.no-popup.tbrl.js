@@ -4,12 +4,15 @@
 // , "description" : "Create a context menu dynamically to post without the popup window"
 // , "include"     : ["background", "content"]
 // , "match"       : ["*://*/*"]
-// , "version"     : "0.6.0"
+// , "version"     : "0.7.0"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/others/menu.taberareloo.no-popup.tbrl.js"
 // }
 // ==/Taberareloo==
 
-(function() {
+(function(exports) {
+  if (exports.menu_taberareloo_no_popup_tbrl_js_loaded) return;
+  exports.menu_taberareloo_no_popup_tbrl_js_loaded = true;
+
   var onRequestsHandlers = {};
   var requestsHandler = function (req, sender, func) {
     var handler = onRequestsHandlers[req.request];
@@ -130,4 +133,4 @@
       now = new Date().getTime();
     }
   }
-})();
+})(this);

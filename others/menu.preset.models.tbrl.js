@@ -4,11 +4,14 @@
 // , "description" : "Post to preset models"
 // , "include"     : ["background", "content"]
 // , "match"       : ["*://*/*"]
-// , "version"     : "0.6.0"
+// , "version"     : "0.7.0"
 // }
 // ==/Taberareloo==
 
-(function() {
+(function(exports) {
+  if (exports.menu_preset_models_tbrl_js_loaded) return;
+  exports.menu_preset_models_tbrl_js_loaded = true;
+
   var onRequestsHandlers = {};
   var requestsHandler = function (req, sender, func) {
     var handler = onRequestsHandlers[req.request];
@@ -169,4 +172,4 @@
       window.removeEventListener(PRESET_EVENTS[i].name, PRESET_EVENTS[i].func, false);
     });
   }, false);
-})();
+})(this);
