@@ -3,7 +3,7 @@
 //   "name"        : "Backup/Restore Configurations"
 // , "description" : "Backup/Restore Configurations using data URI"
 // , "include"     : ["background"]
-// , "version"     : "0.2.1"
+// , "version"     : "0.2.2"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/others/menu.backup.config.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -63,17 +63,14 @@
       window.localStorage.setItem(key, value);
     }
     if (typeof json.patches_preferences === 'object') {
-      var patches = [];
+      var patches = {};
       for (var patch in json.patches_preferences) {
         var preference = json.patches_preferences[patch];
         if (preference.origin) {
-          try {
-            patches.push(Patches.install(preference.origin));
-          }
-          catch(e) {}
+          patches[patch] = Patches.install(preference.origin, true);
         }
       }
-      new DeferredList(patches).addCallback(function(resses) {
+      new DeferredHash(patches).addCallback(function(ress) {
         alert('Configurations has been restored!');
         window.location.reload();
       });
