@@ -3,13 +3,13 @@
 //   "name"        : "Backup/Restore Configurations"
 // , "description" : "Backup/Restore Configurations using data URI"
 // , "include"     : ["background"]
-// , "version"     : "0.1.0"
+// , "version"     : "0.2.0"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/others/menu.backup.config.tbrl.js"
 // }
 // ==/Taberareloo==
 
 (function() {
-  var taberareloo_data_schema = 'data:text/plain;charset=utf-8,taberareloo_config=';
+  var DATA_TYPE = 'text/plain;charset=utf-8;name=taberareloo.json';
 
   Menus._register({
     type     : 'separator',
@@ -29,45 +29,54 @@
           configurations[key] = value;
         }
       }
-      chrome.tabs.create({
-        url : taberareloo_data_schema +
-          encodeURIComponent(JSON.stringify(configurations, undefined, 2))
+      var data = JSON.stringify(configurations, undefined, 2);
+      var blob = new Blob([data], {type : DATA_TYPE});
+      fileToDataURL(blob).addCallback(function(url) {
+        chrome.tabs.create({
+          url : url
+        });
       });
     }
   });
   Menus._register({
     title    : 'Config - Restore',
     contexts : ['page'],
-    documentUrlPatterns : [taberareloo_data_schema + '*'],
+    documentUrlPatterns : ['data:' + DATA_TYPE + ';base64,*'],
     onclick  : function(info, tab) {
-      var data = info.pageUrl.replace(taberareloo_data_schema, '');
-      data = decodeURIComponent(data);
-      var json = JSON.parse(data);
-      for (var key in json) {
-        var value = json[key];
-        if (typeof value !== 'string') {
-          value = JSON.stringify(value);
-        }
-        window.localStorage.setItem(key, value);
-      }
-      if (typeof json.patches_preferences === 'object') {
-        var patches = [];
-        for (var patch in json.patches_preferences) {
-          var preference = json.patches_preferences[patch];
-          if (preference.origin) {
-            patches.push(Patches.install(preference.origin));
-          }
-        }
-        new DeferredList(patches).addCallback(function(resses) {
-          alert('Configurations has been restored!');
-          window.location.reload();
-        });
-        return;
-      }
-      alert('Configurations has been restored!');
-      window.location.reload();
+      var blob = base64ToBlob(info.pageUrl, DATA_TYPE);
+      var reader = new FileReader();
+      reader.onload = function (ev) {
+        restore(ev.target.result);
+      };
+      reader.readAsText(blob);
     }
   });
-
   Menus.create();
+
+  function restore(data) {
+    var json = JSON.parse(data);
+    for (var key in json) {
+      var value = json[key];
+      if (typeof value !== 'string') {
+        value = JSON.stringify(value);
+      }
+      window.localStorage.setItem(key, value);
+    }
+    if (typeof json.patches_preferences === 'object') {
+      var patches = [];
+      for (var patch in json.patches_preferences) {
+        var preference = json.patches_preferences[patch];
+        if (preference.origin) {
+          patches.push(Patches.install(preference.origin));
+        }
+      }
+      new DeferredList(patches).addCallback(function(resses) {
+        alert('Configurations has been restored!');
+        window.location.reload();
+      });
+      return;
+    }
+    alert('Configurations has been restored!');
+    window.location.reload();
+  }
 })();
