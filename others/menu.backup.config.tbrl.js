@@ -3,7 +3,7 @@
 //   "name"        : "Backup/Restore Configurations"
 // , "description" : "Backup/Restore Configurations using data URI"
 // , "include"     : ["background"]
-// , "version"     : "0.2.0"
+// , "version"     : "0.2.1"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/others/menu.backup.config.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -67,7 +67,10 @@
       for (var patch in json.patches_preferences) {
         var preference = json.patches_preferences[patch];
         if (preference.origin) {
-          patches.push(Patches.install(preference.origin));
+          try {
+            patches.push(Patches.install(preference.origin));
+          }
+          catch(e) {}
         }
       }
       new DeferredList(patches).addCallback(function(resses) {
