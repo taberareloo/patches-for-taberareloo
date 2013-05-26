@@ -5,15 +5,15 @@
 // , "description" : "Repin at Pinterest"
 // , "include"     : ["background", "content"]
 // , "match"       : ["http://pinterest.com/*"]
-// , "version"     : "0.5.0"
+// , "version"     : "0.6.0"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/patches/patch.model.pinterest.repin.tbrl.js"
 // }
 // ==/Taberareloo==
 
 (function() {
-  var app_version = "46ab";
-
   if (TBRL.ID) { // Is it in the background context?
+    var app_version = "46ab";
+
     update(Models['Pinterest'], {
       favor : function(ps) {
         var REPIN_URL = 'http://pinterest.com/resource/RepinResource/create/';
@@ -59,8 +59,6 @@
   Extractors.register({
     name : 'ReBlog - Pinterest',
 
-    GET_PIN_URL : 'http://pinterest.com/resource/PinResource/get/',
-
     check : function(ctx) {
       return (/pinterest\.com/).test(ctx.href) && !!this.getPinId(ctx);
     },
@@ -68,96 +66,43 @@
     extract : function(ctx) {
       var pin_id = this.getPinId(ctx);
 
-      var csrftoken = this.getLocalCookie('csrftoken');
-
-      return request(this.GET_PIN_URL, {
-        queryString : {
-          data : JSON.stringify({
-            options : {
-              id        : pin_id,
-              view_type : "closeup_content"
-            },
-            module : {
-              name    :"CloseupContent",
-              options : {
-                id       : "content",
-                resource : {
-                  name    : "PinResource",
-                  options : {
-                    id        : pin_id,
-                    view_type : "closeup_content"
-                  }
-                }
-              },
-              append : false
-            },
-            context : {
-              app_version : app_version
-            }
-          }),
-          source_url  : '/pin/' + pin_id + '/',
-          module_path : 'App()>FeedPage()>Grid(resource=CategoryFeedResource(feed=everything))>GridItems(resource=CategoryFeedResource(feed=everything))>Pin(show_pinner=true, show_pinned_from=false, show_board=true, show_via=false, pin_id=' + pin_id + ', resource=PinResource(id=' + pin_id + '))',
-          '_' : new Date().getTime()
-        },
-        headers : {
-          'X-CSRFToken'      : csrftoken,
-          'X-NEW-APP'        : 1,
-          'X-Requested-With' : 'XMLHttpRequest'
-        }
+      return request('http://pinterest.com/pin/' + pin_id, {
+        responseType: 'document'
       }).addCallback(function(res) {
-        var json = JSON.parse(res.responseText);
-        app_version = json.context.app_version;
+        var doc = res.response;
 
-        ctx.title = json.page.title;
-        ctx.href  = json.page.meta['og:url'];
+        ctx.title = $X('//title/text()', doc)[0];
+        ctx.href  = $X('//meta[@property="og:url" or @name="og:url"]/@content', doc)[0];
 
         return {
           type     : 'photo',
           item     : ctx.title,
-          itemUrl  : json.module.tree.children[0].children[0].children[0].options.src,
-          body     : json.page.meta['og:description'],
+          itemUrl  : $X('//meta[@property="og:image"]/@content', doc)[0] ||
+            $X('//div[@class="imageContainer"]/img/@src', doc)[0],
+          body     : $X('//meta[@property="og:description" or @name="og:description"]/@content', doc)[0],
           favorite : {
             name   : 'Pinterest',
             id     : pin_id,
-            source : json.page.meta['pinterestapp:source']
+            source : $X('//meta[@property="pinterestapp:source" or @name="pinterestapp:source"]/@content', doc)[0]
           }
         };
       });
     },
 
     getPinId : function(ctx) {
-      var result = ctx.href.match(/^http:\/\/pinterest\.com\/pin\/(\d+)\//);
+      var pattern = /^http:\/\/pinterest\.com\/pin\/(\d+)\//;
+      var result = ctx.href.match(pattern);
       if (result) {
         return result[1];
       }
       else {
-        var link = $X('./ancestor-or-self::div[starts-with(@class, "item")]//a[starts-with(@href, "/pin/")]', ctx.target)[0];
+        var link = $X('./ancestor-or-self::div[starts-with(@class, "item") or starts-with(@class, "pin")]//a[starts-with(@href, "/pin/")]', ctx.target)[0];
         if (link) {
-          result = link.href.match(/^http:\/\/pinterest\.com\/pin\/(\d+)\//);
+          result = link.href.match(pattern);
           return result && result[1];
         }
       }
       return false;
-    },
-
-    getLocalCookie : function(c_name) {
-      var c_value = document.cookie;
-      var c_start = c_value.indexOf(" " + c_name + "=");
-      if (c_start == -1) {
-        c_start = c_value.indexOf(c_name + "=");
-      }
-      if (c_start == -1) {
-        c_value = null;
-      }
-      else {
-        c_start = c_value.indexOf("=", c_start) + 1;
-        var c_end = c_value.indexOf(";", c_start);
-        if (c_end == -1) {
-         c_end = c_value.length;
-        }
-        c_value = unescape(c_value.substring(c_start,c_end));
-      }
-      return c_value;
     }
 
   }, 'ReBlog');
