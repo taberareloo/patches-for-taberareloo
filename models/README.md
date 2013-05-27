@@ -8,6 +8,10 @@ Model とは、Taberareloo から投稿する先のウェブ・サービス及�
 * [model.appdotnet.tbrl.js](https://raw.github.com/YungSang/patches-for-taberareloo/master/models/model.appdotnet.tbrl.js)  
   [https://alpha.app.net](https://alpha.app.net) 用モデル
 
+* [model.googl.tbrl.js](https://raw.github.com/YungSang/patches-for-taberareloo/master/models/model.googl.tbrl.js)  
+  [Google URL Shortener](http://goo.gl) 用モデル  
+  ポスト関連オプションの「Twitter - 常にURLを短縮する」がチェックされている場合に有効になります。
+
 * [model.loveit.tbrl.js](https://raw.github.com/YungSang/patches-for-taberareloo/master/models/model.loveit.tbrl.js)  
   [http://loveit.com](http://loveit.com) 用モデル
 
