@@ -5,7 +5,7 @@
 // , "description" : "Fix login check for Delicious"
 // , "include"     : ["background", "content"]
 // , "match"       : ["https://delicious.com/"]
-// , "version"     : "1.1.0"
+// , "version"     : "1.2.0"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/patches/patch.model.delicious.getinfo.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -74,10 +74,20 @@
     return;
   }
 
-  onRequestHandlers.getLocalStorageItem = function(req, sender, func) {
+  var onRequestsHandlers = {};
+  var requestsHandler = function (req, sender, func) {
+    var handler = onRequestsHandlers[req.request];
+    if (handler) {
+      handler.apply(this, arguments);
+    }
+  };
+
+  onRequestsHandlers.getLocalStorageItem = function(req, sender, func) {
     func({
       key   : req.key,
       value : window.localStorage.getItem(req.key)
     });
   };
+
+  chrome.runtime.onMessage.addListener(requestsHandler);
 })();
