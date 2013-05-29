@@ -4,7 +4,7 @@
 // , "description" : "Extract tweets as a conversation"
 // , "include"     : ["background", "content"]
 // , "match"       : ["*://twitter.com/*"]
-// , "version"     : "0.2.0"
+// , "version"     : "0.3.0"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/extractors/extractor.chat.twitter.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -190,7 +190,7 @@
       var selection = createFlavoredString(cloneElm);
       return {
         account : $X('.//strong[contains(concat(" ",@class," ")," fullname ")]/text()', tweet)[0],
-        body    : selection.raw,
+        body    : selection.raw.replace(/[\r\n]/g, ' ').trim(),
         source  : $X('.//a[contains(concat(" ",@class," ")," details ")]', tweet)[0]
       };
     }
