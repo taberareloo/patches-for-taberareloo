@@ -4,7 +4,7 @@
 // , "description" : "Extract tweets as a conversation"
 // , "include"     : ["background", "content"]
 // , "match"       : ["*://twitter.com/*"]
-// , "version"     : "0.1.0"
+// , "version"     : "0.2.0"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/extractors/extractor.chat.twitter.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -38,7 +38,11 @@
 
   onRequestsHandlers.contextMenusChatTwitter = function (req, sender, func) {
     var ctx = TBRL.createContext(TBRL.getContextMenuTarget());
-    TBRL.share(ctx, Extractors['Chat - Twitter'], true);
+    var ext = Extractors['Chat - Twitter Dashboard'];
+    if (ctx.href.match(/\/\/twitter\.com\/.*?\/(?:status|statuses)\/\d+/)) {
+      ext = Extractors['Chat - Twitter'];
+    }
+    TBRL.share(ctx, ext, true);
   };
 
   chrome.runtime.onMessage.addListener(requestsHandler);
@@ -57,37 +61,49 @@
       doc = doc || MochiKit.DOM.currentDocument();
 
       var list = [];
+      var nodes = [];
       var now_target = null;
       function getChatElement(e) {
         return $X(xpath, e.target)[0];
       }
       function onMouseOver(e) {
-        var target = null;
-        if ((target = getChatElement(e)) && !target.captureSelected) {
+        var target = getChatElement(e);
+        if (target && !target.captureSelected) {
           now_target = target;
           target.originalBackground = target.style.background;
           target.style.background = self.TARGET_BACKGROUND;
         }
       }
       function onMouseOut(e) {
-        var target = null;
-        if ((target = getChatElement(e)) && !target.captureSelected) {
+        var target = getChatElement(e);
+        if (target && !target.captureSelected) {
           now_target = null;
           unpoint(target);
         }
       }
       function onClick(e) {
         cancel(e);
-        var target = null;
-        if (target = getChatElement(e)) {
-          if (target.captureSelected = !target.captureSelected) {
+        var target = getChatElement(e);
+        if (target) {
+          var tweets = $X('.//div[contains(concat(" ",@class," ")," js-stream-tweet ")]', target);
+          target.captureSelected = !target.captureSelected;
+          if (target.captureSelected) {
             list.push(target);
+            tweets.forEach(function(node) {
+              nodes.push(node);
+            });
           }
           else {
             var index = list.indexOf(target);
-            if (!(index === -1)) {
+            if (index !== -1) {
               list.splice(index, 1);
             }
+            tweets.forEach(function(node) {
+              var index = nodes.indexOf(node);
+              if (index !== -1) {
+                nodes.splice(index, 1);
+              }
+            });
           }
         }
       }
@@ -101,8 +117,8 @@
           return;
         case 'RETURN':
           finalize();
-          if (list.length) {
-            deferred.callback(list);
+          if (nodes.length) {
+            deferred.callback(nodes);
           }
           else {
             deferred.cancel();
@@ -139,44 +155,62 @@
 
       return deferred;
     },
-    createChat : function(list) {
-      var chat = list.map(function(item, index) {
-        return escapeHTML(item.account) + ': ' + escapeHTML(item.body) + ' [' + item.source + ']';
+    createChat : function(tweets) {
+      var chat = tweets.map(function(tweet, index) {
+        return escapeHTML(tweet.account) + ': ' + escapeHTML(tweet.body) + ' [' + tweet.source + ']';
       });
       return chat.join('\n');
     }
   },
   {
-    name     : 'Chat - Twitter',
-    ICON     : Extractors['Quote - Twitter'].ICON,
-    li_xpath : './ancestor-or-self::li[starts-with(@id, "stream-item-tweet-")]',
+    name  : 'Chat - Twitter',
+    ICON  : Extractors['Quote - Twitter'].ICON,
 
     check : function(ctx) {
-      return ctx.href.match('https?://twitter.com/');
+      return ctx.href.match(/\/\/twitter\.com\/.*?\/(?:status|statuses)\/\d+/);
     },
     extract : function(ctx) {
-      var Chat = Extractors.Chat;
-      return Chat.extract(ctx, this.li_xpath).addCallback(function(list) {
-        list = list.map(function(li) {
-          var elm = $X('.//p[contains(concat(" ",@class," ")," js-tweet-text ")]', li)[0];
-          var cloneElm = elm.cloneNode(true);
-          $A(cloneElm.getElementsByClassName('tco-ellipsis')).forEach(
-            function(target) {
-              target.parentNode.removeChild(target);
-            }
-          );
-          var selection = createFlavoredString(cloneElm);
-          return {
-            account : $X('.//strong[contains(concat(" ",@class," ")," fullname ")]/text()', li)[0],
-            body    : selection.raw,
-            source  : $X('.//a[contains(concat(" ",@class," ")," details ")]', li)[0]
-          };
-        });
+      var nodes = $X('id("page-container")//div[contains(concat(" ",@class," ")," js-stream-tweet ")]');
+      var tweets = nodes.map(this.extractTweet);
+      return {
+        type    : 'conversation',
+        item    : ctx.title,
+        itemUrl : ctx.href,
+        body    : Extractors.Chat.createChat(tweets)
+      };
+    },
+    extractTweet : function(tweet) {
+      var elm = $X('.//p[contains(concat(" ",@class," ")," js-tweet-text ")]', tweet)[0];
+      var cloneElm = elm.cloneNode(true);
+      $A(cloneElm.getElementsByClassName('tco-ellipsis')).forEach(
+        function(target) {
+          target.parentNode.removeChild(target);
+        }
+      );
+      var selection = createFlavoredString(cloneElm);
+      return {
+        account : $X('.//strong[contains(concat(" ",@class," ")," fullname ")]/text()', tweet)[0],
+        body    : selection.raw,
+        source  : $X('.//a[contains(concat(" ",@class," ")," details ")]', tweet)[0]
+      };
+    }
+  },
+  {
+    name     : 'Chat - Twitter Dashboard',
+    ICON     : Extractors['Quote - Twitter'].ICON,
+    li_xpath : './ancestor-or-self::li[starts-with(@id,"stream-item-tweet-")]',
+
+    check : function(ctx) {
+      return ctx.href.match('https?://twitter.com/') && !ctx.href.match(/\/\/twitter\.com\/.*?\/(?:status|statuses)\/\d+/);
+    },
+    extract : function(ctx) {
+      return Extractors.Chat.extract(ctx, this.li_xpath).addCallback(function(nodes) {
+        var tweets = nodes.map(Extractors['Chat - Twitter'].extractTweet);
         return {
           type    : 'conversation',
           item    : ctx.title,
           itemUrl : ctx.href,
-          body    : Chat.createChat(list)
+          body    : Extractors.Chat.createChat(tweets)
         };
       });
     }
