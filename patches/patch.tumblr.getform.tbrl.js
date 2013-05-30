@@ -5,7 +5,7 @@
 // , "description" : "Set 'Send to Twitter/Facebook' automatically"
 // , "include"     : ["background", "content"]
 // , "match"       : ["http://www.tumblr.com/dashboard*"]
-// , "version"     : "1.5.0"
+// , "version"     : "1.6.0"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/patches/patch.tumblr.getform.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -17,7 +17,6 @@
         var html = res.responseText.replace(/\s+/g, ' ');
         var selectbox = html.extract(/\{\{else\}\} (<div id="tumblelog_choices".*<\/ul> <\/div> <\/div> <\/div>) \{\{\/if\}\}/);
         var doc = createHTML(selectbox);
-
         var div;
         if (channel_id) {
           div = $X('//li/div[@data-option-value="' + channel_id + '"]', doc)[0];
@@ -70,14 +69,14 @@
 
   update(Extractors['ReBlog - Dashboard'], {
     extract : function(ctx) {
-      var li = $X('./ancestor-or-self::li[starts-with(normalize-space(@class), "post")]', ctx.target)[0];
+      var post = $X('./ancestor-or-self::*[starts-with(@id,"post_")]', ctx.target)[0];
 
-      ctx.title      = $X('.//a[@class="post_avatar"]/@title', li)[0];
-      ctx.href       = $X('.//a[@class="permalink"]/@href', li)[0];
-      ctx.form_key   = $X('.//input[@name="form_key"]/@value', li)[0];
-      ctx.reblog_id  = li.getAttribute('data-post-id');
-      ctx.reblog_key = li.getAttribute('data-reblog-key');
-      ctx.post_type  = li.getAttribute('data-type');
+      ctx.title      = $X('.//a[@class="post_avatar_link"]/@title', post)[0];
+      ctx.href       = $X('.//a[@class="post_permalink"]/@href', post)[0];
+      ctx.form_key   = $X('.//input[@name="form_key"]/@value', post)[0];
+      ctx.reblog_id  = post.getAttribute('data-post-id');
+      ctx.reblog_key = post.getAttribute('data-reblog-key');
+      ctx.post_type  = post.getAttribute('data-type');
 
       var that = Extractors['ReBlog'];
       return that.getFormKeyAndChannelId(ctx).addCallback(function() {
