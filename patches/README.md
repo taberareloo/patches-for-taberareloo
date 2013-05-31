@@ -8,14 +8,16 @@
 	[Delicious](https://delicious.com) の下記の問題に対応するパッチ。  
 	https://github.com/Constellation/taberareloo/issues/183
 
-* [patch.model.googleplus.icon.tbrl.js](https://raw.github.com/YungSang/patches-for-taberareloo/master/patches/patch.model.googleplus.icon.tbrl.js)  
-	Taberareloo 内で使用されている [Google+](https://plus.google.com) アイコンを最新のものに差し替えるパッチ。
+* <del>[patch.model.googleplus.icon.tbrl.js](https://raw.github.com/YungSang/patches-for-taberareloo/master/patches/patch.model.googleplus.icon.tbrl.js)  
+	Taberareloo 内で使用されている [Google+](https://plus.google.com) アイコンを最新のものに差し替えるパッチ。</del>  
+	Taberareloo v 3.0.2 より Google+ の新しい API 対応に統合されました。
 
 * [patch.model.googleplus.post.fullimage.tbrl.js](https://raw.github.com/YungSang/patches-for-taberareloo/master/patches/patch.model.googleplus.post.fullimage.tbrl.js)  
 	[Google+](https://plus.google.com) への全ての画像投稿を「Upload from cache」と同様にアップロードしてフルサイズの画像を投稿するパッチ。
 
-* [patch.model.googleplus.quote.tbrl.js](https://raw.github.com/YungSang/patches-for-taberareloo/master/patches/patch.model.googleplus.quote.tbrl.js)  
-  [Google+](https://plus.google.com) に長い引用を投稿すると、200 文字でカットされてしまうのを、本文欄に移すことによって全文引用を可能にしるパッチ。
+* <del>[patch.model.googleplus.quote.tbrl.js](https://raw.github.com/YungSang/patches-for-taberareloo/master/patches/patch.model.googleplus.quote.tbrl.js)  
+  [Google+](https://plus.google.com) に長い引用を投稿すると、200 文字でカットされてしまうのを、本文欄に移すことによって全文引用を可能にしるパッチ。</del>  
+  Taberareloo v 3.0.2 より Google+ の新しい API 対応に統合されました。
 
 * [patch.model.pinterest.repin.tbrl.js](https://raw.github.com/YungSang/patches-for-taberareloo/master/patches/patch.model.pinterest.repin.tbrl.js)  
 	[Pinterest](http://pinterest.com) のダッシュボードのサムネイル表示から直接投稿する為のパッチ。
