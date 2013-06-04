@@ -3,7 +3,7 @@
 //   "name"        : "wri.pe Model"
 // , "description" : "Post to wri.pe"
 // , "include"     : ["background"]
-// , "version"     : "0.1.2"
+// , "version"     : "0.2.0"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/models/model.wripe.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -11,12 +11,13 @@
 (function() {
 
   Models.register({
-    name       : 'wri.pe',
-    ICON       : 'http://wri.pe/favicon.ico',
-    LINK       : 'http://wri.pe/',
-    LOGIN_URL  : 'http://wri.pe/',
+    name      : 'wri.pe',
+    ICON      : 'https://wri.pe/favicon.ico',
+    LINK      : 'https://wri.pe/',
+    LOGIN_URL : 'https://wri.pe/',
 
-    NEW_URL    : 'http://wri.pe/new',
+    SESS_URL  : 'https://wri.pe/session.json',
+    POST_URL  : 'https://wri.pe/pages.json',
 
     YOUTUBE_REGEX : /http(?:s)?:\/\/(?:.*\.)?youtube.com\/watch\?v=([a-zA-Z0-9_-]+)[-_.!~*'()a-zA-Z0-9;\/?:@&=+\$,%#]*/g,
 
@@ -48,33 +49,26 @@
         ], "  \n");
       }
 
-      return request(this.NEW_URL, { responseType: 'document' }).addCallback(function(res) {
-        var doc = res.response;
-
-        var csrf_token = $X('//meta[@name="csrf-token"]/@content', doc)[0];
-        var form       = $X('id("edit_page")', doc)[0];
-        if (!form) {
-          throw new Error(chrome.i18n.getMessage('error_notLoggedin', self.name));
-        }
-        var post_url   = self.LINK + form.getAttribute('action').substring(1);
+      return request(this.SESS_URL).addCallback(function(res) {
+        var json = JSON.parse(res.responseText);
 
         var sendContent = {
-          utf8                    : '✓',
-          _method                 : 'patch',
-          authenticity_token      : csrf_token,
-          'page[lock_version]'    : 0,
-          'page[title]'           : ps.item || ps.page,
-          'page[body]'            : body,
-          'page[read_permission]' : 10
+          'page[title]'        : ps.item || ps.page,
+          'page[body]'         : body,
+          'page[dates_json]'   : JSON.stringify([Math.floor((new Date()).getTime() / 1000)]),
+          'page[lock_version]' : 0,
+          'page[archived]'     : false
         };
 
-        return request(post_url, {
+        return request(self.POST_URL, {
           sendContent : sendContent,
-          heeaders    : {
-            'X-CSRF-Token'     : csrf_token,
+          headers    : {
+            'X-CSRF-Token'     : json.csrf_token,
             'X-Requested-With' : 'XMLHttpRequest'
           }
         });
+      }).addErrback(function() {
+        throw new Error(chrome.i18n.getMessage('error_notLoggedin', self.name));
       });
     }
   });
