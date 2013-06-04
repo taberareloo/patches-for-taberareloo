@@ -36,13 +36,14 @@ A patch must have a metadata about its patch.
 
 * `"description"` : The description of a patch (optional)
 
-* `"include"`     : An array of target contexts ("background" and/or "content")  
+* `"include"`     : An array of target contexts ("background", "content" and/or "popup")  
 	"background" : The background context of Taberareloo  
-	"content"    : A page context opened in a browser tab
+	"content"    : A page context opened in a browser tab  
+	"popup"      : The popup window in which the QuickPostForm is (v3.0.1~)
 
 * `"match"`       : An array of target page patterns, if `"include"` has "content".  
 	The match patterns are equivalent of [Match Patterms of Google Chrome](http://developer.chrome.com/extensions/match_patterns.html).  
-	If `"include"` has only "background", it's ignored.
+	If `"include"` doesn't have "content", it's ignored.
 
 * `"version"`     : The version of a patch (optional)  
 	The version format uses [Semantic Versioning](http://semver.org/).
