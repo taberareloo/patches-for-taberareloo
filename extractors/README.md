@@ -10,6 +10,10 @@ Extractor とは、Taberareloo から投稿する元のページ及びそこで�
 	「[Tumblrにポストすると動かなくなるgifアニメを減色して動かすパッチ。](https://github.com/polygonplanet/tombloo/blob/master/tombloo.extractor.diet.gif.js)」から移植  
 	[diet-gif](http://diet-gif.herokuapp.com/) を使っている。
 
+* [extractor.feedly.tbrl.js](https://raw.github.com/YungSang/patches-for-taberareloo/master/extractors/extractor.feedly.tbrl.js)  
+	[Feedly](http://cloud.feedly.com/) の各記事のリンク先をポスト対象する為のパッチ  
+	キーボードショートカットは「GoogleReader + Taberareloo」のものと兼用
+
 * [extractor.quote.hatebu.comment.tbrl.js](https://raw.github.com/YungSang/patches-for-taberareloo/master/extractors/extractor.quote.hatebu.comment.tbrl.js)  
 	[はてブ](http://b.hatena.ne.jp)のコメントを簡単に Quote するパッチ  
 	「[はてブのコメントを簡単に Quote する tombloo パッチ](https://gist.github.com/saitamanodoruji/4263416)」から移植
