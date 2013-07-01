@@ -4,7 +4,7 @@
 // , "description" : "Extract an article on Feedly"
 // , "include"     : ["content"]
 // , "match"       : ["*://cloud.feedly.com/*"]
-// , "version"     : "0.1.0"
+// , "version"     : "0.2.0"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/extractors/extractor.feedly.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -41,12 +41,14 @@
         }
 
         var res = {
-          title : $X('@data-title', item)[0] || '',
-          href  : $X('@data-alternate-link', item)[0]
+          author : '',
+          title  : $X('@data-title', item)[0] || '',
+          feed   : $X('.//span[@class="sourceTitle"]/a/text()', item)[0] || $X('.//a[@class="sourceTitle"]/text()', item)[0],
+          href   : $X('@data-alternate-link', item)[0]
         };
 
         if (!getOnly) {
-          ctx.title = res.title;
+          ctx.title = res.title + (res.title && res.feed ? ' - ' : '') + res.feed;
           ctx.href  = res.href;
           ctx.host  = res.href.match(/https?:\/\/([^\/]*)/)[1];
         }
