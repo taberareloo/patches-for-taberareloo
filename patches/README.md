@@ -4,9 +4,12 @@
 
 ## パッチ一覧
 
-* [patch.model.delicious.getinfo.tbrl.js](https://raw.github.com/YungSang/patches-for-taberareloo/master/patches/patch.model.delicious.getinfo.tbrl.js)  
+* <del>[patch.model.delicious.getinfo.tbrl.js](https://raw.github.com/YungSang/patches-for-taberareloo/master/patches/patch.model.delicious.getinfo.tbrl.js)  
 	[Delicious](https://delicious.com) の下記の問題に対応するパッチ。  
-	https://github.com/Constellation/taberareloo/issues/183
+	https://github.com/Constellation/taberareloo/issues/183</del>
+
+* [patch.model.delicious.tbrl.js](https://raw.github.com/YungSang/patches-for-taberareloo/master/patches/patch.model.delicious.tbrl.js)  
+	[Delicious](https://delicious.com) の新デザイン／APIに対応させる為のパッチ。
 
 * <del>[patch.model.googleplus.icon.tbrl.js](https://raw.github.com/YungSang/patches-for-taberareloo/master/patches/patch.model.googleplus.icon.tbrl.js)  
 	Taberareloo 内で使用されている [Google+](https://plus.google.com) アイコンを最新のものに差し替えるパッチ。</del>  
