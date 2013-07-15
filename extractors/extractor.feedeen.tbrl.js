@@ -4,7 +4,7 @@
 // , "description" : "Extract an article on Feedeen"
 // , "include"     : ["content"]
 // , "match"       : ["*://feedeen.com/*"]
-// , "version"     : "0.0.2"
+// , "version"     : "0.0.3"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/extractors/extractor.feedeen.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -93,7 +93,7 @@
         return Extractors.Link.extract(ctx);
       }
     }
-  ], 'GoogleReader');
+  ], 'LDR');
 
   UserScripts.register({
     name  : 'Feedeen + Taberareloo',

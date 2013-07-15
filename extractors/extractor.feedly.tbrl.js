@@ -4,7 +4,7 @@
 // , "description" : "Extract an article on Feedly"
 // , "include"     : ["content"]
 // , "match"       : ["*://cloud.feedly.com/*"]
-// , "version"     : "0.3.0"
+// , "version"     : "0.4.0"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/extractors/extractor.feedly.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -107,7 +107,7 @@
         return Extractors.Link.extract(ctx);
       }
     }
-  ], 'GoogleReader');
+  ], 'LDR');
 
   UserScripts.register({
     name  : 'Feedly + Taberareloo',
