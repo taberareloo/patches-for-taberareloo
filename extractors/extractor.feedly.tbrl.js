@@ -4,7 +4,7 @@
 // , "description" : "Extract an article on Feedly"
 // , "include"     : ["content"]
 // , "match"       : ["*://cloud.feedly.com/*"]
-// , "version"     : "0.2.0"
+// , "version"     : "0.3.0"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/extractors/extractor.feedly.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -112,8 +112,8 @@
   UserScripts.register({
     name  : 'Feedly + Taberareloo',
     check : function () {
-      var key = TBRL.config.post.shortcutkey_googlereader_plus_taberareloo;
-      if (/^https?:\/\/cloud\.feedly\.com\//.test(location.href) && TBRL.config.post.googlereader_plus_taberareloo && key) {
+      var key = TBRL.config.post.shortcutkey_ldr_plus_taberareloo;
+      if (/^https?:\/\/cloud\.feedly\.com\//.test(location.href) && TBRL.config.post.ldr_plus_taberareloo && key) {
         this.key = key;
         return true;
       } else {

@@ -4,7 +4,7 @@
 // , "description" : "Extract an article on Feedeen"
 // , "include"     : ["content"]
 // , "match"       : ["*://feedeen.com/*"]
-// , "version"     : "0.0.1"
+// , "version"     : "0.0.2"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/extractors/extractor.feedeen.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -98,8 +98,8 @@
   UserScripts.register({
     name  : 'Feedeen + Taberareloo',
     check : function () {
-      var key = TBRL.config.post.shortcutkey_googlereader_plus_taberareloo;
-      if (/^https?:\/\/feedeen.com\/d/.test(location.href) && TBRL.config.post.googlereader_plus_taberareloo && key) {
+      var key = TBRL.config.post.shortcutkey_ldr_plus_taberareloo;
+      if (/^https?:\/\/feedeen.com\/d/.test(location.href) && TBRL.config.post.ldr_plus_taberareloo && key) {
         this.key = key;
         return true;
       } else {
