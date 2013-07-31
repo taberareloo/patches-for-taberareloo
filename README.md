@@ -36,10 +36,11 @@ Taberareloo 用のパッチ・ファイルは、`.tbrl.js` の拡張子が必要
 
 * `"description"` : パッチの説明 (省略可)
 
-* `"include"`     : パッチが適用されるページを配列で指定します ("background"、"content"、"popup"、またはそれらの組み合わせ)  
+* `"include"`     : パッチが適用されるページを配列で指定します ("background"、"content"、"popup"、"options"、またはそれらの組み合わせ)  
 	"background" : Taberareloo 拡張本体の Background ページ  
 	"content"    : ブラウザのタブで開かれたページ  
-	"popup"      : QuickPostForm のポップアップ・ウィンドウ (v3.0.1 以降)
+	"popup"      : QuickPostForm のポップアップ・ウィンドウ (v3.0.1 以降)  
+	"options"    : Option セッティング・ページ (v3.0.3 以降)
 
 * `"match"`       : `"include"` に "content" が指定された場合に、適用されるページの URL のパターンを配列で指定します。  
 	マッチングに使われるパターンの記法は、[Match Patterms of Google Chrome](http://developer.chrome.com/extensions/match_patterns.html) に準拠します。  
