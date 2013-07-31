@@ -27,7 +27,7 @@
 	https://github.com/to/tombloo/blob/master/patches/action.TinEye.js から移植。
 
 * [menu.preset.models.tbrl.js](https://raw.github.com/YungSang/patches-for-taberareloo/master/others/menu.preset.models.tbrl.js)  
-	予めプロセットした投稿先に振り分けて投稿する為のメニューを追加するパッチ。(実験中。Experimental)  
+	予めプリセットした投稿先に振り分けて投稿する為のメニューを追加するパッチ。(実験中。Experimental)  
 	Gestures と KeyConfig との連携も追加。  
 	ダウンロードしてから、PRESET_MODELS (24−25行目) の部分を自分の好きな投稿先に変更してオプションページよりインストールして下さい。
 
