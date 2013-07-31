@@ -4,12 +4,13 @@
 
 ## パッチ一覧
 
-* [menu.backup.config.tbrl.js](https://raw.github.com/YungSang/patches-for-taberareloo/master/others/menu.backup.config.tbrl.js)  
+* <del>[menu.backup.config.tbrl.js](https://raw.github.com/YungSang/patches-for-taberareloo/master/others/menu.backup.config.tbrl.js)  
 	Taberareloo のオプションの設定データをバックアップ／リストアする為のパッチ(実験中。Experimental)  
 	バックアップは、設定データを含んだ DataURL が生成されるので、それをブックマークします。  
 	リストアは、ブックマークした DataURL のページを開いて行います。  
 	※) リストア時のパッチは全て新規にダウンロード／インストールされます。  
-	※) ローカルファイルからインストールしたパッチは復元されません。(ただし、downloadURL が設定されているものは、downloadURL からインストールされます。)
+	※) ローカルファイルからインストールしたパッチは復元されません。(ただし、downloadURL が設定されているものは、downloadURL からインストールされます。)</del>  
+	Taberareloo v 3.0.3 よりバックアップ／リストア機能が実装されました。
 
 * [menu.gunosy.rss.tbrl.js](https://raw.github.com/YungSang/patches-for-taberareloo/master/others/menu.gunosy.rss.tbrl.js)  
 	[Gunosy](http://gunosy.com) の RSS フィード生成 Web サービス [Gunosy RSS](http://dai-shi.github.io/gunosy-rss/) の上級者向け RSS リンク(学習可能バージョン)を自動生成するツール
