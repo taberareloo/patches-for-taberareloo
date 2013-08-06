@@ -4,7 +4,7 @@
 // , "description" : "Capture a viewport"
 // , "include"     : ["background", "content"]
 // , "match"       : ["*://*/*"]
-// , "version"     : "0.1.0"
+// , "version"     : "0.2.0"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/others/menu.capture.window.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -21,6 +21,16 @@
         });
       }
     }, null, 'Photo - Capture', true);
+    Menus._register({
+      title    : 'Photo - Capture - Element',
+      contexts : ['all'],
+      onclick: function(info, tab) {
+        chrome.tabs.sendMessage(tab.id, {
+          request: 'contextMenusCaptureElement',
+          content: info
+        });
+      }
+    }, null, 'Photo - Capture', true);
     Menus.create();
     return;
   }
@@ -30,6 +40,15 @@
     var ctx = update({
       contextMenu : true,
       captureType : 'View'
+    }, TBRL.createContext(TBRL.getContextMenuTarget()));
+    TBRL.share(ctx, Extractors['Photo - Capture'], true);
+  });
+
+  TBRL.setRequestHandler('contextMenusCaptureElement', function (req, sender, func) {
+    func({});
+    var ctx = update({
+      contextMenu : true,
+      captureType : 'Element'
     }, TBRL.createContext(TBRL.getContextMenuTarget()));
     TBRL.share(ctx, Extractors['Photo - Capture'], true);
   });
