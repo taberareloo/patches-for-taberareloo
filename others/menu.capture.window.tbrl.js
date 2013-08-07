@@ -4,23 +4,25 @@
 // , "description" : "Capture a viewport"
 // , "include"     : ["background", "content"]
 // , "match"       : ["*://*/*"]
-// , "version"     : "0.2.0"
+// , "version"     : "0.3.0"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/others/menu.capture.window.tbrl.js"
 // }
 // ==/Taberareloo==
 
 (function(exports) {
   if (inContext('background')) {
+    var parent = 'Photo - Capture';
+
     Menus._register({
-      title    : 'Photo - Capture - Window',
-      contexts : ['all'],
-      onclick: function(info, tab) {
+      title: 'Photo - Capture - Area',
+      contexts: ['all'],
+      onclick: function (info, tab) {
         chrome.tabs.sendMessage(tab.id, {
-          request: 'contextMenusCaptureWindow',
+          request: 'contextMenusCapture',
           content: info
         });
       }
-    }, null, 'Photo - Capture', true);
+    }, parent);
     Menus._register({
       title    : 'Photo - Capture - Element',
       contexts : ['all'],
@@ -30,8 +32,24 @@
           content: info
         });
       }
-    }, null, 'Photo - Capture', true);
+    }, parent);
+    Menus._register({
+      title    : 'Photo - Capture - Window',
+      contexts : ['all'],
+      onclick: function(info, tab) {
+        chrome.tabs.sendMessage(tab.id, {
+          request: 'contextMenusCaptureWindow',
+          content: info
+        });
+      }
+    }, parent);
     Menus.create();
+
+    setTimeout(function () {
+      chrome.contextMenus.update(Menus[parent].id, {
+        title : 'Photo - Capture ...'
+      }, function() {});
+    }, 500);
     return;
   }
 
