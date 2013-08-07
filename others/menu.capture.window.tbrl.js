@@ -4,7 +4,7 @@
 // , "description" : "Capture a viewport"
 // , "include"     : ["background", "content"]
 // , "match"       : ["*://*/*"]
-// , "version"     : "0.6.0"
+// , "version"     : "0.7.1"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/others/menu.capture.window.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -61,22 +61,28 @@
       }, function() {});
     }, 500);
 
-    var originalY  = 0;
     var views      = [];
+    var pageX      = 0;
     var pageY      = 0;
+    var originalX  = 0;
+    var originalY  = 0;
     var pageWidth  = 0;
     var pageHeight = 0;
+    var viewWidth  = 0;
     var viewHeight = 0;
 
     TBRL.setRequestHandler('capturePage', function (req, sender, callback) {
-      originalY  = req.originalY;
       views      = [];
+      pageX      = req.originalX;
       pageY      = 0;
+      originalX  = req.originalX;
+      originalY  = req.originalY;
       pageWidth  = req.pageWidth;
       pageHeight = req.pageHeight;
+      viewWidth  = req.viewWidth;
       viewHeight = req.viewHeight;
       chrome.tabs.executeScript(sender.tab.id, {
-        code  : 'scrollTo(0, ' + pageY + ');',
+        code  : 'scrollTo(' + pageX + ', ' + pageY + ');',
         runAt : 'document_end'
       }, function() {
         setTimeout(function () {
@@ -107,7 +113,7 @@
 
     function nextViewport(tab, callback) {
       chrome.tabs.executeScript(tab.id, {
-        code  : 'scrollTo(0, ' + pageY + ');',
+        code  : 'scrollTo(' + pageX + ', ' + pageY + ');',
         runAt : 'document_end'
       }, function() {
         setTimeout(function () {
@@ -118,7 +124,7 @@
 
     function createCaptureImage(tab, callback) {
       var canvas = document.createElement('canvas');
-      canvas.width  = pageWidth;
+      canvas.width  = viewWidth;
       canvas.height = pageHeight;
       var ctx = canvas.getContext('2d');
       pageY = 0;
@@ -129,13 +135,13 @@
           offset = pageY + viewHeight - pageHeight;
           height = viewHeight - offset;
         }
-        ctx.drawImage(views[i], 0, offset, pageWidth, height, 0, pageY, pageWidth, height);
+        ctx.drawImage(views[i], 0, offset, viewWidth, height, 0, pageY, viewWidth, height);
         views[i] = null;
         pageY += viewHeight;
       }
       views.length = 0;
       chrome.tabs.executeScript(tab.id, {
-        code  : 'scrollTo(0, ' + originalY + ');',
+        code  : 'scrollTo(' + pageX + ', ' + originalY + ');',
         runAt : 'document_end'
       }, function() {
         callback(canvas.toDataURL('image/png', ''));
@@ -206,7 +212,7 @@
           return self.capture(win, { x : 0, y : 0 }, getViewportDimensions());
 
         case 'Page':
-          return self.capturePage(win, { x : 0, y : 0 }, getViewportDimensions());
+          return self.capturePage(win, getViewportPosition(), getViewportDimensions());
         }
         return null;
       }).addCallback(function (file) {
@@ -223,9 +229,11 @@
       var width = win.innerWidth;
       chrome.runtime.sendMessage(TBRL.id, {
         request    : 'capturePage',
-        originalY  : document.body.scrollTop || document.documentElement.scrollTop,
-        pageWidth  : document.body.scrollWidth || document.documentElement.scrollWidth,
+        originalX  : pos.x,
+        originalY  : pos.y,
+        pageWidth  : document.body.scrollWidth  || document.documentElement.scrollWidth,
         pageHeight : document.body.scrollHeight || document.documentElement.scrollHeight,
+        viewWidth  : dim.w,
         viewHeight : dim.h
       }, function (res) {
         base64ToFileEntry(res).addCallback(function (url) {
