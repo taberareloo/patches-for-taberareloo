@@ -4,7 +4,7 @@
 // , "description" : "Capture a viewport"
 // , "include"     : ["background", "content"]
 // , "match"       : ["*://*/*"]
-// , "version"     : "0.5.0"
+// , "version"     : "0.6.0"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/others/menu.capture.window.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -224,8 +224,8 @@
       chrome.runtime.sendMessage(TBRL.id, {
         request    : 'capturePage',
         originalY  : document.body.scrollTop || document.documentElement.scrollTop,
-        pageWidth  : document.width || document.body.offsetWidth,
-        pageHeight : document.height || document.body.offsetHeight,
+        pageWidth  : document.body.scrollWidth || document.documentElement.scrollWidth,
+        pageHeight : document.body.scrollHeight || document.documentElement.scrollHeight,
         viewHeight : dim.h
       }, function (res) {
         base64ToFileEntry(res).addCallback(function (url) {
