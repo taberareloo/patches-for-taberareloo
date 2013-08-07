@@ -4,7 +4,7 @@
 // , "description" : "Capture a viewport"
 // , "include"     : ["background", "content"]
 // , "match"       : ["*://*/*"]
-// , "version"     : "0.4.0"
+// , "version"     : "0.5.0"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/others/menu.capture.window.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -61,22 +61,22 @@
       }, function() {});
     }, 500);
 
-    var currentY   = 0;
+    var originalY  = 0;
     var views      = [];
-    var viewY      = 0;
+    var pageY      = 0;
     var pageWidth  = 0;
     var pageHeight = 0;
     var viewHeight = 0;
 
     TBRL.setRequestHandler('capturePage', function (req, sender, callback) {
-      currentY   = req.currentY;
+      originalY  = req.originalY;
       views      = [];
-      viewY      = 0;
+      pageY      = 0;
       pageWidth  = req.pageWidth;
       pageHeight = req.pageHeight;
       viewHeight = req.viewHeight;
       chrome.tabs.executeScript(sender.tab.id, {
-        code  : 'scrollTo(0, ' + viewY + ');',
+        code  : 'scrollTo(0, ' + pageY + ');',
         runAt : 'document_end'
       }, function() {
         setTimeout(function () {
@@ -91,13 +91,13 @@
         img.src = src;
         img.onload = function() {
           views.push(this);
-          if ((pageHeight - viewY) <= viewHeight) {
+          if ((pageHeight - pageY) <= viewHeight) {
             createCaptureImage(tab, callback);
           }
           else {
-            viewY += viewHeight;
-            if (viewY > (pageHeight - viewHeight)) {
-              viewY = pageHeight - viewHeight;
+            pageY += viewHeight;
+            if (pageY > (pageHeight - viewHeight)) {
+              pageY = pageHeight - viewHeight;
             }
             nextViewport(tab, callback);
           }
@@ -107,7 +107,7 @@
 
     function nextViewport(tab, callback) {
       chrome.tabs.executeScript(tab.id, {
-        code  : 'scrollTo(0, ' + viewY + ');',
+        code  : 'scrollTo(0, ' + pageY + ');',
         runAt : 'document_end'
       }, function() {
         setTimeout(function () {
@@ -117,26 +117,29 @@
     }
 
     function createCaptureImage(tab, callback) {
-      canvas = document.createElement('canvas');
+      var canvas = document.createElement('canvas');
       canvas.width  = pageWidth;
       canvas.height = pageHeight;
-      ctx = canvas.getContext('2d');
-      viewY = 0;
+      var ctx = canvas.getContext('2d');
+      pageY = 0;
       for (var i = 0, len = views.length ; i < len; i++) {
         var offset = 0;
         var height = views[i].height;
-        if (viewY > (pageHeight - viewHeight)) {
-          offset = viewY + viewHeight - pageHeight;
+        if (pageY > (pageHeight - viewHeight)) {
+          offset = pageY + viewHeight - pageHeight;
           height = viewHeight - offset;
         }
-        ctx.drawImage(views[i], 0, offset, pageWidth, height, 0, viewY, pageWidth, height);
-        viewY += viewHeight;
+        ctx.drawImage(views[i], 0, offset, pageWidth, height, 0, pageY, pageWidth, height);
+        views[i] = null;
+        pageY += viewHeight;
       }
+      views.length = 0;
       chrome.tabs.executeScript(tab.id, {
-        code  : 'scrollTo(0, ' + currentY + ');',
+        code  : 'scrollTo(0, ' + originalY + ');',
         runAt : 'document_end'
       }, function() {
         callback(canvas.toDataURL('image/png', ''));
+        canvas = null;
       });
     }
 
@@ -220,13 +223,13 @@
       var width = win.innerWidth;
       chrome.runtime.sendMessage(TBRL.id, {
         request    : 'capturePage',
-        currentY   : document.body.scrollTop || document.documentElement.scrollTop,
+        originalY  : document.body.scrollTop || document.documentElement.scrollTop,
         pageWidth  : document.width || document.body.offsetWidth,
         pageHeight : document.height || document.body.offsetHeight,
         viewHeight : dim.h
       }, function (res) {
-        base64ToFileEntry(res).addCallback(function (fileEntry) {
-          defer.callback(fileEntry);
+        base64ToFileEntry(res).addCallback(function (url) {
+          defer.callback(url);
         });
       });
       return defer;
