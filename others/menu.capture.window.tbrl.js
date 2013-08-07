@@ -4,7 +4,7 @@
 // , "description" : "Capture a viewport"
 // , "include"     : ["background", "content"]
 // , "match"       : ["*://*/*"]
-// , "version"     : "0.3.0"
+// , "version"     : "0.4.0"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/others/menu.capture.window.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -43,6 +43,16 @@
         });
       }
     }, parent);
+    Menus._register({
+      title    : 'Photo - Capture - Page',
+      contexts : ['all'],
+      onclick: function(info, tab) {
+        chrome.tabs.sendMessage(tab.id, {
+          request: 'contextMenusCapturePage',
+          content: info
+        });
+      }
+    }, parent);
     Menus.create();
 
     setTimeout(function () {
@@ -50,8 +60,97 @@
         title : 'Photo - Capture ...'
       }, function() {});
     }, 500);
+
+    var currentY   = 0;
+    var views      = [];
+    var viewY      = 0;
+    var pageWidth  = 0;
+    var pageHeight = 0;
+    var viewHeight = 0;
+
+    TBRL.setRequestHandler('capturePage', function (req, sender, callback) {
+      currentY   = req.currentY;
+      views      = [];
+      viewY      = 0;
+      pageWidth  = req.pageWidth;
+      pageHeight = req.pageHeight;
+      viewHeight = req.viewHeight;
+      chrome.tabs.executeScript(sender.tab.id, {
+        code  : 'scrollTo(0, ' + viewY + ');',
+        runAt : 'document_end'
+      }, function() {
+        setTimeout(function () {
+          captureViewport(sender.tab, callback);
+        }, 500);
+      });
+    });
+
+    function captureViewport(tab, callback) {
+      chrome.tabs.captureVisibleTab(tab.windowId, { format : 'png' }, function (src) {
+        var img = new Image();
+        img.src = src;
+        img.onload = function() {
+          views.push(this);
+          if ((pageHeight - viewY) <= viewHeight) {
+            createCaptureImage(tab, callback);
+          }
+          else {
+            viewY += viewHeight;
+            if (viewY > (pageHeight - viewHeight)) {
+              viewY = pageHeight - viewHeight;
+            }
+            nextViewport(tab, callback);
+          }
+        };
+      });
+    }
+
+    function nextViewport(tab, callback) {
+      chrome.tabs.executeScript(tab.id, {
+        code  : 'scrollTo(0, ' + viewY + ');',
+        runAt : 'document_end'
+      }, function() {
+        setTimeout(function () {
+          captureViewport(tab, callback);
+        }, 500);
+      });
+    }
+
+    function createCaptureImage(tab, callback) {
+      canvas = document.createElement('canvas');
+      canvas.width  = pageWidth;
+      canvas.height = pageHeight;
+      ctx = canvas.getContext('2d');
+      viewY = 0;
+      for (var i = 0, len = views.length ; i < len; i++) {
+        var offset = 0;
+        var height = views[i].height;
+        if (viewY > (pageHeight - viewHeight)) {
+          offset = viewY + viewHeight - pageHeight;
+          height = viewHeight - offset;
+        }
+        ctx.drawImage(views[i], 0, offset, pageWidth, height, 0, viewY, pageWidth, height);
+        viewY += viewHeight;
+      }
+      chrome.tabs.executeScript(tab.id, {
+        code  : 'scrollTo(0, ' + currentY + ');',
+        runAt : 'document_end'
+      }, function() {
+        callback(canvas.toDataURL('image/png', ''));
+      });
+    }
+
     return;
   }
+
+  TBRL.setRequestHandler('contextMenusCaptureElement', function (req, sender, func) {
+    func({});
+    var ctx = update({
+      contextMenu : true,
+      captureType : 'Element'
+    }, TBRL.createContext(TBRL.getContextMenuTarget()));
+    TBRL.share(ctx, Extractors['Photo - Capture'], true);
+  });
 
   TBRL.setRequestHandler('contextMenusCaptureWindow', function (req, sender, func) {
     func({});
@@ -62,11 +161,11 @@
     TBRL.share(ctx, Extractors['Photo - Capture'], true);
   });
 
-  TBRL.setRequestHandler('contextMenusCaptureElement', function (req, sender, func) {
+  TBRL.setRequestHandler('contextMenusCapturePage', function (req, sender, func) {
     func({});
     var ctx = update({
       contextMenu : true,
-      captureType : 'Element'
+      captureType : 'Page'
     }, TBRL.createContext(TBRL.getContextMenuTarget()));
     TBRL.share(ctx, Extractors['Photo - Capture'], true);
   });
@@ -101,13 +200,10 @@
           });
 
         case 'View':
-          return self.capture(win, getViewportPosition(), getViewportDimensions());
+          return self.capture(win, { x : 0, y : 0 }, getViewportDimensions());
 
         case 'Page':
-          return self.capture(win, { x : 0, y : 0 }, {
-            w : document.width || document.body.offsetWidth,
-            h : document.height || document.body.offsetHeight
-          });
+          return self.capturePage(win, { x : 0, y : 0 }, getViewportDimensions());
         }
         return null;
       }).addCallback(function (file) {
@@ -117,6 +213,23 @@
           fileEntry: file
         };
       });
+    },
+
+    capturePage : function (win, pos, dim) {
+      var defer = new Deferred();
+      var width = win.innerWidth;
+      chrome.runtime.sendMessage(TBRL.id, {
+        request    : 'capturePage',
+        currentY   : document.body.scrollTop || document.documentElement.scrollTop,
+        pageWidth  : document.width || document.body.offsetWidth,
+        pageHeight : document.height || document.body.offsetHeight,
+        viewHeight : dim.h
+      }, function (res) {
+        base64ToFileEntry(res).addCallback(function (fileEntry) {
+          defer.callback(fileEntry);
+        });
+      });
+      return defer;
     }
   });
 
