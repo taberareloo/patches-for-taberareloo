@@ -4,7 +4,7 @@
 // , "description" : "Capture a viewport"
 // , "include"     : ["background", "content"]
 // , "match"       : ["*://*/*"]
-// , "version"     : "0.7.1"
+// , "version"     : "0.7.2"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/others/menu.capture.window.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -241,6 +241,67 @@
         });
       });
       return defer;
+    },
+
+    selectElement : function (ctx) {
+      var deferred = new Deferred();
+      var self = this;
+      var doc = ctx ? ctx.document : document;
+
+      var target;
+      function onMouseOver(e) {
+        target = e.target;
+        target.originalBackground = target.style.background;
+        target.style.background = self.TARGET_BACKGROUND;
+      }
+      function onMouseOut(e) {
+        unpoint(e.target);
+      }
+      function onClick(e) {
+        cancel(e);
+
+        finalize();
+        deferred.callback(target);
+      }
+      function onKeyDown(e) {
+        cancel(e);
+
+        switch (keyString(e)) {
+        case 'ESCAPE':
+          finalize();
+          deferred.cancel();
+          return;
+        }
+      }
+      function onCntextMenu(e) {
+        cancel(e);
+
+        finalize();
+        deferred.cancel();
+      }
+      function unpoint(elm) {
+        if (elm.originalBackground !== null) {
+          elm.style.background = elm.originalBackground;
+          elm.originalBackground = null;
+        }
+      }
+      function finalize() {
+        doc.removeEventListener('mouseover', onMouseOver, true);
+        doc.removeEventListener('mouseout', onMouseOut, true);
+        doc.removeEventListener('click', onClick, true);
+        doc.removeEventListener('keydown', onKeyDown, true);
+        doc.removeEventListener('contextmenu', onCntextMenu, true);
+
+        unpoint(target);
+      }
+
+      doc.addEventListener('mouseover', onMouseOver, true);
+      doc.addEventListener('mouseout', onMouseOut, true);
+      doc.addEventListener('click', onClick, true);
+      doc.addEventListener('keydown', onKeyDown, true);
+      doc.addEventListener('contextmenu', onCntextMenu, true);
+
+      return deferred;
     }
   });
 
