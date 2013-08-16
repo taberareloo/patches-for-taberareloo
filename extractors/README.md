@@ -12,7 +12,7 @@ Extractor とは、Taberareloo から投稿する元のページ及びそこで�
 
 * [extractor.feedly.tbrl.js](https://raw.github.com/YungSang/patches-for-taberareloo/master/extractors/extractor.feedly.tbrl.js)  
 	[Feedly](http://cloud.feedly.com/) の各記事のリンク先をポスト対象する為のパッチ  
-	キーボードショートカットは「GoogleReader + Taberareloo」のものと兼用
+	キーボードショートカットは「LDR + Taberareloo」のものと兼用
 
 * [extractor.quote.hatebu.comment.tbrl.js](https://raw.github.com/YungSang/patches-for-taberareloo/master/extractors/extractor.quote.hatebu.comment.tbrl.js)  
 	[はてブ](http://b.hatena.ne.jp)のコメントを簡単に Quote するパッチ  
