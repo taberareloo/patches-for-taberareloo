@@ -4,7 +4,7 @@
 // , "description" : "Get new posts on Google+ automatically"
 // , "include"     : ["background", "content"]
 // , "match"       : ["https://plus.google.com/*"]
-// , "version"     : "0.4.0"
+// , "version"     : "0.5.2"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/userscripts/userscript.googleplus.refresh.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -83,6 +83,8 @@
 
   var button_selector = 'div[role="button"].c-b-M';
   var message_class   = 'M4DNS';
+  var reload_class    = 'AcWGPc';
+  var resume_class    = 'QZZuJ';
 
   function check_message() {
     if (timer) {
@@ -93,8 +95,9 @@
     var button = document.body.querySelector(button_selector);
     if (button) {
       var message = $X('./div[@class="'+ message_class + '"]/text()', button)[0];
+      var resume  = $X('./div[@class="'+ resume_class + '"]', button)[0];
 
-      if (message) {
+      if (message && !resume) {
         chrome.runtime.sendMessage(TBRL.id, {
           request : 'googleplus_notify',
           content : {
@@ -122,7 +125,8 @@
     if (can_refresh() || req.force) {
       var button = document.body.querySelector(button_selector);
       if (button) {
-        button.click();
+        var reload = $X('./div[@class="'+ reload_class + '"]', button)[0];
+        if (reload) button.click();
       }
     }
   };
