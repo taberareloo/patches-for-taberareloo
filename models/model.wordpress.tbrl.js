@@ -3,8 +3,7 @@
 //   "name"        : "WordPress Model"
 // , "description" : "Post to WordPress"
 // , "include"     : ["background"]
-// , "version"     : "0.1.0"
-// , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/models/model.wordpress.tbrl.js"
+// , "version"     : "0.2.0"
 // }
 // ==/Taberareloo==
 
@@ -20,8 +19,8 @@
 
     WP_URL    : 'http://blog.yungsang.com',
 
-    NONCE_API : '/api/core/get_nonce',
-    POST_API  : '/api/posts/create_post',
+    NONCE_API : '/',
+    POST_API  : '/?json=posts.create_post',
 
     initialize : function () {
       this.ICON      = this.WP_URL + '/favicon.ico';
@@ -36,6 +35,7 @@
     getNonce : function () {
       return request(this.WP_URL + this.NONCE_API, {
         queryString : {
+          json       : 'get_nonce',
           controller : 'posts',
           method     : 'create_post'
         }
