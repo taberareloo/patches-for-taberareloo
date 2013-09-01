@@ -3,7 +3,7 @@
 //   "name"        : "WordPress Model"
 // , "description" : "Post to WordPress"
 // , "include"     : ["background"]
-// , "version"     : "0.2.0"
+// , "version"     : "0.2.2"
 // }
 // ==/Taberareloo==
 
@@ -61,6 +61,14 @@
         sendContent.content = joinText([
           sendContent.content,
           '<img src="' + ps.itemUrl + '" alt="" />'
+        ], "\n\n");
+      }
+
+      if (ps.type !== 'regular') {
+        var title = ps.page || ps.pageUrl;
+        sendContent.content = joinText([
+          sendContent.content,
+          'via <a href="' + ps.pageUrl + '">' + title + '</a>'
         ], "\n\n");
       }
 
