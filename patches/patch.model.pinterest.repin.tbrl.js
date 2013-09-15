@@ -4,8 +4,8 @@
 // , "namespace"   : "https://github.com/YungSang/patches-for-taberareloo"
 // , "description" : "Repin at Pinterest"
 // , "include"     : ["background", "content"]
-// , "match"       : ["http://pinterest.com/*"]
-// , "version"     : "0.7.0"
+// , "match"       : ["http://pinterest.com/*", "http://www.pinterest.com/*"]
+// , "version"     : "0.7.1"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/patches/patch.model.pinterest.repin.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -90,7 +90,7 @@
     },
 
     getPinId : function(ctx) {
-      var pattern = /^http:\/\/pinterest\.com\/pin\/(\d+)\//;
+      var pattern = /^http:\/\/(?:www\.)?pinterest\.com\/pin\/(\d+)\//;
       var result = ctx.href.match(pattern);
       if (result) {
         return result[1];
