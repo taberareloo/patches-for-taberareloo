@@ -5,13 +5,13 @@
 // , "description" : "Set 'Send to Twitter/Facebook' automatically"
 // , "include"     : ["background", "content"]
 // , "match"       : ["http://www.tumblr.com/dashboard*"]
-// , "version"     : "1.6.1"
+// , "version"     : "1.7.0"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/patches/patch.tumblr.getform.tbrl.js"
 // }
 // ==/Taberareloo==
 
 (function() {
-  if (TBRL.ID) { // Is it in the background context?
+  if (inContext('background')) {
     function getShareOption(channel_id) {
       return request('http://www.tumblr.com/dashboard').addCallback(function(res) {
         var html = res.responseText.replace(/\s+/g, ' ');

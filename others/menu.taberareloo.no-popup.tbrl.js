@@ -4,24 +4,13 @@
 // , "description" : "Create a context menu dynamically to post without the popup window"
 // , "include"     : ["background", "content"]
 // , "match"       : ["*://*/*"]
-// , "version"     : "0.7.0"
+// , "version"     : "0.8.0"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/others/menu.taberareloo.no-popup.tbrl.js"
 // }
 // ==/Taberareloo==
 
-(function(exports) {
-  if (exports.menu_taberareloo_no_popup_tbrl_js_loaded) return;
-  exports.menu_taberareloo_no_popup_tbrl_js_loaded = true;
-
-  var onRequestsHandlers = {};
-  var requestsHandler = function (req, sender, func) {
-    var handler = onRequestsHandlers[req.request];
-    if (handler) {
-      handler.apply(this, arguments);
-    }
-  };
-
-  if (TBRL.ID) { // Is it in the background context?
+(function() {
+  if (inContext('background')) {
     var name = 'Taberareloo - Taberareloo';
     Menus._register({
       title    : name,
@@ -40,18 +29,16 @@
 
     Menus.create();
 
-    onRequestsHandlers.updateContextMenu = function (req, sender, func) {
+    TBRL.setRequestHandler('updateContextMenu', function (req, sender, func) {
       chrome.contextMenus.update(Menus[name].id, {
         title : 'Taberareloo - ' + req.extractor
       }, function() {});
-    };
-
-    chrome.runtime.onMessage.addListener(requestsHandler);
+    });
 
     return;
   }
 
-  onRequestsHandlers.contextMenusNoPopup = function (req, sender, func) {
+  TBRL.setRequestHandler('contextMenusNoPopup', function (req, sender, func) {
     var content = req.content;
     var ctx = {};
     var query = null;
@@ -91,9 +78,7 @@
     }
     update(ctx, TBRL.createContext((query && document.querySelector(query)) || TBRL.getContextMenuTarget()));
     TBRL.share(ctx, Extractors.check(ctx)[0], false);
-  };
-
-  chrome.runtime.onMessage.addListener(requestsHandler);
+  });
 
   function updateContextMenu(event) {
     var ctx = {};
@@ -133,4 +118,4 @@
       now = new Date().getTime();
     }
   }
-})(this);
+})();

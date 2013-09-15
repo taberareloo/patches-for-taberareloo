@@ -4,7 +4,7 @@
 // , "description" : "Extract tweets as a conversation"
 // , "include"     : ["background", "content", "popup"]
 // , "match"       : ["*://twitter.com/*"]
-// , "version"     : "0.4.0"
+// , "version"     : "0.5.0"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/extractors/extractor.chat.twitter.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -12,9 +12,7 @@
 // ported from https://gist.github.com/Constellation/125251
 
 (function() {
-  var TBRL = window.TBRL || {};
-
-  if (TBRL.ID) { // Is it in the background context?
+  if (inContext('background')) {
     Menus._register({
       title    : 'Chat - Twitter',
       contexts : ['all'],
@@ -30,25 +28,15 @@
     return;
   }
 
-  if (TBRL.id) { // Is it in a content context?
-    var onRequestsHandlers = {};
-    var requestsHandler = function (req, sender, func) {
-      var handler = onRequestsHandlers[req.request];
-      if (handler) {
-        handler.apply(this, arguments);
-      }
-    };
-
-    onRequestsHandlers.contextMenusChatTwitter = function (req, sender, func) {
+  if (inContext('content')) {
+    TBRL.setRequestHandler('contextMenusChatTwitter', function (req, sender, func) {
       var ctx = TBRL.createContext(TBRL.getContextMenuTarget());
       var ext = Extractors['Chat - Twitter Dashboard'];
       if (ctx.href.match(/\/\/twitter\.com\/.*?\/(?:status|statuses)\/\d+/)) {
         ext = Extractors['Chat - Twitter'];
       }
       TBRL.share(ctx, ext, true);
-    };
-
-    chrome.runtime.onMessage.addListener(requestsHandler);
+    });
 
     Extractors.register([{
       name              : 'Chat',

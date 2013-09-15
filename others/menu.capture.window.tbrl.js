@@ -4,12 +4,12 @@
 // , "description" : "Capture a viewport"
 // , "include"     : ["background", "content"]
 // , "match"       : ["*://*/*"]
-// , "version"     : "0.7.2"
+// , "version"     : "0.7.3"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/others/menu.capture.window.tbrl.js"
 // }
 // ==/Taberareloo==
 
-(function(exports) {
+(function() {
   if (inContext('background')) {
     var parent = 'Photo - Capture';
 
@@ -305,4 +305,4 @@
     }
   });
 
-})(this);
+})();

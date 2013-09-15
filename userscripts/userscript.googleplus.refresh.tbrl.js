@@ -4,21 +4,13 @@
 // , "description" : "Get new posts on Google+ automatically"
 // , "include"     : ["background", "content"]
 // , "match"       : ["https://plus.google.com/*"]
-// , "version"     : "0.5.2"
+// , "version"     : "0.6.0"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/userscripts/userscript.googleplus.refresh.tbrl.js"
 // }
 // ==/Taberareloo==
 
 (function() {
-  var onRequestsHandlers = {};
-  var requestsHandler = function (req, sender, func) {
-    var handler = onRequestsHandlers[req.request];
-    if (handler) {
-      handler.apply(this, arguments);
-    }
-  };
-
-  if (TBRL.ID) { // Is it in the background context?
+  if (inContext('background')) {
     var auto_refresh = (localStorage.getItem('googleplus_auto_refresh') === 'true') || false;
 
     var documentUrlPatterns = [
@@ -44,7 +36,7 @@
 
     var previous_message      = '';
     var previous_notification = null;
-    onRequestsHandlers.googleplus_notify = function (req, sender, func) {
+    TBRL.setRequestHandler('googleplus_notify', function (req, sender, func) {
       if (previous_message !== req.content.message) {
         previous_message = req.content.message;
         var notification = update({}, req.content);
@@ -74,8 +66,7 @@
           force   : false
         });
       }
-    };
-    chrome.runtime.onMessage.addListener(requestsHandler);
+    });
     return;
   }
 
@@ -121,7 +112,7 @@
     return false;
   }
 
-  onRequestsHandlers.googleplus_refresh = function (req, sender, func) {
+  TBRL.setRequestHandler('googleplus_refresh', function (req, sender, func) {
     if (can_refresh() || req.force) {
       var button = document.body.querySelector(button_selector);
       if (button) {
@@ -129,6 +120,5 @@
         if (reload) button.click();
       }
     }
-  };
-  chrome.runtime.onMessage.addListener(requestsHandler);
+  });
 })();

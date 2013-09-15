@@ -5,7 +5,7 @@ Here is a patch repository for [Taberareloo](https://github.com/Constellation/ta
 ## Requirements
 
 * [Google Chrome](http://www.google.com/chrome) 26+
-* [Taberareloo](https://chrome.google.com/webstore/detail/taberareloo/ldcnohnnlpgglecmkldelbmiokgmikno) 3.0.0+
+* [Taberareloo](https://chrome.google.com/webstore/detail/taberareloo/ldcnohnnlpgglecmkldelbmiokgmikno) 3.0.3+
 
 ## Filename
 

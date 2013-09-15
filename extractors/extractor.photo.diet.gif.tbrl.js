@@ -4,7 +4,7 @@
 // , "description" : "Diet a gif animation to post properly"
 // , "include"     : ["background", "content"]
 // , "match"       : ["*://*/*"]
-// , "version"     : "1.0.0"
+// , "version"     : "1.1.0"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/extractors/extractor.photo.diet.gif.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -12,7 +12,7 @@
 // Ported from https://github.com/polygonplanet/tombloo/blob/master/tombloo.extractor.diet.gif.js
 
 (function() {
-  if (TBRL.ID) { // Is it in the background context?
+  if (inContext('background')) {
     Menus._register({
       title: 'Photo - Diet Gif Animation',
       contexts: ['image'],
@@ -29,24 +29,14 @@
     return;
   }
 
-  var onRequestsHandlers = {};
-  var requestsHandler = function (req, sender, func) {
-    var handler = onRequestsHandlers[req.request];
-    if (handler) {
-      handler.apply(this, arguments);
-    }
-  };
-
-  onRequestsHandlers.contextMenusDietGifAnimation = function (req, sender, func) {
+  TBRL.setRequestHandler('contextMenusDietGifAnimation', function (req, sender, func) {
     var content = req.content;
     var ctx = update({
       onImage: true,
       contextMenu: true
     }, TBRL.createContext(document.querySelector('img[src=' + JSON.stringify(content.srcUrl) + ']') || TBRL.getContextMenuTarget()));
     TBRL.share(ctx, Extractors['Photo - Diet Gif Animation'], true);
-  };
-
-  chrome.runtime.onMessage.addListener(requestsHandler);
+  });
 
   Extractors.register({
     name  : 'Photo - Diet Gif Animation',

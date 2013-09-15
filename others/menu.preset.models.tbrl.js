@@ -4,22 +4,11 @@
 // , "description" : "Post to preset models"
 // , "include"     : ["background", "content"]
 // , "match"       : ["*://*/*"]
-// , "version"     : "0.7.0"
+// , "version"     : "0.8.0"
 // }
 // ==/Taberareloo==
 
-(function(exports) {
-  if (exports.menu_preset_models_tbrl_js_loaded) return;
-  exports.menu_preset_models_tbrl_js_loaded = true;
-
-  var onRequestsHandlers = {};
-  var requestsHandler = function (req, sender, func) {
-    var handler = onRequestsHandlers[req.request];
-    if (handler) {
-      handler.apply(this, arguments);
-    }
-  };
-
+(function() {
   var PRESET_MODELS = {
     1 : ['Tumblr', 'Google+'],
     2 : ['Tumblr - Another Blog', 'GimmeBar']
@@ -40,7 +29,7 @@
     });
   });
 
-  if (TBRL.ID) { // Is it in the background context?
+  if (inContext('background')) {
     Object.keys(PRESET_MODELS).forEach(function(i) {
       Menus._register({
         title    : PRESET_EVENTS[i].title,
@@ -62,7 +51,7 @@
 
     Menus.create();
 
-    onRequestsHandlers.postToPresetModels = function (req, sender, func) {
+    TBRL.setRequestHandler('postToPresetModels', function (req, sender, func) {
       var ps = req.content;
       var models = PRESET_MODELS[req.preset].filter(function(name) {
         return Models.values.some(function(model) {
@@ -80,9 +69,7 @@
       } else {
         TBRL.Service.post(ps, posters);
       }
-    };
-
-    chrome.runtime.onMessage.addListener(requestsHandler);
+    });
 
     var CHROME_GESTURES  = 'jpkfjicglakibpenojifdiepckckakgk';
     var CHROME_KEYCONFIG = 'okneonigbfnolfkmfgjmaeniipdjkgkl';
@@ -95,7 +82,7 @@
     return;
   }
 
-  onRequestsHandlers.contextMenusPreset = function (req, sender, func) {
+  TBRL.setRequestHandler('contextMenusPreset', function (req, sender, func) {
     var content = req.content;
     var ctx = {};
     var query = null;
@@ -145,9 +132,7 @@
         preset : req.preset
       });
     });
-  };
-
-  chrome.runtime.onMessage.addListener(requestsHandler);
+  });
 
   function postToPresetModels(preset) {
     var ctx = TBRL.createContext();
@@ -172,4 +157,4 @@
       window.removeEventListener(PRESET_EVENTS[i].name, PRESET_EVENTS[i].func, false);
     });
   }, false);
-})(this);
+})();

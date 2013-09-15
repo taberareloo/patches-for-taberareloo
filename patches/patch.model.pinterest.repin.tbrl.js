@@ -5,13 +5,13 @@
 // , "description" : "Repin at Pinterest"
 // , "include"     : ["background", "content"]
 // , "match"       : ["http://pinterest.com/*"]
-// , "version"     : "0.6.0"
+// , "version"     : "0.7.0"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/patches/patch.model.pinterest.repin.tbrl.js"
 // }
 // ==/Taberareloo==
 
 (function() {
-  if (TBRL.ID) { // Is it in the background context?
+  if (inContext('background')) {
     var app_version = "46ab";
 
     update(Models['Pinterest'], {
