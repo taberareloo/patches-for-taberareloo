@@ -3,8 +3,8 @@
 //   "name"        : "Photo Extractor for Twitter Media Grid"
 // , "description" : "Extract tweets on a media grid page"
 // , "include"     : ["content"]
-// , "match"       : ["*://twitter.com/*/media/grid"]
-// , "version"     : "0.1.1"
+// , "match"       : ["*://twitter.com/*"]
+// , "version"     : "0.2.0"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/extractors/extractor.photo.twitter.media-grid.tbrl.js"
 // }
 // ==/Taberareloo==
