@@ -3,7 +3,7 @@
 //   "name"        : "Image Search with Ascii2D.net"
 // , "description" : "Search similar images at ascii2d.net"
 // , "include"     : ["background"]
-// , "version"     : "1.0.0"
+// , "version"     : "1.0.1"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/others/menu.photo.search.ascii2d.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -24,7 +24,7 @@
         });
       });
     }
-  }, null, 'Photo - Search - GoogleImage', true);
+  }, null, 'Photo - Capture', true);
 
   Menus.create();
 })();
