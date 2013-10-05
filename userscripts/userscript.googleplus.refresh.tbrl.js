@@ -4,7 +4,7 @@
 // , "description" : "Get new posts on Google+ automatically"
 // , "include"     : ["background", "content"]
 // , "match"       : ["https://plus.google.com/*"]
-// , "version"     : "0.6.1"
+// , "version"     : "0.7.1"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/userscripts/userscript.googleplus.refresh.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -78,10 +78,11 @@
 
   var timer = null;
 
-  var button_selector = 'div[role="button"].c-b-M';
-  var message_class   = 'M4DNS';
-  var reload_class    = 'AcWGPc';
-  var resume_class    = 'QZZuJ';
+  var notifications_id = '#gbwc, #gbsfw';
+  var button_selector  = 'div[role="button"].c-b-M, div[role="button"].b-c-T';
+  var message_selector = 'div.M4DNS, div.lZb';
+  var reload_selector  = 'div.AcWGPc, div.cBc';
+  var resume_selector  = 'div.QZZuJ, div.dBc';
 
   function check_message() {
     if (timer) {
@@ -89,10 +90,10 @@
       timer = null;
     }
 
-    var button = document.body.querySelector(button_selector);
+    var button = document.querySelector(button_selector);
     if (button) {
-      var message = $X('./div[@class="'+ message_class + '"]/text()', button)[0];
-      var resume  = $X('./div[@class="'+ resume_class + '"]', button)[0];
+      var message = button.querySelector(message_selector).innerText;
+      var resume  = button.querySelector(resume_selector);
 
       if (message && !resume) {
         chrome.runtime.sendMessage(TBRL.id, {
@@ -111,8 +112,9 @@
 
   function can_refresh() {
     if (document.body.scrollTop) return false;
-    var notifications_box = document.body.querySelector('#gbwc');
-    if (!notifications_box || (notifications_box.style.length === 0) || (notifications_box.style.display === 'none')) {
+    var notifications_box = document.querySelector(notifications_id);
+    var style = document.defaultView.getComputedStyle(notifications_box, '');
+    if (!notifications_box || (notifications_box.style.length === 0) || (notifications_box.style.display === 'none') || (style.display === 'none')) {
       return true;
     }
     return false;
@@ -120,9 +122,9 @@
 
   TBRL.setRequestHandler('googleplus_refresh', function (req, sender, func) {
     if (can_refresh() || req.force) {
-      var button = document.body.querySelector(button_selector);
+      var button = document.querySelector(button_selector);
       if (button) {
-        var reload = $X('./div[@class="'+ reload_class + '"]', button)[0];
+        var reload = button.querySelector(reload_selector);
         if (reload) button.click();
       }
     }
