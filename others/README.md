@@ -4,6 +4,9 @@
 
 ## パッチ一覧
 
+* [menu.capture.window.tbrl.js](https://raw.github.com/YungSang/patches-for-taberareloo/master/others/menu.capture.window.tbrl.js)  
+	「Photo - Capture」の機能を拡張し、選択 Area 以外に、Element と Window(viewport 全体) と Page 全体のキャプチャを追加します。
+
 * <del>[menu.backup.config.tbrl.js](https://raw.github.com/YungSang/patches-for-taberareloo/master/others/menu.backup.config.tbrl.js)  
 	Taberareloo のオプションの設定データをバックアップ／リストアする為のパッチ(実験中。Experimental)  
 	バックアップは、設定データを含んだ DataURL が生成されるので、それをブックマークします。  

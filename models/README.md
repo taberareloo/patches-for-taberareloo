@@ -21,6 +21,10 @@ Model とは、Taberareloo から投稿する先のウェブ・サービス及�
 * [model.twittaw.tbrl.js](https://raw.github.com/YungSang/patches-for-taberareloo/master/models/model.twittaw.tbrl.js)  
 	[http://twittaw.com](http://twittaw.com) 用モデル (サンプルも兼ねて)
 
+* [model.wordpress.tbrl.js](https://raw.github.com/YungSang/patches-for-taberareloo/master/models/model.wordpress.tbrl.js)  
+	Wordpress へ投稿する為のモデル  
+	※ ただし、パッチをダウンロード後、コード内の WP_URL を投稿先の Wordpress の URL に書き換えてからインストールする必要があります。
+
 * [model.wripe.tbrl.js](https://raw.github.com/YungSang/patches-for-taberareloo/master/models/model.wripe.tbrl.js)  
   [http://wri.pe](http://wri.pe) 用モデル
 
