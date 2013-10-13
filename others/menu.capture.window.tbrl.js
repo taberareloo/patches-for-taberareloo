@@ -4,7 +4,7 @@
 // , "description" : "Capture a viewport"
 // , "include"     : ["background", "content"]
 // , "match"       : ["*://*/*"]
-// , "version"     : "0.7.3"
+// , "version"     : "0.8.0"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/others/menu.capture.window.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -87,7 +87,7 @@
       }, function() {
         setTimeout(function () {
           captureViewport(sender.tab, callback);
-        }, 500);
+        }, 100);
       });
     });
 
@@ -118,7 +118,7 @@
       }, function() {
         setTimeout(function () {
           captureViewport(tab, callback);
-        }, 500);
+        }, 100);
       });
     }
 
@@ -192,6 +192,13 @@
       var win = ctx.window;
       self.makeOpaqueFlash(ctx.document);
 
+      var dim = getViewportDimensions();
+      dim.w = document.body.clientWidth; // without vertical scrollbar
+      var scrollbar = window.innerWidth - document.body.clientWidth;
+      if (scrollbar > 0) {
+        dim.h -= scrollbar; // without horizontal scrollbar
+      }
+
       return succeed().addCallback(function () {
         switch (type) {
         case 'Region':
@@ -209,10 +216,10 @@
           });
 
         case 'View':
-          return self.capture(win, { x : 0, y : 0 }, getViewportDimensions());
+          return self.capture(win, { x : 0, y : 0 }, dim);
 
         case 'Page':
-          return self.capturePage(win, getViewportPosition(), getViewportDimensions());
+          return self.capturePage(win, getViewportPosition(), dim);
         }
         return null;
       }).addCallback(function (file) {
