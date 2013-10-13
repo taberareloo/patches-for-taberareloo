@@ -4,7 +4,7 @@
 // , "description" : "Get new posts on Google+ automatically"
 // , "include"     : ["background", "content"]
 // , "match"       : ["https://plus.google.com/*"]
-// , "version"     : "0.7.1"
+// , "version"     : "0.7.2"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/userscripts/userscript.googleplus.refresh.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -81,7 +81,7 @@
   var notifications_id = '#gbwc, #gbsfw';
   var button_selector  = 'div[role="button"].c-b-M, div[role="button"].b-c-T';
   var message_selector = 'div.M4DNS, div.lZb';
-  var reload_selector  = 'div.AcWGPc, div.cBc';
+  var reload_selector  = 'div.AcWGPc, div.cBc, div.eBc';
   var resume_selector  = 'div.QZZuJ, div.dBc';
 
   function check_message() {
