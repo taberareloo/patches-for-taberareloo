@@ -3,7 +3,7 @@
 //   "name"        : "Croudia Model"
 // , "description" : "Post to croudia.com"
 // , "include"     : ["background"]
-// , "version"     : "0.1.0"
+// , "version"     : "0.1.1"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/models/model.croudia.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -41,7 +41,7 @@
       if (ps.type === 'photo') {
         info.push('(via ' + ps.item + ' ' + ps.pageUrl + ' )');
       }
-      else {
+      else if (ps.type !== 'regular') {
         info.push('(via ' + ps.item + ' ' + ps.itemUrl + ' )');
       }
       var tags = joinText(ps.tags, ' #');
