@@ -3,7 +3,7 @@
 //   "name"        : "Croudia Model"
 // , "description" : "Post to croudia.com"
 // , "include"     : ["background"]
-// , "version"     : "0.1.1"
+// , "version"     : "0.1.2"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/models/model.croudia.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -21,15 +21,22 @@
       return (/(regular|photo|quote|link|video)/).test(ps.type);
     },
 
+    is_initialized : false,
+
     getForm : function () {
       var self = this;
-      return request(this.FORM_URL, {responseType: 'document'}).addCallback(function (res) {
-        var doc = res.response;
-        var form = formContents(doc);
-        if (!form.utf8) {
-          throw new Error(chrome.i18n.getMessage('error_notLoggedin', self.name));
-        }
-        return form;
+      return (
+        this.is_initialized ? succeed() : request(this.LOGIN_URL)
+      ).addCallback(function () {
+        return request(self.FORM_URL, {responseType: 'document'}).addCallback(function (res) {
+          var doc = res.response;
+          var form = formContents(doc);
+          if (!form.utf8) {
+            throw new Error(chrome.i18n.getMessage('error_notLoggedin', self.name));
+          }
+          self.is_initialized = true;
+          return form;
+        });
       });
     },
 
