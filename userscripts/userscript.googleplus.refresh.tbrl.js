@@ -4,7 +4,7 @@
 // , "description" : "Get new posts on Google+ automatically"
 // , "include"     : ["background", "content"]
 // , "match"       : ["https://plus.google.com/*"]
-// , "version"     : "0.7.3"
+// , "version"     : "0.7.4"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/userscripts/userscript.googleplus.refresh.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -92,7 +92,7 @@
 
     var button = document.querySelector(button_selector);
     if (button) {
-      var message = button.querySelector(message_selector).innerText;
+      var message = button.querySelector(message_selector);
       var resume  = button.querySelector(resume_selector);
 
       if (message && !resume) {
@@ -100,7 +100,7 @@
           request : 'googleplus_notify',
           content : {
             title   : 'New Post on Google+',
-            message : message
+            message : message.innerText
           }
         });
       }
