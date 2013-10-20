@@ -3,7 +3,7 @@
 //   "name"        : "Croudia Model"
 // , "description" : "Post to croudia.com"
 // , "include"     : ["background"]
-// , "version"     : "0.1.2"
+// , "version"     : "0.1.4"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/models/model.croudia.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -44,7 +44,8 @@
       var maxlen = 372;
 
       var info = [ps.description, ps.description ? "\n" : ''];
-      info.push(ps.body ? '"' + ps.body.trimTag().trim() + '"' : '');
+      var body = ps.body ? ps.body.trimTag().trim() : '';
+      info.push(body ? '"' + body + '"' : '');
       if (ps.type === 'photo') {
         info.push('(via ' + ps.item + ' ' + ps.pageUrl + ' )');
       }
@@ -105,7 +106,7 @@
   addAround(Models['Croudia'], 'createVoice', function(proceed, args, target, methodName) {
     var ps = update({}, args[0]);
     if (ps.body) {
-      ps.body = ps.body.trimTag().replace(/\s+/g, ' ');
+      ps.body = ps.body.trimTag().replace(/\s+/g, ' ').trim();
     }
     try {
       return proceed([ps]);
