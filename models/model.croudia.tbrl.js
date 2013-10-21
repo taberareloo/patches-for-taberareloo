@@ -3,7 +3,7 @@
 //   "name"        : "Croudia Model"
 // , "description" : "Post to croudia.com"
 // , "include"     : ["background"]
-// , "version"     : "0.1.4"
+// , "version"     : "0.1.5"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/models/model.croudia.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -12,6 +12,7 @@
   Models.register({
     name      : 'Croudia',
     ICON      : 'https://croudia.com/favicon.ico',
+    LINK      : 'https://croudia.com/',
     LOGIN_URL : 'https://croudia.com/',
 
     FORM_URL  : 'https://croudia.com/voices/written_ajax',
