@@ -27,6 +27,9 @@ Extractor とは、Taberareloo から投稿する元のページ及びそこで�
 * [extractor.quote.twitter.dashboard.tbrl.js](https://raw.github.com/YungSang/patches-for-taberareloo/master/extractors/extractor.quote.twitter.dashboard.tbrl.js)  
 	[Twitter](https://twitter.com/) の Tweet をダッシュボード(ホーム)から簡単に Quote するパッチ  
 
+* [extractor.reblog.googleplus.tbrl.js](https://raw.github.com/YungSang/patches-for-taberareloo/master/extractors/extractor.reblog.googleplus.tbrl)  
+	[Google+](https://plus.google.com/) の Post をストリームから簡単に ReBlog/ReShare するパッチ
+
 * [extractor.video.fc2.tbrl.js](https://raw.github.com/YungSang/patches-for-taberareloo/master/extractors/extractor.video.fc2.tbrl.js)  
 	[FC2](http://video.fc2.com/) の動画を投稿する為のパッチ
 

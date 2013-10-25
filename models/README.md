@@ -15,6 +15,9 @@ Model とは、Taberareloo から投稿する先のウェブ・サービス及�
   [Google URL Shortener](http://goo.gl) 用モデル  
   ポスト関連オプションの「Twitter - 常にURLを短縮する」がチェックされている場合に有効になります。
 
+* [model.googleplus.tbrl.js](https://raw.github.com/YungSang/patches-for-taberareloo/master/models/model.googleplus.tbrl.js)  
+  [Google+](https://plus.google.com) 、Google+ Pages、Google+ Communities 用モデル
+
 * [model.loveit.tbrl.js](https://raw.github.com/YungSang/patches-for-taberareloo/master/models/model.loveit.tbrl.js)  
   [http://loveit.com](http://loveit.com) 用モデル
 
