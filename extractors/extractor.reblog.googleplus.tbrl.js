@@ -4,12 +4,16 @@
 // , "description" : "Extract posts to reblog/reshare"
 // , "include"     : ["content"]
 // , "match"       : ["https://plus.google.com/*"]
-// , "version"     : "1.0.0"
+// , "version"     : "1.0.1"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/extractors/extractor.reblog.googleplus.tbrl.js"
 // }
 // ==/Taberareloo==
 
 (function() {
+  if (Extractors['ReBlog - Google+']) {
+    Extractors.remove('ReBlog - Google+');
+  }
+
   Extractors.register({
     name     : 'ReBlog - Google+',
     ICON     : 'https://ssl.gstatic.com/s2/oz/images/faviconr3.ico',
