@@ -4,15 +4,18 @@
 // , "description" : "Post to Google+"
 // , "include"     : ["background", "content", "popup"]
 // , "match"       : ["https://plus.google.com/*"]
-// , "version"     : "1.0.0"
+// , "version"     : "1.0.1"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/models/model.googleplus.tbrl.js"
 // }
 // ==/Taberareloo==
 
 (function() {
   if (inContext('background')) {
-    if (Models['Google+'] && Models['Google+'].timer) {
-      clearTimeout(Models['Google+'].timer);
+    if (Models['Google+']) {
+      if (Models['Google+'].timer) {
+        clearTimeout(Models['Google+'].timer);
+      }
+      Models.remove('Google+');
     }
 
     Models.register({
@@ -888,7 +891,7 @@
 
         return false;
       }
-    });
+    }, 'Diigo', true);
 
     Models.googlePlusPages = [];
     Models.getGooglePlusPages = function() {
