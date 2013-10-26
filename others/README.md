@@ -4,8 +4,14 @@
 
 ## パッチ一覧
 
+* [menu.apple.maps.search.tbrl.js](https://raw.github.com/YungSang/patches-for-taberareloo/master/others/menu.apple.maps.search.tbrl.js)  
+	選択したテキストを [Apple Maps](http://maps.apple.com) で検索するパッチ
+
 * [menu.capture.window.tbrl.js](https://raw.github.com/YungSang/patches-for-taberareloo/master/others/menu.capture.window.tbrl.js)  
 	「Photo - Capture」の機能を拡張し、選択 Area 以外に、Element と Window(viewport 全体) と Page 全体のキャプチャを追加します。
+
+* [menu.google.maps.search.tbrl.js](https://raw.github.com/YungSang/patches-for-taberareloo/master/others/menu.google.maps.search.tbrl.js)  
+	選択したテキストを [Google Maps](https://maps.google.com) で検索するパッチ
 
 * <del>[menu.backup.config.tbrl.js](https://raw.github.com/YungSang/patches-for-taberareloo/master/others/menu.backup.config.tbrl.js)  
 	Taberareloo のオプションの設定データをバックアップ／リストアする為のパッチ(実験中。Experimental)  
