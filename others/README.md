@@ -13,6 +13,9 @@
 * [menu.capture.window.tbrl.js](https://raw.github.com/YungSang/patches-for-taberareloo/master/others/menu.capture.window.tbrl.js)  
 	「Photo - Capture」の機能を拡張し、選択 Area 以外に、Element と Window(viewport 全体) と Page 全体のキャプチャを追加します。
 
+* [menu.digital.library.search.tbrl.js](https://raw.github.com/YungSang/patches-for-taberareloo/master/others/menu.digital.library.search.tbrl.js)  
+	選択したテキストを [近代デジタルライブラリー](http://kindai.ndl.go.jp/) で検索するパッチ
+
 * [menu.google.maps.search.tbrl.js](https://raw.github.com/YungSang/patches-for-taberareloo/master/others/menu.google.maps.search.tbrl.js)  
 	選択したテキストを [Google Maps](https://maps.google.com) で検索するパッチ
 
