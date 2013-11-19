@@ -1,16 +1,16 @@
 // ==Taberareloo==
 // {
-//   "name"        : "Image Search with ImgOps.com"
-// , "description" : "Operate image with online image utilities at ImgOps.com"
+//   "name"        : "Image Operation with ImgOps.com"
+// , "description" : "Operate an image with online image utilities at ImgOps.com"
 // , "include"     : ["background"]
-// , "version"     : "1.0.0"
-// , "downloadURL" : "https://raw.github.com/oumu/patches-for-taberareloo/master/others/menu.photo.search.imgops.tbrl.js"
+// , "version"     : "1.0.1"
+// , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/others/menu.photo.operate.imgops.tbrl.js"
 // }
 // ==/Taberareloo==
 
 (function() {
   Menus._register({
-    title    : 'Photo - Search - ImgOps',
+    title    : 'Photo - Operate - ImgOps',
     contexts : ['image'],
     onclick  : function(info, tab) {
       if ((info.mediaType !== 'image') || (!info.srcUrl)) return;

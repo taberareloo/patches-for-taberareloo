@@ -3,8 +3,8 @@
 //   "name"        : "TheFreeDictionary Search Menu"
 // , "description" : "Menu for TheFreeDictionary Search"
 // , "include"     : ["background"]
-// , "version"     : "1.0.0"
-// , "downloadURL" : "https://raw.github.com/oumu/patches-for-taberareloo/master/others/menu.tfd.search.tbrl.js"
+// , "version"     : "1.0.1"
+// , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/others/menu.tfd.search.tbrl.js"
 // }
 // ==/Taberareloo==
 
