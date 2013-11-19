@@ -16,6 +16,9 @@
 * [menu.digital.library.search.tbrl.js](https://raw.github.com/YungSang/patches-for-taberareloo/master/others/menu.digital.library.search.tbrl.js)  
 	選択したテキストを [近代デジタルライブラリー](http://kindai.ndl.go.jp/) で検索するパッチ
 
+* [menu.google.feelinglucky.search.tbrl.js](https://raw.github.com/YungSang/patches-for-taberareloo/master/others/menu.google.feelinglucky.search.tbrl.js)  
+	選択したテキストを [Google](https://www.google.com) で「I'm Feeling Lucky」を使ってピンポイント検索するパッチ (by @oumu)
+
 * [menu.google.maps.search.tbrl.js](https://raw.github.com/YungSang/patches-for-taberareloo/master/others/menu.google.maps.search.tbrl.js)  
 	選択したテキストを [Google Maps](https://maps.google.com) で検索するパッチ
 
@@ -34,6 +37,9 @@
 	投稿を非公開(Private)にする為のパッチ。  
 	対応サービス(Tumblr, Pinboard, Delicious, YahooBookmarks, Diigo, Zootool)
 
+* [menu.photo.operate.imgops.tbrl.js](https://raw.github.com/YungSang/patches-for-taberareloo/master/others/menu.photo.operate.imgops.tbrl.js)  
+	選択した画像を [ImgOps - Image Operations Meta-tool](http://imgops.com/) で操作／加工する (by @oumu)
+
 * [menu.photo.search.ascii2d.tbrl.js](https://raw.github.com/YungSang/patches-for-taberareloo/master/others/menu.photo.search.ascii2d.tbrl.js)  
 	選択した画像を [二次元画像詳細検索](http://www.ascii2d.net/imagesearch) で検索するパッチ
 
@@ -48,6 +54,9 @@
 
 * [menu.taberareloo.no-popup.tbrl.js](https://raw.github.com/YungSang/patches-for-taberareloo/master/others/menu.taberareloo.no-popup.tbrl.js)  
 	Tombloo のようにコンテキストに合わせたメニューを動的に生成しつつ、ポップアップ画面無しで投稿できるようにするパッチ(実験中。Experimental)
+
+* [menu.tfd.search.tbrl.js](https://raw.github.com/YungSang/patches-for-taberareloo/master/others/menu.tfd.search.tbrl.js)  
+	選択したテキストを [TheFreeDictionary](http://www.tfd.com) で検索するパッチ (by @oumu)
 
 * [menu.view.tumblr.dashboard.tbrl.js](https://raw.github.com/YungSang/patches-for-taberareloo/master/others/menu.view.tumblr.dashboard.tbrl.js)  
 	Tumblr のアーカイブ(個別)ページからそのページを含む DashBoard のページを表示する為のパッチ(実験中。Experimental)  
