@@ -14,7 +14,7 @@
     contexts: ['selection'],
     onclick: function (info, tab) {
       chrome.tabs.create({
-        url    : "http://www.tfd.com/" + info.selectionText,
+        url    : "http://www.tfd.com/" + encodeURIComponent(info.selectionText),
         active : false
       });
     }

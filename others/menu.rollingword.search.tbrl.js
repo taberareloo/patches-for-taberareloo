@@ -14,7 +14,7 @@
     contexts: ['selection'],
     onclick: function (info, tab) {
       chrome.tabs.create({
-        url    : "http://rollingword.com/app#query/" + info.selectionText,
+        url    : "http://rollingword.com/app#query/" + encodeURIComponent(info.selectionText),
         active : false
       });
     }
