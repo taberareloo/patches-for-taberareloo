@@ -4,7 +4,7 @@
 // , "description" : "Post to preset models"
 // , "include"     : ["background", "content"]
 // , "match"       : ["*://*/*"]
-// , "version"     : "0.8.0"
+// , "version"     : "0.9.0"
 // }
 // ==/Taberareloo==
 
@@ -21,7 +21,7 @@
       name  : 'Taberareloo.preset_' + i,
       title : 'Preset ' + i + ' (' + PRESET_MODELS[i].join(', ') + ')',
       func  : function(ev) {
-        postToPresetModels(i);
+        postToPresetModels(ev, i);
       }
     };
     PRESET_ACTIONS.push({
@@ -134,9 +134,45 @@
     });
   });
 
-  function postToPresetModels(preset) {
+
+  var isDashboard = /^https?:\/\/www\.tumblr\.com\/(?:(?:dashboard|likes)|(?:liked\/by|show|tagged|blog)\/)/.test(location.href);
+
+  function postToPresetModels(ev, preset) {
     var ctx = TBRL.createContext();
-    TBRL.extract(ctx, Extractors.check(ctx)[0]).addCallback(function(ps) {
+    var ext = Extractors.check(ctx)[0];
+
+    if (isDashboard) {
+      var current;
+      if (!('selectionStart' in ev.target && ev.target.disabled !== true)) {
+        current = UserScripts['Dashboard + Taberareloo'].getCurrentItem();
+        if (!current) {
+          return;
+        }
+        stop(ev);
+      }
+      else {
+        return;
+      }
+
+      var post = current.classList.contains('post') ? current : current.querySelector('.post');
+      var sel = createFlavoredString(window.getSelection());
+      ctx = update({
+        document  : document,
+        window    : window,
+        selection : (sel.raw) ? sel : null,
+        target    : post,
+        event     : {},
+        title     : null,
+        mouse     : null,
+        menu      : null
+      }, window.location);
+      ext = Extractors['ReBlog - Dashboard'];
+      if (!ext.check(ctx)) {
+        return;
+      }
+    }
+
+    TBRL.extract(ctx, ext).addCallback(function(ps) {
       chrome.runtime.sendMessage(TBRL.id, {
         request : "postToPresetModels",
         content : checkHttps(update({
