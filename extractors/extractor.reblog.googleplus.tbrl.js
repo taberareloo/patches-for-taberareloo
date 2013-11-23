@@ -4,7 +4,7 @@
 // , "description" : "Extract posts to reblog/reshare"
 // , "include"     : ["content"]
 // , "match"       : ["https://plus.google.com/*"]
-// , "version"     : "1.0.1"
+// , "version"     : "1.0.2"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/extractors/extractor.reblog.googleplus.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -101,7 +101,7 @@
               type        : 'video',
               item        : attachment[3],
               itemUrl     : ctx.href = attachment[24][1],
-              body        : attachment[5] && attachment[5][1]
+              body        : null // attachment[5] && attachment[5][1]
             });
           } else if ((attachment[24][4] === 'image') || (attachment[24][4] === 'photo')) {
             result = update(result, {
@@ -192,7 +192,7 @@
                 type    : 'video',
                 item    : attachment[key][2],
                 itemUrl : ctx.href = attachment[key][12],
-                body    : attachment[key][3]
+                body    : null // attachment[key][3]
               });
               break;
             case '40842909':
