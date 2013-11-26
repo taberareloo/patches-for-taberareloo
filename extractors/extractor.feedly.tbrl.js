@@ -3,8 +3,8 @@
 //   "name"        : "Extractor for Feedly"
 // , "description" : "Extract an article on Feedly"
 // , "include"     : ["content"]
-// , "match"       : ["*://cloud.feedly.com/*"]
-// , "version"     : "0.4.0"
+// , "match"       : ["*://feedly.com/*"]
+// , "version"     : "0.5.0"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/extractors/extractor.feedly.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -23,7 +23,7 @@
     {
       name: 'Feedly',
       getItem: function (ctx, getOnly) {
-        if (!ctx.href.match(/\/\/cloud\.feedly\.com\//)) {
+        if (!ctx.href.match(/\/\/feedly\.com\//)) {
           return null;
         }
 
@@ -59,7 +59,7 @@
 
     {
       name: 'Quote - Feedly',
-      ICON: 'http://cloud.feedly.com/favicon.ico',
+      ICON: 'http://feedly.com/favicon.ico',
       check: function (ctx) {
         return Extractors.Feedly.getItem(ctx, true) && ctx.selection;
       },
@@ -71,7 +71,7 @@
 
     {
       name: 'ReBlog - Feedly',
-      ICON: 'http://cloud.feedly.com/favicon.ico',
+      ICON: 'http://feedly.com/favicon.ico',
       check: function (ctx) {
         var item = Extractors.Feedly.getItem(ctx, true);
         return item && (
@@ -86,7 +86,7 @@
 
     {
       name: 'Photo - Feedly',
-      ICON: 'http://cloud.feedly.com/favicon.ico',
+      ICON: 'http://feedly.com/favicon.ico',
       check: function (ctx) {
         return Extractors.Feedly.getItem(ctx, true) && ctx.onImage;
       },
@@ -98,7 +98,7 @@
 
     {
       name: 'Link - Feedly',
-      ICON: 'http://cloud.feedly.com/favicon.ico',
+      ICON: 'http://feedly.com/favicon.ico',
       check: function (ctx) {
         return Extractors.Feedly.getItem(ctx, true);
       },
@@ -113,7 +113,7 @@
     name  : 'Feedly + Taberareloo',
     check : function () {
       var key = TBRL.config.post.shortcutkey_ldr_plus_taberareloo;
-      if (/^https?:\/\/cloud\.feedly\.com\//.test(location.href) && TBRL.config.post.ldr_plus_taberareloo && key) {
+      if (/^https?:\/\/feedly\.com\//.test(location.href) && TBRL.config.post.ldr_plus_taberareloo && key) {
         this.key = key;
         return true;
       } else {
@@ -141,7 +141,7 @@
           return null;
         }
         stop(ev);
-        var sel = createFlavoredString(window.getSelection());
+        var sel = createdString(window.getSelection());
         var ctx = update({
           document  : document,
           window    : window,
