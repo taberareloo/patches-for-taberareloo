@@ -4,6 +4,10 @@
 
 ## パッチ一覧
 
+* [iview.for.taberareloo.tbrl.js](https://raw.github.com/YungSang/patches-for-taberareloo/master/others/iview.for.taberareloo.tbrl.js)  
+	[iview for Tombloo](http://ido.nu/kuma/2008/09/26/iview-for-tombloo/) の Taberareloo 版  
+	SITEINFO は[こちら](https://github.com/YungSang/wedata/blob/master/databases/iview/items_all.json)
+
 * [menu.apple.maps.search.tbrl.js](https://raw.github.com/YungSang/patches-for-taberareloo/master/others/menu.apple.maps.search.tbrl.js)  
 	選択したテキストを [Apple Maps](http://maps.apple.com) で検索するパッチ
 
