@@ -4,7 +4,7 @@
 // , "description" : "iview for Taberareloo"
 // , "include"     : ["background", "content"]
 // , "match"       : ["http://yungsang.github.io/patches-for-taberareloo/iview.html"]
-// , "version"     : "0.2.2"
+// , "version"     : "0.2.3"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/others/iview.for.taberareloo.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -152,11 +152,8 @@ console.log(e);
     },
     onSubrequestLoad: function (res) {
       var siteinfo = this.siteinfo.subRequest;
-
       var doc = res.response;
-      var paragraphes = $X( siteinfo.paragraph, doc );
-
-      var base = res.channel.URI.asciiSpec;
+      var base = doc.URL;
       this.parseResponse(doc, siteinfo, base, {permalink: base});
     },
     onPageLoad: function (res) {
@@ -188,7 +185,7 @@ console.log(e);
               try {
                 var cdata = $X( siteinfo.subParagraph.cdata, paragraph ).shift().textContent;
                 cdata = '<html><body>' + cdata + '</body></html>';
-                paragraph = createHTMLDocumentByString(iview.doc, cdata);
+                paragraph = createHTML(cdata);
               }catch(e){
                 console.log(e);
               }
