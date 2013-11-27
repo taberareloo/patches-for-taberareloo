@@ -4,7 +4,7 @@
 // , "description" : "iview for Taberareloo"
 // , "include"     : ["background", "content"]
 // , "match"       : ["http://yungsang.github.io/patches-for-taberareloo/iview.html"]
-// , "version"     : "0.2.3"
+// , "version"     : "0.3.0"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/others/iview.for.taberareloo.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -48,7 +48,11 @@
     Menus.create();
 
     TBRL.setRequestHandler('loadSiteInfo', function (req, sender, func) {
-      request(req.url).addCallback( function(res) {
+      request(req.url, {
+        queryString : {
+          t : (new Date()).getTime()
+        }
+      }).addCallback( function(res) {
         Sandbox.evalJSON(res.responseText).addCallback(function (json) {
           func(json);
         });
@@ -58,7 +62,7 @@
   }
 
   var requestopts = {
-    //charset: 'utf-8'
+//    charset: 'utf-8'
     responseType: 'document'
   };
 
@@ -133,7 +137,7 @@ console.log(e);
         if ( !this.siteinfo.nextLink ) {
           return;
         }
-        var link = $X(this.siteinfo.nextLink, this.lastPageDoc).shift();
+        var link = [].concat($X(this.siteinfo.nextLink, this.lastPageDoc)).shift();
         var nextLink = valueOfNode(link);
         this.currentPage = url.resolve(this.lastPageURI, nextLink);
       } else {
@@ -153,7 +157,7 @@ console.log(e);
     onSubrequestLoad: function (res) {
       var siteinfo = this.siteinfo.subRequest;
       var doc = res.response;
-      var base = doc.URL;
+      var base = doc.baseURI;
       this.parseResponse(doc, siteinfo, base, {permalink: base});
     },
     onPageLoad: function (res) {
@@ -165,7 +169,11 @@ console.log(e);
       this.parseResponse(doc, siteinfo, base);
     },
     parseResponse: function (doc, siteinfo, baseURI, hashTemplate) {
-      var paragraphes = $X( siteinfo.paragraph, doc );
+      var paragraphes = [].concat($X( siteinfo.paragraph, doc ));
+      if ( paragraphes.length === 0 ) {
+        console.error('Something wrong with siteinfo.paragraph');
+        throw new TypeError('Something wrong with siteinfo.paragraph');
+      }
       var self = this;
       paragraphes.map ( function (paragraph, index) {
         if ( siteinfo.subRequest && siteinfo.subRequest.paragraph ) {
@@ -183,7 +191,7 @@ console.log(e);
 
             if ( siteinfo.subParagraph.cdata ) {
               try {
-                var cdata = $X( siteinfo.subParagraph.cdata, paragraph ).shift().textContent;
+                var cdata = [].concat($X( siteinfo.subParagraph.cdata, paragraph )).shift().textContent;
                 cdata = '<html><body>' + cdata + '</body></html>';
                 paragraph = createHTML(cdata);
               }catch(e){
@@ -236,18 +244,24 @@ console.log(e);
         var rs = $X(xpath, paragraph);
         if (typeof rs == 'string') {
           v = rs;
-          if ( k == 'caption' ) {
-            v =  v.textContent.replace(/(^\s*)|(\s*$)/g, '');
+          if ( k === 'caption' ) {
+            v =  v.trim();
           } else {
             v = url.resolve(baseURI, v);
           }
         } else {
-          var node = rs.shift();
-          if ( k == 'caption' ) {
-            v =  node.textContent.replace(/(^\s*)|(\s*$)/g, '');
+          var node = [].concat(rs).shift();
+          if ( !node ) {
+            console.error('Something wrong with siteinfo.' + k);
+          }
+          if ( k === 'caption' ) {
+            if ( typeof node === 'object' ) {
+              v =  node.textContent.trim();
+            }
+            else {
+              v = valueOfNode(node);
+            }
           } else {
-            if ( node === null )
-              console.log(k, "null!");
             v = valueOfNode(node);
             v = url.resolve(baseURI, v);
           }
@@ -585,25 +599,71 @@ console.log(e);
   iview.init(document);
   iview.loadJson();
 
-  function valueOfNode (node) {
-    var doc = node.ownerDocument;
-    {
-      if ( node.nodeType == node.ELEMENT_NODE ) {
-        if ( node.tagName.match( /^(a|link)$/i ) ) {
-          var u = node.getAttribute('href');
-          return u;
-        } else if ( node.tagName.match( /img/i ) ) {
-          var u = node.getAttribute('src');
-          return u;
-        } else {
-          return node.textContent.replace(/(^\s*)|(\s*$)/g, '');
-        }
-      } else if ( node.nodeType == node.ATTRIBUTE_NODE ) {
-        var u = node.nodeValue;
-        return u;
-      } else if (node.nodeType == node.TEXT_NODE ) {
-        return node.nodeValue;
+  function $X(exp, context) {
+    if (!context) {
+      context = document;
+    }
+    var _document  = context.ownerDocument || context,
+    documentElement = _document.documentElement,
+    isXHTML = documentElement.tagName !== 'HTML' && _document.createElement('p').tagName === 'p',
+    defaultPrefix = null;
+/*
+    if (isXHTML) {
+      defaultPrefix = '__default__';
+      exp = addDefaultPrefix(exp, defaultPrefix);
+    }
+*/
+    function resolver(prefix) {
+      return context.lookupNamespaceURI(prefix === defaultPrefix ? null : prefix) ||
+           documentElement.namespaceURI || '';
+    }
+    function value(node) {
+      if (!node) {
+        return;
       }
+
+      switch (node.nodeType) {
+      case Node.ELEMENT_NODE:
+        return node;
+      case Node.ATTRIBUTE_NODE:
+      case Node.TEXT_NODE:
+        return node.textContent;
+      }
+    }
+    var result = _document.evaluate(exp, context, resolver, XPathResult.ANY_TYPE, null);
+    switch (result.resultType) {
+    case XPathResult.STRING_TYPE:
+      return result.stringValue;
+    case XPathResult.NUMBER_TYPE:
+      return result.numberValue;
+    case XPathResult.BOOLEAN_TYPE:
+      return result.booleanValue;
+    case XPathResult.UNORDERED_NODE_ITERATOR_TYPE:
+      // not ensure the order.
+      var ret = [], i = null;
+      while ((i = result.iterateNext())) {
+        ret.push(value(i));
+      }
+      return ret;
+    }
+  }
+
+  function valueOfNode (node) {
+    if ( typeof node === 'string' ) {
+      return node;
+    }
+    if ( node.nodeType === node.ELEMENT_NODE ) {
+      if ( node.tagName.match( /^(a|link)$/i ) ) {
+        return node.getAttribute('href');
+      } else if ( node.tagName.match( /img/i ) ) {
+        return node.getAttribute('src');
+      } else {
+        return node.textContent.trim();
+      }
+    } else if ( node.nodeType === node.ATTRIBUTE_NODE ) {
+      return node.nodeValue;
+    } else if (node.nodeType === node.TEXT_NODE ) {
+      return node.nodeValue;
     }
   }
 
