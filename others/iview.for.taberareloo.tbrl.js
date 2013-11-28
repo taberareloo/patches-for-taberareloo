@@ -157,8 +157,7 @@
     onSubrequestLoad: function (res) {
       var siteinfo = this.siteinfo.subRequest;
       var doc = res.response;
-      var base = doc.baseURI;
-      this.parseResponse(doc, siteinfo, base, {permalink: base});
+      this.parseResponse(doc, siteinfo, doc.baseURI, {permalink: doc.URL});
     },
     onPageLoad: function (res) {
       var siteinfo = this.siteinfo;
