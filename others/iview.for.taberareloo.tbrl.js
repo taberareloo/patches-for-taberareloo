@@ -4,7 +4,7 @@
 // , "description" : "iview for Taberareloo"
 // , "include"     : ["background", "content"]
 // , "match"       : ["http://yungsang.github.io/patches-for-taberareloo/iview.html"]
-// , "version"     : "0.3.0"
+// , "version"     : "0.4.0"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/others/iview.for.taberareloo.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -80,7 +80,7 @@
             var opts = args[1];
             var f = args[2];
             request(u, opts).addCallback( f ).addErrback( function (e) {
-console.log(e);
+              console.log(e);
             } );
           }
         }
@@ -219,7 +219,7 @@ console.log(e);
     },
     addToImageList: function (img) {
       if ( img.imageSource && img.permalink ) {
-        (new window.Image()).src = img.src();
+        (new window.Image()).src = img.imageSource;
         this.images.push(img);
       }
     },
@@ -319,20 +319,31 @@ console.log(e);
 
       var title = i.caption || i.permalink;
 
-      var ps = {
-        type:   'photo',
-        page:   title,
-        pageUrl:  i.permalink,
-        item:   title,
-        itemUrl:  i.src()
+      var ctx = {
+        title   : title,
+        href    : i.permalink,
+        link    : {
+          href : i.permalink
+        },
+        onLink  : true,
+        onImage : true
       };
+      var ext = Extractors['ReBlog - Tumblr link'];
 
-      chrome.runtime.sendMessage(TBRL.id, {
-        request : 'share',
-        show    : false,
-        content : checkHttps(ps)
-      }, function () { });
-
+      (ext.check(ctx) ? TBRL.extract(ctx, ext) : succeed({
+        type    : 'photo',
+        item    : title,
+        itemUrl : i.src()
+      })).addCallback(function (ps) {
+        chrome.runtime.sendMessage(TBRL.id, {
+          request : 'share',
+          show    : false,
+          content : checkHttps(update({
+            page    : ctx.title,
+            pageUrl : ctx.href
+          }, ps))
+        }, function () { });
+      });
     },
     showRebloggingBox: function (i) {
       var r = this.doc.getElementById('reblogging');
@@ -410,7 +421,7 @@ console.log(e);
       img.setAttribute('src', null);
 
       window.setTimeout( function () {
-        img.setAttribute('src', imageInfo.src());
+        img.setAttribute('src', imageInfo.imageSource);
       }, 20);
 
       var a = this.doc.getElementById('caption');
@@ -649,6 +660,9 @@ console.log(e);
   }
 
   function valueOfNode (node) {
+    if ( !node ) {
+      return node;
+    }
     if ( typeof node === 'string' ) {
       return node;
     }
