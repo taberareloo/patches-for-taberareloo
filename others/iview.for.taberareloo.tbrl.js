@@ -4,7 +4,7 @@
 // , "description" : "iview for Taberareloo"
 // , "include"     : ["background", "content"]
 // , "match"       : ["http://yungsang.github.io/patches-for-taberareloo/iview.html"]
-// , "version"     : "0.4.0"
+// , "version"     : "0.4.1"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/others/iview.for.taberareloo.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -157,8 +157,7 @@
     onSubrequestLoad: function (res) {
       var siteinfo = this.siteinfo.subRequest;
       var doc = res.response;
-      var base = doc.baseURI;
-      this.parseResponse(doc, siteinfo, base, {permalink: base});
+      this.parseResponse(doc, siteinfo, doc.baseURI, {permalink: doc.URL});
     },
     onPageLoad: function (res) {
       var siteinfo = this.siteinfo;
