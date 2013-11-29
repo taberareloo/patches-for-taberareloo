@@ -28,7 +28,7 @@
 
 (function() {
   var IVIEW_URL    = 'http://yungsang.github.io/patches-for-taberareloo/iview.html';
-  var SITEINFO_URL = 'https://raw.github.com/YungSang/wedata/master/databases/iview/items_all.json';
+  var SITEINFO_URL = 'http://wedata.github.io/databases/iview/items_all.json';
 
   if (inContext('background')) {
     Menus._register({
