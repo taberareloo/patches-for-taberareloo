@@ -49,9 +49,11 @@
 
     TBRL.setRequestHandler('loadSiteInfo', function (req, sender, func) {
       request(req.url, {
+/* for debug
         queryString : {
           t : (new Date()).getTime()
         }
+*/
       }).addCallback( function(res) {
         Sandbox.evalJSON(res.responseText).addCallback(function (json) {
           func(json);
