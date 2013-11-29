@@ -4,7 +4,7 @@
 // , "description" : "iview for Taberareloo"
 // , "include"     : ["background", "content"]
 // , "match"       : ["http://yungsang.github.io/patches-for-taberareloo/iview.html"]
-// , "version"     : "0.5.0"
+// , "version"     : "0.6.0"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/others/iview.for.taberareloo.tbrl.js"
 // }
 // ==/Taberareloo==
