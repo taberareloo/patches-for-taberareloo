@@ -4,7 +4,7 @@
 // , "description" : "iview for Taberareloo"
 // , "include"     : ["background", "content"]
 // , "match"       : ["http://yungsang.github.io/patches-for-taberareloo/iview.html"]
-// , "version"     : "0.4.1"
+// , "version"     : "0.5.0"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/others/iview.for.taberareloo.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -49,9 +49,11 @@
 
     TBRL.setRequestHandler('loadSiteInfo', function (req, sender, func) {
       request(req.url, {
+/* for debug
         queryString : {
           t : (new Date()).getTime()
         }
+*/
       }).addCallback( function(res) {
         Sandbox.evalJSON(res.responseText).addCallback(function (json) {
           func(json);
