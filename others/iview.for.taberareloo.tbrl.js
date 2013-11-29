@@ -4,7 +4,7 @@
 // , "description" : "iview for Taberareloo"
 // , "include"     : ["background", "content"]
 // , "match"       : ["http://yungsang.github.io/patches-for-taberareloo/iview.html"]
-// , "version"     : "0.6.0"
+// , "version"     : "0.7.0"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/others/iview.for.taberareloo.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -28,7 +28,7 @@
 
 (function() {
   var IVIEW_URL    = 'http://yungsang.github.io/patches-for-taberareloo/iview.html';
-  var SITEINFO_URL = 'http://wedata.github.io/databases/iview/items_all.json';
+  var SITEINFO_URL = 'http://wedata.github.io/iview/items.json';
 
   if (inContext('background')) {
     Menus._register({
