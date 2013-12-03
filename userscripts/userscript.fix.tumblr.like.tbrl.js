@@ -3,8 +3,13 @@
 //   "name"        : "Fix Tumblr like actions on AutoPagerizing"
 // , "description" : "Fix Tumblr like actions on AutoPagerizing"
 // , "include"     : ["content"]
-// , "match"       : ["http://www.tumblr.com/dashboard*"]
-// , "version"     : "0.2.0"
+// , "match"       : [
+//     "http://www.tumblr.com/dashboard",
+//     "http://www.tumblr.com/likes",
+//     "http://www.tumblr.com/blog/*",
+//     "http://www.tumblr.com/tagged/*"
+//   ]
+// , "version"     : "0.3.0"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/userscripts/userscript.fix.tumblr.like.tbrl.js"
 // }
 // ==/Taberareloo==
