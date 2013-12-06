@@ -5,7 +5,7 @@
 // , "description" : "Set 'Send to Twitter/Facebook' automatically"
 // , "include"     : ["background", "content"]
 // , "match"       : ["http://www.tumblr.com/dashboard*"]
-// , "version"     : "1.7.0"
+// , "version"     : "1.7.1"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/patches/patch.tumblr.getform.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -15,7 +15,7 @@
     function getShareOption(channel_id) {
       return request('http://www.tumblr.com/dashboard').addCallback(function(res) {
         var html = res.responseText.replace(/\s+/g, ' ');
-        var selectbox = html.extract(/<% \} else \{ %> (<div id="tumblelog_choices".*<\/ul> <\/div> <\/div> <\/div>) <% \} %> <\/div>/);
+        var selectbox = html.extract(/<% \} else \{ %>(<div id="tumblelog_choices".*<\/ul><\/div><\/div><\/div>)<% \} %><\/div>/);
         var doc = createHTML(selectbox);
         var div;
         if (channel_id) {
