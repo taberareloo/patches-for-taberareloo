@@ -4,7 +4,7 @@
 // , "description" : "Extract an article on Feedly"
 // , "include"     : ["content"]
 // , "match"       : ["*://feedly.com/*"]
-// , "version"     : "0.5.0"
+// , "version"     : "0.5.1"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/extractors/extractor.feedly.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -141,7 +141,7 @@
           return null;
         }
         stop(ev);
-        var sel = createdString(window.getSelection());
+        var sel = createFlavoredString(window.getSelection());
         var ctx = update({
           document  : document,
           window    : window,
