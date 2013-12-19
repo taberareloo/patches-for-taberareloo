@@ -4,7 +4,7 @@
 // , "namespace"   : "https://github.com/YungSang/patches-for-taberareloo"
 // , "description" : "Post to Twitter surely"
 // , "include"     : ["background"]
-// , "version"     : "1.2.0"
+// , "version"     : "1.2.1"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/patches/patch.model.twitter.createstatus.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -19,7 +19,10 @@
       return status;
     }).addErrback(function(e) {
 console.log(e.message);
-      var over = e.message.extract(/post \((\d+) over\)/);
+      var over = '';
+      if (typeof e.message === 'string') {
+        over = e.message.extract(/post \((\d+) over\)/);
+      }
       if (!over) {
         throw e;
       }
