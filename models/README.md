@@ -11,6 +11,9 @@ Model とは、Taberareloo から投稿する先のウェブ・サービス及�
 * [model.croudia.tbrl.js](https://raw.github.com/YungSang/patches-for-taberareloo/master/models/model.croudia.tbrl.js)  
   [https://croudia.com](https://croudia.com) 用モデル
 
+* [model.gimmebar.tbrl.js](https://raw.github.com/YungSang/patches-for-taberareloo/master/models/model.gimmebar.tbrl.js)  
+  [https://gimmebar.com](https://gimmebar.com) 用モデル
+
 * [model.googl.tbrl.js](https://raw.github.com/YungSang/patches-for-taberareloo/master/models/model.googl.tbrl.js)  
   [Google URL Shortener](http://goo.gl) 用モデル  
   ポスト関連オプションの「Twitter - 常にURLを短縮する」がチェックされている場合に有効になります。
