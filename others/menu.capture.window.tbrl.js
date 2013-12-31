@@ -4,12 +4,16 @@
 // , "description" : "Capture a viewport"
 // , "include"     : ["background", "content"]
 // , "match"       : ["*://*/*"]
-// , "version"     : "0.8.0"
+// , "version"     : "0.9.1"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/others/menu.capture.window.tbrl.js"
 // }
 // ==/Taberareloo==
 
 (function() {
+  var CAP_QUALITY  = 100;
+  var GIF_MAX_SEC  = 10;
+  var GIF_INTERVAL = 100;
+
   if (inContext('background')) {
     var parent = 'Photo - Capture';
 
@@ -53,6 +57,20 @@
         });
       }
     }, parent);
+
+    if (window.GIF) {
+      Menus._register({
+        title    : 'Photo - Capture - Gif Animation',
+        contexts : ['all'],
+        onclick: function(info, tab) {
+          chrome.tabs.sendMessage(tab.id, {
+            request: 'contextMenusCaptureGifAnimation',
+            content: info
+          });
+        }
+      }, parent);
+    }
+
     Menus.create();
 
     setTimeout(function () {
@@ -60,6 +78,101 @@
         title : 'Photo - Capture ...'
       }, function() {});
     }, 500);
+
+    TBRL.setRequestHandler('captureGifAnimation', function (req, sender, callback) {
+      var pos = req.pos;
+      var dim = req.dim;
+      var sec = (req.sec > GIF_MAX_SEC) ? GIF_MAX_SEC : req.sec;
+
+      var frames = (sec * 1000) / GIF_INTERVAL;
+
+      var gif = new GIF({
+        workers: Math.round(frames / 10) || 1,
+        quality: 10,
+        workerScript: '/third_party/gifjs/gif.worker.js',
+        width: dim.w,
+        height: dim.h
+      });
+      gif.on('finished', function (blob) {
+        console.groupEnd();
+        TBRL.Notification.notify({
+          id      : notification.tag,
+          title   : 'Gif Animation',
+          message : 'Rendering... Done',
+          timeout : 3
+        });
+        fileToDataURL(blob).addCallback(function (url) {
+          callback(url);
+        });
+      });
+      gif.on('progress', function (p) {
+        TBRL.Notification.notify({
+          id      : notification.tag,
+          title   : 'Gif Animation',
+          message : 'Rendering... ' + Math.round(p * 100) + '%'
+        });
+      });
+
+      var canvas = document.createElement('canvas');
+      canvas.width  = dim.w;
+      canvas.height = dim.h;
+      var ctx = canvas.getContext('2d');
+
+      var deferredList = [];
+      for (i = 0 ; i < frames ; i++) {
+        deferredList.push(new Deferred());
+      }
+
+      var images = [];
+
+      function captureGifFrame (frame) {
+        if (((frame * GIF_INTERVAL) % 1000) === 0) {
+          TBRL.Notification.notify({
+            id      : notification.tag,
+            title   : 'Gif Animation',
+            message : 'Capturing... ' + (frame * GIF_INTERVAL / 1000) + 's'
+          });
+        }
+        chrome.tabs.captureVisibleTab(sender.tab.windowId, { quality : CAP_QUALITY }, function (src) {
+          var img = new Image();
+          img.onload = function () {
+            deferredList[frame].callback();
+          };
+          img.src = src;
+          images.push(img);
+        });
+        if ((frame + 1) < frames) {
+          setTimeout(function () {
+            captureGifFrame(frame + 1);
+          }, GIF_INTERVAL);
+        }
+      }
+
+      var notification = null;
+      maybeDeferred(TBRL.Notification.notify({
+        title   : 'Gif Animation',
+        message : 'Capturing...',
+        timeout : sec
+      })).addCallback(function (n) {
+        notification = n;
+        captureGifFrame(0);
+      });
+
+      return new DeferredList(deferredList).addCallback(function () {
+        images.forEach(function (img) {
+          ctx.drawImage(img, pos.x, pos.y, dim.w, dim.h, 0, 0, dim.w, dim.h);
+          gif.addFrame(ctx, {copy: true, delay: GIF_INTERVAL});
+        });
+        images.length = 0;
+        TBRL.Notification.notify({
+          id      : notification.tag,
+          title   : 'Gif Animation',
+          message : 'Rendering...'
+        });
+        console.groupCollapsed('gif.render');
+        gif.render();
+      });
+    });
 
     var views      = [];
     var pageX      = 0;
@@ -92,9 +205,8 @@
     });
 
     function captureViewport(tab, callback) {
-      chrome.tabs.captureVisibleTab(tab.windowId, { format : 'png' }, function (src) {
+      chrome.tabs.captureVisibleTab(tab.windowId, { quality : CAP_QUALITY }, function (src) {
         var img = new Image();
-        img.src = src;
         img.onload = function() {
           views.push(this);
           if ((pageHeight - pageY) <= viewHeight) {
@@ -108,6 +220,7 @@
             nextViewport(tab, callback);
           }
         };
+        img.src = src;
       });
     }
 
@@ -128,17 +241,16 @@
       canvas.height = pageHeight;
       var ctx = canvas.getContext('2d');
       pageY = 0;
-      for (var i = 0, len = views.length ; i < len; i++) {
+      views.forEach(function (view) {
         var offset = 0;
-        var height = views[i].height;
+        var height = view.height;
         if (pageY > (pageHeight - viewHeight)) {
           offset = pageY + viewHeight - pageHeight;
           height = viewHeight - offset;
         }
-        ctx.drawImage(views[i], 0, offset, viewWidth, height, 0, pageY, viewWidth, height);
-        views[i] = null;
+        ctx.drawImage(view, 0, offset, viewWidth, height, 0, pageY, viewWidth, height);
         pageY += viewHeight;
-      }
+      });
       views.length = 0;
       chrome.tabs.executeScript(tab.id, {
         code  : 'scrollTo(' + pageX + ', ' + originalY + ');',
@@ -175,6 +287,15 @@
     var ctx = update({
       contextMenu : true,
       captureType : 'Page'
+    }, TBRL.createContext(TBRL.getContextMenuTarget()));
+    TBRL.share(ctx, Extractors['Photo - Capture'], true);
+  });
+
+  TBRL.setRequestHandler('contextMenusCaptureGifAnimation', function (req, sender, func) {
+    func({});
+    var ctx = update({
+      contextMenu : true,
+      captureType : 'GifAnimation'
     }, TBRL.createContext(TBRL.getContextMenuTarget()));
     TBRL.share(ctx, Extractors['Photo - Capture'], true);
   });
@@ -220,6 +341,17 @@
 
         case 'Page':
           return self.capturePage(win, getViewportPosition(), dim);
+
+        case 'GifAnimation':
+          return self.selectRegion(ctx).addCallback(function (region) {
+            var sec = window.prompt("How long do you want to capture? (max " + GIF_MAX_SEC + "s)", 5);
+            if (sec) {
+              return self.captureGifAnimation(win, region.position, region.dimensions, sec);
+            }
+            else {
+              cancel();
+            }
+          });
         }
         return null;
       }).addCallback(function (file) {
@@ -242,6 +374,22 @@
         pageHeight : document.body.scrollHeight || document.documentElement.scrollHeight,
         viewWidth  : dim.w,
         viewHeight : dim.h
+      }, function (res) {
+        base64ToFileEntry(res).addCallback(function (url) {
+          defer.callback(url);
+        });
+      });
+      return defer;
+    },
+
+    captureGifAnimation : function (win, pos, dim, sec) {
+      var defer = new Deferred();
+      var width = win.innerWidth;
+      chrome.runtime.sendMessage(TBRL.id, {
+        request : 'captureGifAnimation',
+        pos     : pos,
+        dim     : dim,
+        sec     : sec
       }, function (res) {
         base64ToFileEntry(res).addCallback(function (url) {
           defer.callback(url);
