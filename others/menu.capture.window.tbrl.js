@@ -4,7 +4,7 @@
 // , "description" : "Capture a viewport"
 // , "include"     : ["background", "content"]
 // , "match"       : ["*://*/*"]
-// , "version"     : "0.9.1"
+// , "version"     : "0.9.2"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/others/menu.capture.window.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -79,121 +79,74 @@
       }, function() {});
     }, 500);
 
-    TBRL.setRequestHandler('captureGifAnimation', function (req, sender, callback) {
-      var pos = req.pos;
-      var dim = req.dim;
-      var sec = (req.sec > GIF_MAX_SEC) ? GIF_MAX_SEC : req.sec;
+    TBRL.setRequestHandler('capturePage', function (req, sender, callback) {
+      var views      = [];
+      var pageX      = req.originalX;
+      var pageY      = 0;
+      var originalX  = req.originalX;
+      var originalY  = req.originalY;
+      var pageWidth  = req.pageWidth;
+      var pageHeight = req.pageHeight;
+      var viewWidth  = req.viewWidth;
+      var viewHeight = req.viewHeight;
 
-      var frames = (sec * 1000) / GIF_INTERVAL;
-
-      var gif = new GIF({
-        workers: Math.round(frames / 10) || 1,
-        quality: 10,
-        workerScript: '/third_party/gifjs/gif.worker.js',
-        width: dim.w,
-        height: dim.h
-      });
-      gif.on('finished', function (blob) {
-        console.groupEnd();
-        TBRL.Notification.notify({
-          id      : notification.tag,
-          title   : 'Gif Animation',
-          message : 'Rendering... Done',
-          timeout : 3
-        });
-        fileToDataURL(blob).addCallback(function (url) {
-          callback(url);
-        });
-      });
-      gif.on('progress', function (p) {
-        TBRL.Notification.notify({
-          id      : notification.tag,
-          title   : 'Gif Animation',
-          message : 'Rendering... ' + Math.round(p * 100) + '%'
-        });
-      });
-
-      var canvas = document.createElement('canvas');
-      canvas.width  = dim.w;
-      canvas.height = dim.h;
-      var ctx = canvas.getContext('2d');
-
-      var deferredList = [];
-      for (i = 0 ; i < frames ; i++) {
-        deferredList.push(new Deferred());
-      }
-
-      var images = [];
-
-      function captureGifFrame (frame) {
-        if (((frame * GIF_INTERVAL) % 1000) === 0) {
-          TBRL.Notification.notify({
-            id      : notification.tag,
-            title   : 'Gif Animation',
-            message : 'Capturing... ' + (frame * GIF_INTERVAL / 1000) + 's'
-          });
-        }
-        chrome.tabs.captureVisibleTab(sender.tab.windowId, { quality : CAP_QUALITY }, function (src) {
+      function captureViewport(tab, callback) {
+        chrome.tabs.captureVisibleTab(tab.windowId, { quality : CAP_QUALITY }, function (src) {
           var img = new Image();
-          img.onload = function () {
-            deferredList[frame].callback();
+          img.onload = function() {
+            views.push(this);
+            if ((pageHeight - pageY) <= viewHeight) {
+              createCaptureImage(tab, callback);
+            }
+            else {
+              pageY += viewHeight;
+              if (pageY > (pageHeight - viewHeight)) {
+                pageY = pageHeight - viewHeight;
+              }
+              nextViewport(tab, callback);
+            }
           };
           img.src = src;
-          images.push(img);
         });
-        if ((frame + 1) < frames) {
-          setTimeout(function () {
-            captureGifFrame(frame + 1);
-          }, GIF_INTERVAL);
-        }
       }
 
-      var notification = null;
-      maybeDeferred(TBRL.Notification.notify({
-        title   : 'Gif Animation',
-        message : 'Capturing...',
-        timeout : sec
-      })).addCallback(function (n) {
-        notification = n;
-        captureGifFrame(0);
-      });
-
-      return new DeferredList(deferredList).addCallback(function () {
-        images.forEach(function (img) {
-          ctx.drawImage(img, pos.x, pos.y, dim.w, dim.h, 0, 0, dim.w, dim.h);
-          gif.addFrame(ctx, {copy: true, delay: GIF_INTERVAL});
+      function nextViewport(tab, callback) {
+        chrome.tabs.executeScript(tab.id, {
+          code  : 'scrollTo(' + pageX + ', ' + pageY + ');',
+          runAt : 'document_end'
+        }, function() {
+          setTimeout(function () {
+            captureViewport(tab, callback);
+          }, 100);
         });
-        images.length = 0;
-        TBRL.Notification.notify({
-          id      : notification.tag,
-          title   : 'Gif Animation',
-          message : 'Rendering...'
+      }
+
+      function createCaptureImage(tab, callback) {
+        var canvas = document.createElement('canvas');
+        canvas.width  = viewWidth;
+        canvas.height = pageHeight;
+        var ctx = canvas.getContext('2d');
+        pageY = 0;
+        views.forEach(function (view) {
+          var offset = 0;
+          var height = view.height;
+          if (pageY > (pageHeight - viewHeight)) {
+            offset = pageY + viewHeight - pageHeight;
+            height = viewHeight - offset;
+          }
+          ctx.drawImage(view, 0, offset, viewWidth, height, 0, pageY, viewWidth, height);
+          pageY += viewHeight;
         });
-        console.groupCollapsed('gif.render');
-        gif.render();
-      });
-    });
+        views.length = 0;
+        chrome.tabs.executeScript(tab.id, {
+          code  : 'scrollTo(' + pageX + ', ' + originalY + ');',
+          runAt : 'document_end'
+        }, function() {
+          callback(canvas.toDataURL('image/png', ''));
+          canvas = null;
+        });
+      }
 
-    var views      = [];
-    var pageX      = 0;
-    var pageY      = 0;
-    var originalX  = 0;
-    var originalY  = 0;
-    var pageWidth  = 0;
-    var pageHeight = 0;
-    var viewWidth  = 0;
-    var viewHeight = 0;
-
-    TBRL.setRequestHandler('capturePage', function (req, sender, callback) {
-      views      = [];
-      pageX      = req.originalX;
-      pageY      = 0;
-      originalX  = req.originalX;
-      originalY  = req.originalY;
-      pageWidth  = req.pageWidth;
-      pageHeight = req.pageHeight;
-      viewWidth  = req.viewWidth;
-      viewHeight = req.viewHeight;
       chrome.tabs.executeScript(sender.tab.id, {
         code  : 'scrollTo(' + pageX + ', ' + pageY + ');',
         runAt : 'document_end'
@@ -204,62 +157,112 @@
       });
     });
 
-    function captureViewport(tab, callback) {
-      chrome.tabs.captureVisibleTab(tab.windowId, { quality : CAP_QUALITY }, function (src) {
+    var GIF_timer     = null;
+    var GIF_len       = 0;
+    var GIF_frames    = [];
+    var GIF_deferreds = [];
+    var GIF_tab       = null;
+    var GIF_pos       = {};
+    var GIF_dim       = {};
+    var GIF_gif       = null;
+
+    function captureGifFrame () {
+      chrome.tabs.executeScript(GIF_tab.id, {
+        code  : 'message=document.querySelector("#taberareloo_capture_message");message.innerHTML="Capturing... ' + ((GIF_len++ * GIF_INTERVAL) / 1000) + 's";',
+        runAt : 'document_end'
+      }, function() {
+      });
+      chrome.tabs.captureVisibleTab(GIF_tab.windowId, { quality : CAP_QUALITY }, function (src) {
+        var deferred = new Deferred();
         var img = new Image();
-        img.onload = function() {
-          views.push(this);
-          if ((pageHeight - pageY) <= viewHeight) {
-            createCaptureImage(tab, callback);
-          }
-          else {
-            pageY += viewHeight;
-            if (pageY > (pageHeight - viewHeight)) {
-              pageY = pageHeight - viewHeight;
-            }
-            nextViewport(tab, callback);
-          }
+        img.onload = function () {
+          deferred.callback();
         };
         img.src = src;
+        GIF_frames.push(img);
+        GIF_deferreds.push(deferred);
       });
     }
 
-    function nextViewport(tab, callback) {
-      chrome.tabs.executeScript(tab.id, {
-        code  : 'scrollTo(' + pageX + ', ' + pageY + ');',
-        runAt : 'document_end'
-      }, function() {
-        setTimeout(function () {
-          captureViewport(tab, callback);
-        }, 100);
-      });
-    }
+    TBRL.setRequestHandler('captureGifAnimationStart', function (req, sender, callback) {
+      if (GIF_timer) {
+        clearTimeout(GIF_timer);
+        GIF_timer = null;
+      }
+      GIF_len = 0;
+      GIF_frames.length = 0;
+      GIF_deferreds.length = 0;
+      GIF_tab = sender.tab;
+      GIF_pos = req.pos;
+      GIF_dim = req.dim;
+      GIF_gif = null;
 
-    function createCaptureImage(tab, callback) {
-      var canvas = document.createElement('canvas');
-      canvas.width  = viewWidth;
-      canvas.height = pageHeight;
-      var ctx = canvas.getContext('2d');
-      pageY = 0;
-      views.forEach(function (view) {
-        var offset = 0;
-        var height = view.height;
-        if (pageY > (pageHeight - viewHeight)) {
-          offset = pageY + viewHeight - pageHeight;
-          height = viewHeight - offset;
+      GIF_timer = setInterval(captureGifFrame, GIF_INTERVAL);
+      captureGifFrame();
+      callback();
+    });
+
+    TBRL.setRequestHandler('captureGifAnimationEnd', function (req, sender, callback) {
+      if (GIF_timer) {
+        clearTimeout(GIF_timer);
+        GIF_timer = null;
+      }
+ 
+      return new DeferredList(GIF_deferreds).addCallback(function () {
+        if (!GIF_frames.length) {
+          callback(null);
         }
-        ctx.drawImage(view, 0, offset, viewWidth, height, 0, pageY, viewWidth, height);
-        pageY += viewHeight;
+
+        GIF_gif = new GIF({
+          workers      : Math.round(GIF_frames.length / 10) || 1,
+          quality      : 10,
+          workerScript : '/third_party/gifjs/gif.worker.js',
+          width        : GIF_dim.w,
+          height       : GIF_dim.h
+        });
+        GIF_gif.on('finished', function (blob) {
+          console.groupEnd();
+          fileToDataURL(blob).addCallback(function (url) {
+            callback(url);
+          });
+        });
+        GIF_gif.on('progress', function (p) {
+          chrome.tabs.executeScript(GIF_tab.id, {
+            code  : 'message=document.querySelector("#taberareloo_capture_message");message.innerHTML="Rendering... ' + Math.round(p * 100) + '%";',
+            runAt : 'document_end'
+          }, function() {
+          });
+        });
+
+        var canvas = document.createElement('canvas');
+        canvas.width  = GIF_dim.w;
+        canvas.height = GIF_dim.h;
+        var ctx = canvas.getContext('2d');
+
+        GIF_frames.forEach(function (img) {
+          ctx.drawImage(img, GIF_pos.x, GIF_pos.y, GIF_dim.w, GIF_dim.h, 0, 0, GIF_dim.w, GIF_dim.h);
+          GIF_gif.addFrame(ctx, {copy: true, delay: GIF_INTERVAL});
+        });
+        GIF_frames.length = 0;
+        console.groupCollapsed('gif.render');
+        GIF_gif.render();
       });
-      views.length = 0;
-      chrome.tabs.executeScript(tab.id, {
-        code  : 'scrollTo(' + pageX + ', ' + originalY + ');',
-        runAt : 'document_end'
-      }, function() {
-        callback(canvas.toDataURL('image/png', ''));
-        canvas = null;
-      });
-    }
+    });
+
+    TBRL.setRequestHandler('captureGifAnimationAbort', function (req, sender, callback) {
+      if (GIF_timer) {
+        clearTimeout(GIF_timer);
+        GIF_timer = null;
+      }
+      if (GIF_gif) {
+        GIF_gif.abort();
+        GIF_gif = null;
+      }
+      GIF_frames.length = 0;
+      GIF_deferreds.length = 0;
+      console.groupEnd();
+      callback();
+    });
 
     return;
   }
@@ -344,13 +347,7 @@
 
         case 'GifAnimation':
           return self.selectRegion(ctx).addCallback(function (region) {
-            var sec = window.prompt("How long do you want to capture? (max " + GIF_MAX_SEC + "s)", 5);
-            if (sec) {
-              return self.captureGifAnimation(win, region.position, region.dimensions, sec);
-            }
-            else {
-              cancel();
-            }
+            return self.captureGifAnimation(win, region.position, region.dimensions);
           });
         }
         return null;
@@ -364,8 +361,7 @@
     },
 
     capturePage : function (win, pos, dim) {
-      var defer = new Deferred();
-      var width = win.innerWidth;
+      var deferred = new Deferred();
       chrome.runtime.sendMessage(TBRL.id, {
         request    : 'capturePage',
         originalX  : pos.x,
@@ -376,51 +372,39 @@
         viewHeight : dim.h
       }, function (res) {
         base64ToFileEntry(res).addCallback(function (url) {
-          defer.callback(url);
+          deferred.callback(url);
         });
       });
-      return defer;
+      return deferred;
     },
 
-    captureGifAnimation : function (win, pos, dim, sec) {
-      var defer = new Deferred();
-      var width = win.innerWidth;
-      chrome.runtime.sendMessage(TBRL.id, {
-        request : 'captureGifAnimation',
-        pos     : pos,
-        dim     : dim,
-        sec     : sec
-      }, function (res) {
-        base64ToFileEntry(res).addCallback(function (url) {
-          defer.callback(url);
-        });
-      });
-      return defer;
-    },
-
-    selectElement : function (ctx) {
+    captureGifAnimation : function (win, pos, dim) {
       var deferred = new Deferred();
-      var self = this;
-      var doc = ctx ? ctx.document : document;
+      var doc = win.document;
 
-      var target;
-      function onMouseOver(e) {
-        target = e.target;
-        target.originalBackground = target.style.background;
-        target.style.background = self.TARGET_BACKGROUND;
-      }
-      function onMouseOut(e) {
-        unpoint(e.target);
-      }
-      function onClick(e) {
-        cancel(e);
+      var end_timer = null;
 
-        finalize();
-        deferred.callback(target);
+      function finalize() {
+        if (end_timer) {
+          clearTimeout(end_timer);
+          end_timer = null;
+        }
+
+        win.removeEventListener('keydown', onKeyDown, true);
+
+        if (button.classList.contains('capturing')) {
+          chrome.runtime.sendMessage(TBRL.id, {
+            request : 'captureGifAnimationAbort'
+          }, function (res) {
+          });
+        }
+
+        region.parentNode.removeChild(region);
+        style.parentNode.removeChild(style);
       }
+
       function onKeyDown(e) {
         cancel(e);
-
         switch (keyString(e)) {
         case 'ESCAPE':
           finalize();
@@ -428,34 +412,121 @@
           return;
         }
       }
-      function onCntextMenu(e) {
-        cancel(e);
+      win.addEventListener('keydown', onKeyDown, true);
 
+      var style = doc.createElement('style');
+      style.innerHTML = [
+        '#taberareloo_capture_region * {',
+        '  font-family : Arial, sans-serif;',
+        '  font-size   : 16px;',
+        '  line-height : 20px',
+        '}',
+        '#taberareloo_capture_region a {',
+        '  display         : inline-block;',
+        '  float           : right;',
+        '  border-radius   : 3px;',
+        '  padding         : 5px;',
+        '  background      : -webkit-gradient(linear, left top, left bottom, from(#acdeed), to(#acdeed));',
+        '  margin-left     : 10px;',
+        '  width           : 60px;',
+        '  height          : 20px;',
+        '  color           : #000;',
+        '  text-align      : center;',
+        '  text-decoration : none;',
+        '  font-weight     : bold;',
+        '}',
+        '#taberareloo_capture_region a:hover {',
+        '  color      : #FFF;',
+        '  background : -webkit-gradient(linear, left top, left bottom, from(#0066cc), to(#0e0e69));',
+        '}',
+        '#taberareloo_capture_region a.disabled {',
+        '  color      : #ccc;',
+        '  background : -webkit-gradient(linear, left top, left bottom, from(#666), to(#666));',
+        '}'
+      ].join("\n");
+      doc.querySelector('head').appendChild(style);
+
+      var region = doc.createElement('div');
+      setStyle(region, {
+        'border'   : 'inset 20px rgba(0,0,0,0.7)',
+        'border-bottom-width' : '60px',
+        'position' : 'fixed',
+        'zIndex'   : '999999999',
+        'top'      : (pos.y - 20) + 'px',
+        'left'     : (pos.x - 20) + 'px',
+        'width'    : dim.w + 'px',
+        'height'   : dim.h + 'px'
+      });
+      region.setAttribute('id', 'taberareloo_capture_region');
+      doc.body.appendChild(region);
+      var ui = $N('div');
+      setStyle(ui, {
+        'position'    : 'absolute',
+        'top'         : (dim.h + 15) + 'px',
+        'width'       : '100%'
+      });
+      ui.innerHTML = [
+        '<a id="taberareloo_capture_button" href="#">Start</a>',
+        '<a id="taberareloo_capture_cancel" href="#">Cancel</a>',
+        '<div id="taberareloo_capture_message"></div>'
+      ].join("\n");
+      region.appendChild(ui);
+      var message = doc.querySelector("#taberareloo_capture_message");
+      setStyle(message, {
+        'color'   : 'white',
+        'padding' : '5px'
+      });
+      message.innerHTML = 'Max ' + GIF_MAX_SEC + ' seconds';
+      var btnCancel = doc.querySelector("#taberareloo_capture_cancel");
+      btnCancel.addEventListener('click', function (e) {
+        cancel(e);
         finalize();
         deferred.cancel();
-      }
-      function unpoint(elm) {
-        if (elm.originalBackground !== null) {
-          elm.style.background = elm.originalBackground;
-          elm.originalBackground = null;
+        return false;
+      }, true);
+      var button = doc.querySelector("#taberareloo_capture_button");
+      button.addEventListener('click', function onClick(e) {
+        cancel(e);
+
+        if (end_timer) {
+          clearTimeout(end_timer);
+          end_timer = null;
         }
-      }
-      function finalize() {
-        doc.removeEventListener('mouseover', onMouseOver, true);
-        doc.removeEventListener('mouseout', onMouseOut, true);
-        doc.removeEventListener('click', onClick, true);
-        doc.removeEventListener('keydown', onKeyDown, true);
-        doc.removeEventListener('contextmenu', onCntextMenu, true);
 
-        unpoint(target);
-      }
+        if (button.classList.contains('capturing')) {
+          button.classList.add('disabled');
+          button.setAttribute('disabled', 'disabled');
+          button.removeEventListener('click', onClick, true);
+          chrome.runtime.sendMessage(TBRL.id, {
+            request : 'captureGifAnimationEnd'
+         }, function (res) {
+            finalize();
+            if (res) {
+              base64ToFileEntry(res).addCallback(function (url) {
+                deferred.callback(url);
+              });
+            } else {
+              deferred.errback();
+            }
+          });
+        } else {
+          button.classList.add('capturing');
+          button.innerHTML = 'Stop';
+          chrome.runtime.sendMessage(TBRL.id, {
+            request : 'captureGifAnimationStart',
+            pos     : pos,
+            dim     : dim
+            }, function (res) {
+              end_timer = setTimeout(function () {
+                button.dispatchEvent(new MouseEvent('click'));
+              }, GIF_MAX_SEC * 1000);
+          });
+        }
 
-      doc.addEventListener('mouseover', onMouseOver, true);
-      doc.addEventListener('mouseout', onMouseOut, true);
-      doc.addEventListener('click', onClick, true);
-      doc.addEventListener('keydown', onKeyDown, true);
-      doc.addEventListener('contextmenu', onCntextMenu, true);
+        return false;
+      }, true);
 
+      region.focus();
       return deferred;
     }
   });
