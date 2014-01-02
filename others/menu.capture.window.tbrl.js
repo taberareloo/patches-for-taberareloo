@@ -4,7 +4,7 @@
 // , "description" : "Capture a viewport"
 // , "include"     : ["background", "content"]
 // , "match"       : ["*://*/*"]
-// , "version"     : "0.9.3"
+// , "version"     : "0.9.4"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/others/menu.capture.window.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -168,7 +168,9 @@
 
     function captureGifFrame () {
       chrome.tabs.executeScript(GIF_tab.id, {
-        code  : 'message=document.querySelector("#taberareloo_capture_message");message.innerHTML="Capturing... ' + ((GIF_len++ * GIF_INTERVAL) / 1000) + 's";',
+        code  : 'message=document.querySelector("#taberareloo_capture_message");' +
+          'if(message)message.innerHTML="Capturing... ' +
+          ((GIF_len++ * GIF_INTERVAL) / 1000).toFixed(1) + 's";',
         runAt : 'document_end'
       }, function() {
       });
@@ -208,9 +210,10 @@
         GIF_timer = null;
       }
  
-      return new DeferredList(GIF_deferreds).addCallback(function () {
+      new DeferredList(GIF_deferreds).addCallback(function () {
         if (!GIF_frames.length) {
           callback(null);
+          return;
         }
 
         GIF_gif = new GIF({
@@ -228,7 +231,8 @@
         });
         GIF_gif.on('progress', function (p) {
           chrome.tabs.executeScript(GIF_tab.id, {
-            code  : 'message=document.querySelector("#taberareloo_capture_message");message.innerHTML="Rendering... ' + Math.round(p * 100) + '%";',
+            code  : 'message=document.querySelector("#taberareloo_capture_message");' +
+            'if(message)message.innerHTML="Rendering... ' + Math.round(p * 100) + '%";',
             runAt : 'document_end'
           }, function() {
           });
@@ -442,6 +446,7 @@
         '#taberareloo_capture_region a.disabled {',
         '  color      : #ccc;',
         '  background : -webkit-gradient(linear, left top, left bottom, from(#666), to(#666));',
+        '  cursor     : wait',
         '}'
       ].join("\n");
       doc.querySelector('head').appendChild(style);
@@ -486,20 +491,24 @@
       }, true);
       var button = doc.querySelector("#taberareloo_capture_button");
       button.addEventListener('click', function onClick(e) {
-        cancel(e);
+        if (e) {
+          cancel(e);
+        }
 
         if (end_timer) {
           clearTimeout(end_timer);
           end_timer = null;
         }
 
+        if (button.classList.contains('disabled')) {
+          return false;
+        }
+
         if (button.classList.contains('capturing')) {
           button.classList.add('disabled');
-          button.setAttribute('disabled', 'disabled');
-          button.removeEventListener('click', onClick, true);
           chrome.runtime.sendMessage(TBRL.id, {
             request : 'captureGifAnimationEnd'
-         }, function (res) {
+          }, function (res) {
             finalize();
             if (res) {
               base64ToFileEntry(res).addCallback(function (url) {
@@ -516,10 +525,8 @@
             request : 'captureGifAnimationStart',
             pos     : pos,
             dim     : dim
-            }, function (res) {
-              end_timer = setTimeout(function () {
-                button.dispatchEvent(new MouseEvent('click'));
-              }, GIF_MAX_SEC * 1000);
+          }, function (res) {
+            end_timer = setTimeout(onClick, GIF_MAX_SEC * 1000);
           });
         }
 
