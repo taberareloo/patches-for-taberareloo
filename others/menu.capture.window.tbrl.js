@@ -334,7 +334,6 @@
       }
 
       var win = ctx.window;
-//      self.makeOpaqueFlash(ctx.document);
 
       var dim = getViewportDimensions();
       dim.w = document.body.clientWidth; // without vertical scrollbar
