@@ -4,7 +4,7 @@
 // , "description" : "Capture a viewport"
 // , "include"     : ["background", "content"]
 // , "match"       : ["*://*/*"]
-// , "version"     : "0.9.5"
+// , "version"     : "0.9.6"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/others/menu.capture.window.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -258,7 +258,7 @@
           GIF_gif.addFrame(ctx, {copy: true, delay: GIF_INTERVAL});
         });
         GIF_frames.length = 0;
-        console.groupCollapsed('gif.render');
+        console.groupCollapsed('GIF.rendering');
         GIF_gif.render();
       });
     });
@@ -279,6 +279,7 @@
       GIF_frames.length = 0;
       GIF_deferreds.length = 0;
       console.groupEnd();
+      console.warn('captureGifAnimationAbort');
       if (callback) callback();
     }
     TBRL.setRequestHandler('captureGifAnimationAbort', captureGifAnimationAbort);
@@ -409,6 +410,7 @@
           end_timer = null;
         }
 
+        win.removeEventListener('beforeunload', finalize, true);
         win.removeEventListener('keydown', onKeyDown, true);
 
         if (button.classList.contains('capturing')) {
@@ -421,6 +423,7 @@
         region.parentNode.removeChild(region);
         style.parentNode.removeChild(style);
       }
+      win.addEventListener('beforeunload', finalize, true);
 
       function onKeyDown(e) {
         cancel(e);
