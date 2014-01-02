@@ -4,7 +4,7 @@
 // , "description" : "Capture a viewport"
 // , "include"     : ["background", "content"]
 // , "match"       : ["*://*/*"]
-// , "version"     : "0.9.2"
+// , "version"     : "0.9.3"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/others/menu.capture.window.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -314,7 +314,7 @@
       }
 
       var win = ctx.window;
-      self.makeOpaqueFlash(ctx.document);
+//      self.makeOpaqueFlash(ctx.document);
 
       var dim = getViewportDimensions();
       dim.w = document.body.clientWidth; // without vertical scrollbar
