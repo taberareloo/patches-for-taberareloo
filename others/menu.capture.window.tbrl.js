@@ -4,7 +4,7 @@
 // , "description" : "Capture a viewport"
 // , "include"     : ["background", "content"]
 // , "match"       : ["*://*/*"]
-// , "version"     : "0.9.4"
+// , "version"     : "0.9.5"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/others/menu.capture.window.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -165,6 +165,7 @@
     var GIF_pos       = {};
     var GIF_dim       = {};
     var GIF_gif       = null;
+    var GIF_timeout   = null;
 
     function captureGifFrame () {
       chrome.tabs.executeScript(GIF_tab.id, {
@@ -188,8 +189,12 @@
 
     TBRL.setRequestHandler('captureGifAnimationStart', function (req, sender, callback) {
       if (GIF_timer) {
-        clearTimeout(GIF_timer);
+        clearInterval(GIF_timer);
         GIF_timer = null;
+      }
+      if (GIF_timeout) {
+        clearTimeout(GIF_timeout);
+        GIF_timeout = null;
       }
       GIF_len = 0;
       GIF_frames.length = 0;
@@ -201,13 +206,18 @@
 
       GIF_timer = setInterval(captureGifFrame, GIF_INTERVAL);
       captureGifFrame();
+      GIF_timeout = setTimeout(captureGifAnimationAbort, (GIF_MAX_SEC + 1) * 1000);
       callback();
     });
 
     TBRL.setRequestHandler('captureGifAnimationEnd', function (req, sender, callback) {
       if (GIF_timer) {
-        clearTimeout(GIF_timer);
+        clearInterval(GIF_timer);
         GIF_timer = null;
+      }
+      if (GIF_timeout) {
+        clearTimeout(GIF_timeout);
+        GIF_timeout = null;
       }
  
       new DeferredList(GIF_deferreds).addCallback(function () {
@@ -253,10 +263,14 @@
       });
     });
 
-    TBRL.setRequestHandler('captureGifAnimationAbort', function (req, sender, callback) {
+    function captureGifAnimationAbort(req, sender, callback) {
       if (GIF_timer) {
-        clearTimeout(GIF_timer);
+        clearInterval(GIF_timer);
         GIF_timer = null;
+      }
+      if (GIF_timeout) {
+        clearTimeout(GIF_timeout);
+        GIF_timeout = null;
       }
       if (GIF_gif) {
         GIF_gif.abort();
@@ -265,8 +279,9 @@
       GIF_frames.length = 0;
       GIF_deferreds.length = 0;
       console.groupEnd();
-      callback();
-    });
+      if (callback) callback();
+    }
+    TBRL.setRequestHandler('captureGifAnimationAbort', captureGifAnimationAbort);
 
     return;
   }
@@ -509,6 +524,7 @@
           chrome.runtime.sendMessage(TBRL.id, {
             request : 'captureGifAnimationEnd'
           }, function (res) {
+            button.classList.remove('capturing');
             finalize();
             if (res) {
               base64ToFileEntry(res).addCallback(function (url) {
