@@ -51,7 +51,8 @@
 	選択したテキストを [TheFreeDictionary](http://www.tfd.com) で検索するパッチ (by @oumu)
 
 * [menu.tumblr.check.daily-post-limit.tbrl.js](https://raw.github.com/YungSang/patches-for-taberareloo/master/others/menu.tumblr.check.daily-post-limit.tbrl.js)  
-	Tumblr の日毎のポスト数／画像ポスト数をカウントして制限数まであとどのくらい残っているかチェックする為のパッチ
+	Tumblr の日毎のポスト数／画像ポスト数をカウントして制限数まであとどのくらい残っているかチェックする為のパッチ  
+	※ただし、非公開のブログはカウント出来ません。
 
 * [menu.tumblr.view.dashboard.tbrl.js](https://raw.github.com/YungSang/patches-for-taberareloo/master/others/menu.tumblr.view.dashboard.tbrl.js)  
 	Tumblr のアーカイブ(個別)ページからそのページを含む DashBoard のページを表示する為のパッチ(実験中。Experimental)  
