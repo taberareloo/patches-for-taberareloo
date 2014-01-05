@@ -3,7 +3,7 @@
 //   "name"        : "Check Tumblr Daily Post Limit"
 // , "description" : "Display the current number of Today's posts in Tumblr"
 // , "include"     : ["background"]
-// , "version"     : "0.1.1"
+// , "version"     : "0.1.2"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/others/menu.tumblr.check.daily-post-limit.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -30,7 +30,6 @@
       timestamp = getResetDateTime();
       posts  = 0;
       photos = 0;
-      var blogs = Models.find('Tumblr');
       var deferreds = [];
 
       maybeDeferred(TBRL.Notification.notify({
@@ -39,19 +38,21 @@
       })).addCallback(function (n) {
         notification = n;
 
-        Tumblr.blogs.forEach(function (id) {
-          deferreds.push(getPosts(id, 0));
-        });
-        new DeferredHash(deferreds).addCallback(function (ress) {
-          TBRL.Notification.notify({
-            id      : notification.tag,
-            title   : title,
-            message : 'Done. Post: ' + posts + ', Photo: ' + photos,
-            timeout : 5
+        Tumblr.getTumblelogs().addCallback(function(blogs) {
+          Tumblr.blogs.forEach(function (id) {
+            deferreds.push(getPosts(id, 0));
           });
-          chrome.contextMenus.update(menu.id, {
-            title : 'Check again (Post: ' + posts + '/250, Photo: ' + photos + '/150)'
-          }, function() {});
+          new DeferredHash(deferreds).addCallback(function (ress) {
+            TBRL.Notification.notify({
+              id      : notification.tag,
+              title   : title,
+              message : 'Done. Post: ' + posts + ', Photo: ' + photos,
+              timeout : 3
+            });
+            chrome.contextMenus.update(menu.id, {
+              title : 'Check again (Post: ' + posts + '/250, Photo: ' + photos + '/150)'
+            }, function() {});
+          });
         });
       });
     }
@@ -83,6 +84,8 @@
       if (data.response.posts[data.response.posts.length - 1].timestamp > timestamp) {
         return getPosts(id, offset + data.response.posts.length);
       }
+    }).addErrback(function (e) {
+      return succeed();
     });
   }
 
