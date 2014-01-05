@@ -3,7 +3,7 @@
 //   "name"        : "Check Tumblr Daily Post Limit"
 // , "description" : "Display the current number of Today's posts in Tumblr"
 // , "include"     : ["background"]
-// , "version"     : "0.1.3"
+// , "version"     : "0.2.0"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/others/menu.tumblr.check.daily-post-limit.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -27,10 +27,14 @@
     title    : title,
     contexts : ['all'],
     onclick  : function(info, tab) {
-      timestamp = getResetDateTime();
+      timestamp = getResetTimestamp();
       posts  = 0;
       photos = 0;
       var deferreds = [];
+
+      chrome.contextMenus.update(menu.id, {
+        enabled : false
+      });
 
       maybeDeferred(TBRL.Notification.notify({
         title   : title,
@@ -43,15 +47,24 @@
             deferreds.push(getPosts(id, 0));
           });
           new DeferredHash(deferreds).addCallback(function (ress) {
-            TBRL.Notification.notify({
-              id      : notification.tag,
-              title   : title,
-              message : 'Done. Post: ' + posts + ', Photo: ' + photos,
-              timeout : 3
-            });
+            if (notification) {
+              TBRL.Notification.notify({
+                id      : notification.tag,
+                title   : title,
+                message : 'Done. Post: ' + posts + ', Photo: ' + photos
+              });
+            }
             chrome.contextMenus.update(menu.id, {
-              title : 'Check again (Post: ' + posts + '/250, Photo: ' + photos + '/150)'
+              title   : 'Check again (Post: ' + posts + '/250, Photo: ' + photos + '/150)',
+              enabled : true
             }, function() {});
+          });
+        }).addErrback(function (e) {
+          if (notification) {
+            notification.close();
+          }
+          chrome.contextMenus.update(menu.id, {
+            enabled : true
           });
         });
       });
@@ -76,11 +89,13 @@
           }
         }
       });
-      TBRL.Notification.notify({
-        id      : notification.tag,
-        title   : title,
-        message : 'Counting... Post: ' + posts + ', Photo: ' + photos
-      });
+      if (notification) {
+        TBRL.Notification.notify({
+          id      : notification.tag,
+          title   : title,
+          message : 'Counting... Post: ' + posts + ', Photo: ' + photos
+        });
+      }
       if (data.response.posts[data.response.posts.length - 1].timestamp > timestamp) {
         return getPosts(id, offset + data.response.posts.length);
       }
@@ -89,12 +104,39 @@
     });
   }
 
-  function getResetDateTime() {
+  var oneday = 24 * 60 * 60 * 1000;
+
+  function getEDTStart() { // the second Sunday of March, 2:00 EST => 3:00 EDT
     var now = new Date();
-    var utc = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 5, 0, 0);
-    if (utc > now.getTime()) {
-      utc -= 24 * 60 * 60 * 1000;
+    var utc = Date.UTC(now.getUTCFullYear(), 3 - 1, 1, 2 + 5, 0, 0);
+    var ret = new Date(utc);
+    return utc + ((ret.getUTCDay() ? (14 - ret.getUTCDay()) : 7) * oneday);
+  }
+
+  function getEDTEnd() { // the first Sunday of November, 2:00 EDT => 1:00 EST
+    var now = new Date();
+    var utc = Date.UTC(now.getUTCFullYear(), 11 - 1, 1, 2 + 4, 0, 0);
+    var ret = new Date(utc);
+    return utc + ((ret.getUTCDay() ? (7 - ret.getUTCDay()) : 0) * oneday);
+  }
+
+  function isEDT(date) {
+    date = date || new Date();
+    if ((date.getTime() >= getEDTStart()) && (date.getTime() < getEDTEnd())) {
+      return true;
     }
-    return Math.floor(utc / 1000);
+    else {
+      return false;
+    }
+  }
+
+  function getResetTimestamp() {
+    var now = new Date();
+    var offset = isEDT(now) ? 4 : 5;
+    var timestamp = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), offset, 0, 0);
+    if (timestamp > now.getTime()) {
+      timestamp -= oneday;
+    }
+    return Math.floor(timestamp / 1000);
   }
 })();
