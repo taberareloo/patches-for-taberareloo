@@ -22,14 +22,6 @@
 * [menu.google.maps.search.tbrl.js](https://raw.github.com/YungSang/patches-for-taberareloo/master/others/menu.google.maps.search.tbrl.js)  
 	選択したテキストを [Google Maps](https://maps.google.com) で検索するパッチ
 
-* <del>[menu.backup.config.tbrl.js](https://raw.github.com/YungSang/patches-for-taberareloo/master/others/menu.backup.config.tbrl.js)  
-	Taberareloo のオプションの設定データをバックアップ／リストアする為のパッチ(実験中。Experimental)  
-	バックアップは、設定データを含んだ DataURL が生成されるので、それをブックマークします。  
-	リストアは、ブックマークした DataURL のページを開いて行います。  
-	※) リストア時のパッチは全て新規にダウンロード／インストールされます。  
-	※) ローカルファイルからインストールしたパッチは復元されません。(ただし、downloadURL が設定されているものは、downloadURL からインストールされます。)</del>  
-	Taberareloo v 3.0.3 よりバックアップ／リストア機能が実装されました。
-
 * [menu.gunosy.rss.tbrl.js](https://raw.github.com/YungSang/patches-for-taberareloo/master/others/menu.gunosy.rss.tbrl.js)  
 	[Gunosy](http://gunosy.com) の RSS フィード生成 Web サービス [Gunosy RSS](http://dai-shi.github.io/gunosy-rss/) の上級者向け RSS リンク(学習可能バージョン)を自動生成するツール
 
@@ -58,7 +50,10 @@
 * [menu.tfd.search.tbrl.js](https://raw.github.com/YungSang/patches-for-taberareloo/master/others/menu.tfd.search.tbrl.js)  
 	選択したテキストを [TheFreeDictionary](http://www.tfd.com) で検索するパッチ (by @oumu)
 
-* [menu.view.tumblr.dashboard.tbrl.js](https://raw.github.com/YungSang/patches-for-taberareloo/master/others/menu.view.tumblr.dashboard.tbrl.js)  
+* [menu.tumblr.check.daily-post-limit.tbrl.js](https://raw.github.com/YungSang/patches-for-taberareloo/master/others/menu.tumblr.check.daily-post-limit.tbrl.js)  
+	Tumblr の日毎のポスト数／画像ポスト数をカウントして制限数まであとどのくらい残っているかチェックする為のパッチ
+
+* [menu.tumblr.view.dashboard.tbrl.js](https://raw.github.com/YungSang/patches-for-taberareloo/master/others/menu.tumblr.view.dashboard.tbrl.js)  
 	Tumblr のアーカイブ(個別)ページからそのページを含む DashBoard のページを表示する為のパッチ(実験中。Experimental)  
 	※) Custom Domain では動作しません。Follow 中でないもの(DashBoardに元々無いもの)はうまくいかないようです。  
 	https://github.com/polygonplanet/tombloo/blob/master/tombloo.model.tumblr.view.dashboard.by.permalink.js から一部を移植。
