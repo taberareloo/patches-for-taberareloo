@@ -5,7 +5,7 @@
 // , "description" : "Repin at Pinterest"
 // , "include"     : ["background", "content"]
 // , "match"       : ["http://pinterest.com/*", "http://www.pinterest.com/*"]
-// , "version"     : "0.7.1"
+// , "version"     : "0.7.2"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/patches/patch.model.pinterest.repin.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -16,7 +16,7 @@
 
     update(Models['Pinterest'], {
       favor : function(ps) {
-        var REPIN_URL = 'http://pinterest.com/resource/RepinResource/create/';
+        var REPIN_URL = 'http://www.pinterest.com/resource/RepinResource/create/';
         var self = this;
         var pin_id = ps.favorite.id;
         return (
@@ -47,7 +47,7 @@
               }
             }).addCallback(function(res) {
               var json = JSON.parse(res.responseText);
-              app_version = json.context.app_version;
+              app_version = json.client_context.app_version;
             });
           });
         });
