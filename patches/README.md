@@ -19,6 +19,9 @@
 * [patch.model.googleplus.post.fullimage.tbrl.js](https://raw.github.com/YungSang/patches-for-taberareloo/master/patches/patch.model.googleplus.post.fullimage.tbrl.js)  
 	[Google+](https://plus.google.com) への全ての画像投稿を「Upload from cache」と同様にアップロードしてフルサイズの画像を投稿するパッチ。
 
+* [patch.model.hatenablog.post.tweet.tbrl.js](https://raw.github.com/YungSang/patches-for-taberareloo/master/patches/patch.model.hatenablog.post.tweet.tbrl.js)  
+	[HatenaBlog](http://hatenablog.com/) へ Tweet を投稿する場合に Twitter Widgets を使って整形させるようにするパッチ。
+
 * <del>[patch.model.googleplus.quote.tbrl.js](https://raw.github.com/YungSang/patches-for-taberareloo/master/patches/patch.model.googleplus.quote.tbrl.js)  
   [Google+](https://plus.google.com) に長い引用を投稿すると、200 文字でカットされてしまうのを、本文欄に移すことによって全文引用を可能にしるパッチ。</del>  
   Taberareloo v 3.0.2 より Google+ の新しい API 対応に統合されました。
