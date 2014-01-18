@@ -3,7 +3,7 @@
 //   "name"        : "Add Twitter Widgets to HatenaBlog"
 // , "description" : "Add Twitter Widgets to HatenaBlog on sharing a tweet"
 // , "include"     : ["background"]
-// , "version"     : "0.1.0"
+// , "version"     : "0.1.1"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/patches/patch.model.hatenablog.post.tweet.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -54,11 +54,18 @@
 
       var body = templateExtract(template, data);
 
+      // regularのときはユーザーがタイトルを入力できる．
+      // pageとitemが一致しないとき，ユーザーが何か入力しているので，タイトルに設定する．
+      var title = '';
+      if (ps.type === 'regular' || ps.page !== ps.item) {
+        title = ps.item;
+      }
+
       return self.getUserName().addCallback(function(userName) {
         self.getApiKey().addCallback(function(apiKey){
           var xml = self.generateXML({
             userName   : escapeHTML(userName),
-            title      : '',
+            title      : escapeHTML(title),
             body       : escapeHTML(body),
             isDraft    : escapeHTML('false'),
             categories : ps.tags
