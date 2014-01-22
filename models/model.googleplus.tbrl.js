@@ -4,7 +4,7 @@
 // , "description" : "Post to Google+"
 // , "include"     : ["background", "content", "popup"]
 // , "match"       : ["https://plus.google.com/*"]
-// , "version"     : "1.0.2"
+// , "version"     : "1.0.3"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/models/model.googleplus.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -317,7 +317,7 @@
             [], null, null,
             [], null, null,
             null, null, null, null, null,
-            '' + ps.upload.height, '' + ps.upload.width,
+            '' + ps.upload.width, '' + ps.upload.height,
             null, null, null, null, null,
             null,
             ps.upload.username,
