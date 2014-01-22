@@ -27,6 +27,9 @@ Model とは、Taberareloo から投稿する先のウェブ・サービス及�
 * [model.plurk.tbrl.js](https://raw.github.com/YungSang/patches-for-taberareloo/master/models/model.plurk.tbrl.js)  
   [http://plurk.com](http://plurk.com) 用モデル
 
+* [model.pplog.tbrl.js](https://raw.github.com/YungSang/patches-for-taberareloo/master/models/model.pplog.tbrl.js)  
+  [https://www.pplog.net](https://www.pplog.net) 用モデル
+
 * [model.twittaw.tbrl.js](https://raw.github.com/YungSang/patches-for-taberareloo/master/models/model.twittaw.tbrl.js)  
 	[http://twittaw.com](http://twittaw.com) 用モデル (サンプルも兼ねて)
 
