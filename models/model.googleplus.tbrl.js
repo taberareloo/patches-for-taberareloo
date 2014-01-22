@@ -4,7 +4,7 @@
 // , "description" : "Post to Google+"
 // , "include"     : ["background", "content", "popup"]
 // , "match"       : ["https://plus.google.com/*"]
-// , "version"     : "1.0.1"
+// , "version"     : "1.0.2"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/models/model.googleplus.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -302,40 +302,46 @@
       createMediaInfo : function(ps) {
         var info = [];
         info.push(
+          [344,339,338,336,335],
           null, null, null,
-          '',
-          null,
-          [null, ps.upload.url, ps.upload.height, ps.upload.width],
-          null, null, null,
-          [],
-          null, null, null, null, null,
-          null, null, null, null, null, null,
-          '',
+          [{"39387941":[true,false]}],
           null, null
         );
-        info.push([null, ps.upload.photoPageUrl, null, ps.upload.mimeType, 'image']);
-        info.push(
-          null, null, null, null, null,
-          null, null, null, null, null,
-          null, null, null, null, null, null,
-          [
-            [null, ps.upload.url, null, null],
-            [null, ps.upload.url, null, null]
-          ],
-          null, null, null, null, null
-        );
-        info.push([
-          [null, 'picasa', 'http://google.com/profiles/media/provider'],
-          [
+        info.push({
+          "40655821": [
+            ps.upload.pageUrl,
+            ps.upload.url,
+            ps.upload.mimeType,
+            "",
+            null, null, null,
+            [], null, null,
+            [], null, null,
+            null, null, null, null, null,
+            '' + ps.upload.height, '' + ps.upload.width,
+            null, null, null, null, null,
             null,
+            ps.upload.username,
+            null, null, null, null, null,
+            null, null, null, null, null,
+            ps.upload.albumid, ps.upload.photoid,
             queryString({
               albumid : ps.upload.albumid,
               photoid : ps.upload.photoid
             }),
-            'http://google.com/profiles/media/onepick_media_id'
+            1,
+            [],
+            null, null, null, null, [],
+            null, null, null, null, null,
+            null, null, null, null, null,
+            null, null, null, null, null,
+            null, null, null, null, null,
+            null, null, null, null, null,
+            null, null, null, null, null,
+            null, null, null, null, null,
+            []
           ]
-        ]);
-        return JSON.stringify(info);
+        });
+        return info;
       },
 
       createScopeSpar : function(ps) {
@@ -371,7 +377,6 @@
            this.getSnippetFromURL(ps.pageUrl, oz) :
            (ps.upload ? this.getMediaLayout(ps, oz) : succeed())
         ).addCallback(function(snippet) {
-
           var description = ps.description || '';
           if (ps.type === 'regular') {
             description = joinText([ps.item, ps.description], "\n");
@@ -414,15 +419,9 @@
               description,
               self.getToken(oz),
               null,
-              ps.upload ? ps.upload.albumid : null, null, null
+              null, null, null,
+              JSON.stringify([])
             );
-            if (ps.upload) {
-              var link = self.createMediaInfo(ps);
-              data.push(JSON.stringify([link]));
-            }
-            else {
-              data.push(JSON.stringify([]));
-            }
           }
 
           data.push(null, null);
@@ -430,13 +429,13 @@
           data.push((scopes[0].scopeType !== 'community'));
           data.push([], false, null, null, [], null, false);
           data.push(null, null);
-          data.push(ps.upload ? oz[2][0] : null);
+          data.push(null);
           data.push(null, null);
           data.push(null, null, null, null, null);
-          data.push(false, false, !!ps.upload);
+          data.push(false, false, false);
           data.push(null, null, null, null);
           if (ps.upload) {
-            snippet = self.makeSnippetPostable(snippet[2][0]);
+            snippet = self.createMediaInfo(ps);
             data.push(snippet);
           }
           else {
@@ -636,6 +635,11 @@
               var completionInfo = session.sessionStatus
                 .additionalInfo['uploader_service.GoogleRupioAdditionalInfo'].completionInfo;
               if (completionInfo && (completionInfo.status === 'SUCCESS')) {
+                var pageUrl = 'https://plus.google.com/photos/' +
+                  completionInfo.customerSpecificInfo.username + '/albums/' +
+                  completionInfo.customerSpecificInfo.albumid + '/' +
+                  completionInfo.customerSpecificInfo.photoid;
+                completionInfo.customerSpecificInfo.pageUrl = pageUrl;
                 return completionInfo.customerSpecificInfo;
               }
             }
