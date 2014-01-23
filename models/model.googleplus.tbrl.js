@@ -4,7 +4,7 @@
 // , "description" : "Post to Google+"
 // , "include"     : ["background", "content", "popup"]
 // , "match"       : ["https://plus.google.com/*"]
-// , "version"     : "1.0.3"
+// , "version"     : "1.0.5"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/models/model.googleplus.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -256,30 +256,6 @@
         });
       },
 
-      getMediaLayout : function(ps, oz) {
-        var self = this;
-        var data = [];
-        var info = self.createMediaInfo(ps);
-        data.push(JSON.stringify([info]));
-        data.push([2,null,null,null,null,null,null,null,null,null,null,null,null,[]]);
-        return request(this.HOME_URL + '_/sharebox/medialayout/' + '?' + queryString({
-          hl     : 'en',
-          _reqid : this.getReqid(),
-          rt     : 'j'
-        }), {
-          sendContent : {
-            'f.req' : JSON.stringify(data),
-            at      : oz[1][15]
-          }
-        }).addCallback(function(res) {
-          var initialData = res.responseText.substr(4).replace(/(\\n|\n)/g, '');
-          return Sandbox.evalJSON(initialData).addCallback(function(json) {
-            var data = self.getDataByKey(json[0], 't.mlr');
-            return data;
-          });
-        });
-      },
-
       makeSnippetPostable : function(snippet) {
         for (var i = 0, len = snippet.length ; i < len ; i++) {
           var item = snippet[i];
@@ -299,7 +275,7 @@
         return snippet;
       },
 
-      createMediaInfo : function(ps) {
+      createPhotoInfo : function (ps, oz) {
         var info = [];
         info.push(
           [344,339,338,336,335],
@@ -320,7 +296,7 @@
             '' + ps.upload.width, '' + ps.upload.height,
             null, null, null, null, null,
             null,
-            ps.upload.username,
+            oz[2][0],
             null, null, null, null, null,
             null, null, null, null, null,
             ps.upload.albumid, ps.upload.photoid,
@@ -375,7 +351,7 @@
         return (
           (!ps.upload && !ps.reshare && (ps.type !== 'regular') && ps.pageUrl) ?
            this.getSnippetFromURL(ps.pageUrl, oz) :
-           (ps.upload ? this.getMediaLayout(ps, oz) : succeed())
+           succeed()
         ).addCallback(function(snippet) {
           var description = ps.description || '';
           if (ps.type === 'regular') {
@@ -435,7 +411,7 @@
           data.push(false, false, false);
           data.push(null, null, null, null);
           if (ps.upload) {
-            snippet = self.createMediaInfo(ps);
+            snippet = self.createPhotoInfo(ps, oz);
             data.push(snippet);
           }
           else {
@@ -636,7 +612,7 @@
                 .additionalInfo['uploader_service.GoogleRupioAdditionalInfo'].completionInfo;
               if (completionInfo && (completionInfo.status === 'SUCCESS')) {
                 var pageUrl = 'https://plus.google.com/photos/' +
-                  completionInfo.customerSpecificInfo.username + '/albums/' +
+                  oz[2][0] + '/albums/' +
                   completionInfo.customerSpecificInfo.albumid + '/' +
                   completionInfo.customerSpecificInfo.photoid;
                 completionInfo.customerSpecificInfo.pageUrl = pageUrl;
