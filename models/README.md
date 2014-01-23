@@ -18,6 +18,10 @@ Model とは、Taberareloo から投稿する先のウェブ・サービス及�
   [Google URL Shortener](http://goo.gl) 用モデル  
   ポスト関連オプションの「Twitter - 常にURLを短縮する」がチェックされている場合に有効になります。
 
+* [model.google.image.search.tbrl.js](https://raw.github.com/YungSang/patches-for-taberareloo/master/models/model.google.image.search.tbrl.js)  
+  [Google Image Search](https://www.google.com/imghp) 用モデル  
+  [メニュー方式](https://github.com/YungSang/patches-for-taberareloo/blob/master/others/menu.google.image.search.tbrl.js)と異なり、`Upload from cache` や `Capture` からも使える。
+
 * [model.googleplus.tbrl.js](https://raw.github.com/YungSang/patches-for-taberareloo/master/models/model.googleplus.tbrl.js)  
   [Google+](https://plus.google.com) 、Google+ Pages、Google+ Communities 用モデル
 
