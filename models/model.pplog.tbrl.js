@@ -3,16 +3,18 @@
 //   "name"        : "pplog Model"
 // , "description" : "Post to pplog.net"
 // , "include"     : ["background"]
-// , "version"     : "0.1.0"
+// , "version"     : "0.1.1"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/models/model.pplog.tbrl.js"
 // }
 // ==/Taberareloo==
 
 (function() {
   Models.register({
-    name     : 'pplog',
-    ICON     : 'https://dltvadzlmcsl3.cloudfront.net/assets/favicon-a0817290258726ffdc238a41b29fdd58.ico',
-    HOME_URL : 'https://www.pplog.net/',
+    name      : 'pplog',
+    ICON      : 'https://dltvadzlmcsl3.cloudfront.net/assets/favicon-a0817290258726ffdc238a41b29fdd58.ico',
+    LINK      : 'https://www.pplog.net/',
+    LOGIN_URL : 'https://www.pplog.net/',
+
     FORM_URL : 'https://www.pplog.net/my/posts/new',
     POST_URL : 'https://www.pplog.net/my/posts',
 

@@ -4,15 +4,18 @@
 // , "namespace"   : "http://yungsang.com/"
 // , "description" : "Post to twittaw.com"
 // , "include"     : ["background"]
-// , "version"     : "1.2.0"
+// , "version"     : "1.2.1"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/models/model.twittaw.tbrl.js"
 // }
 // ==/Taberareloo==
 
 (function() {
   Models.register({
-    name     : 'Twittaw',
-    ICON     : 'http://twittaw.appspot.com/favicon.ico',
+    name      : 'Twittaw',
+    ICON      : 'http://twittaw.appspot.com/favicon.ico',
+    LINK      : 'http://twittaw.appspot.com/',
+    LOGIN_URL : 'http://twittaw.appspot.com/',
+
     HOME_URL : 'http://twittaw.appspot.com/',
     POST_URL : 'http://twittaw.appspot.com/thread/post',
 
