@@ -3,16 +3,17 @@
 //   "name"        : "Google Image Search Model"
 // , "description" : "Search similar images by Google"
 // , "include"     : ["background"]
-// , "version"     : "0.1.0"
+// , "version"     : "0.1.1"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/models/model.google.image.search.tbrl.js"
 // }
 // ==/Taberareloo==
 
 (function() {
   Models.register({
-    name       : 'Google Image Search',
-    ICON       : 'http://www.google.com/images/icons/product/images-32.gif',
-    HOME_URL   : 'https://www.google.com/imghp',
+    name : 'Google Image Search',
+    ICON : 'http://www.google.com/images/icons/product/images-32.gif',
+    LINK : 'https://www.google.com/imghp',
+
     SEARCH_URL : 'https://www.google.com/searchbyimage',
     UPLOAD_URL : 'https://www.google.com/searchbyimage/upload',
 

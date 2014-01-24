@@ -8,6 +8,10 @@ Model とは、Taberareloo から投稿する先のウェブ・サービス及�
 * [model.appdotnet.tbrl.js](https://raw.github.com/YungSang/patches-for-taberareloo/master/models/model.appdotnet.tbrl.js)  
   [https://alpha.app.net](https://alpha.app.net) 用モデル
 
+* [model.ascii2d.image.search.tbrl.js](https://raw.github.com/YungSang/patches-for-taberareloo/master/models/model.ascii2d.image.search.tbrl.js)  
+  [二次元画像詳細検索](http://www.ascii2d.net) 用モデル  
+  [メニュー方式](https://github.com/YungSang/patches-for-taberareloo/blob/master/others/menu.photo.search.ascii2d.tbrl.js)と異なり、`Upload from cache` や `Capture` からも使える。
+
 * [model.croudia.tbrl.js](https://raw.github.com/YungSang/patches-for-taberareloo/master/models/model.croudia.tbrl.js)  
   [https://croudia.com](https://croudia.com) 用モデル
 
