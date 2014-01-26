@@ -4,7 +4,7 @@
 // , "description" : "Post to Google+"
 // , "include"     : ["background", "content", "popup"]
 // , "match"       : ["https://plus.google.com/*"]
-// , "version"     : "1.0.5"
+// , "version"     : "1.0.7"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/models/model.googleplus.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -346,6 +346,12 @@
         return [aclEntries, null];
       },
 
+      decodeHTMLEntities : function(str) {
+        var div = $N('div');
+        div.innerHTML = str;
+        return div.innerText;
+      },
+
       _post : function(ps, oz) {
         var self = this;
         return (
@@ -358,13 +364,14 @@
             description = joinText([ps.item, ps.description], "\n");
           }
           var body = ps.body || '';
-          ps.body  = null;
+          ps.body = null;
           if (body) {
             body = body.replace(/\r\n/g, "\n");
             body = body.replace(/\n<br(\s*\/)?>/ig, "\n");
             body = body.replace(/<br(\s*\/)?>\n/ig, "\n");
             body = body.replace(/<br(\s*\/)?>/ig, "\n");
             body = body.trimTag().trim();
+            body = self.decodeHTMLEntities(body);
             description = joinText([description, '“' + body + '”'], "\n\n");
           }
           if (ps.upload) {
