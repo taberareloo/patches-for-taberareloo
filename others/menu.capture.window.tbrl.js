@@ -4,7 +4,7 @@
 // , "description" : "Capture a viewport"
 // , "include"     : ["background", "content"]
 // , "match"       : ["*://*/*"]
-// , "version"     : "0.9.6"
+// , "version"     : "0.9.7"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/others/menu.capture.window.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -437,10 +437,14 @@
 
       var style = doc.createElement('style');
       style.innerHTML = [
+        '#taberareloo_capture_region {',
+        '  box-sizing  : content-box;',
+        '}',
         '#taberareloo_capture_region * {',
         '  font-family : Arial, sans-serif;',
         '  font-size   : 16px;',
-        '  line-height : 20px',
+        '  line-height : 20px;',
+        '  box-sizing  : content-box;',
         '}',
         '#taberareloo_capture_region a {',
         '  display         : inline-block;',
