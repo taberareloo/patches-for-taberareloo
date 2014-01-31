@@ -3,7 +3,7 @@
 //   "name"        : "pplog Model"
 // , "description" : "Post to pplog.net"
 // , "include"     : ["background"]
-// , "version"     : "0.1.1"
+// , "version"     : "0.1.2"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/models/model.pplog.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -38,7 +38,9 @@
       var info = [];
       info.push(ps.item, ps.description);
       if (ps.type === 'photo') {
-        info.push(ps.itemUrl);
+        if (!ps.file) {
+          info.push(ps.itemUrl);
+        }
 /*
         if (ps.item !== ps.page) {
           info.push(ps.page);
