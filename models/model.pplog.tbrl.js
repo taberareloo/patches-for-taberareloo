@@ -3,7 +3,7 @@
 //   "name"        : "pplog Model"
 // , "description" : "Post to pplog.net"
 // , "include"     : ["background"]
-// , "version"     : "0.1.2"
+// , "version"     : "0.2.0"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/models/model.pplog.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -35,33 +35,35 @@
     },
 
     post : function (ps) {
+      var body = [];
+      if (ps.type === 'regular') {
+        body.push(ps.item, ps.description);
+      } else {
+        body.push(ps.description);
+      }
+      body = joinText(body, "\n", true);
+
       var info = [];
-      info.push(ps.item, ps.description);
       if (ps.type === 'photo') {
         if (!ps.file) {
           info.push(ps.itemUrl);
         }
-/*
-        if (ps.item !== ps.page) {
-          info.push(ps.page);
-        }
-*/
+        info.push(ps.item);
         if (ps.itemUrl !== ps.pageUrl) {
           info.push(ps.pageUrl);
         }
       } else if (ps.type !== 'regular') {
-/*
-        if (ps.item !== ps.page) {
-          info.push(ps.page);
-        }
-*/
-        info.push(ps.itemUrl);
-        if (ps.type === 'quote') {
-          var body = (ps.body || '').trim();
-          info.push(body ? '“' + body + '”' : '');
-        }
+        info.push(ps.item, ps.itemUrl);
       }
-      return this.update(ps, joinText(info, "\n", true));
+
+      var quote = (ps.body || '').trim();
+      if (quote) {
+        info.push('“' + quote + '”');
+      }
+
+      info = joinText(info, "\n", true);
+
+      return this.update(ps, joinText([body, info], "\n\n"));
     },
 
     update : function (ps, content) {
