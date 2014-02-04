@@ -4,8 +4,8 @@
 // , "namespace"   : "https://github.com/YungSang/patches-for-taberareloo"
 // , "description" : "Set 'Send to Twitter/Facebook' automatically"
 // , "include"     : ["background", "content"]
-// , "match"       : ["http://www.tumblr.com/dashboard*"]
-// , "version"     : "1.7.1"
+// , "match"       : ["*://www.tumblr.com/dashboard*"]
+// , "version"     : "1.7.2"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/patches/patch.tumblr.getform.tbrl.js"
 // }
 // ==/Taberareloo==
