@@ -4,7 +4,7 @@
 // , "description" : "Post Tumblr Photo Set"
 // , "include"     : ["background", "content"]
 // , "match"       : ["*://*/*"]
-// , "version"     : "0.1.0"
+// , "version"     : "0.1.1"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/patches/patch.model.tumblr.photoset.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -111,17 +111,16 @@
           ps.photos.forEach(function (photo) {
             if (photo.match(/^https?/)) {
               var deferred = (photo ? getFinalUrl(photo) : succeed(null)).addCallback(function (finalUrl) {
-                if (finalUrl) {
-                  photos.push(finalUrl);
-                }
+                return finalUrl;
               });
               deferredList.push(deferred);
             } else {
-              photos.push(photo);
+              deferredList.push(succeed(photo));
             }
           });
-          return new DeferredList(deferredList).addCallback(function () {
-            ps.photos = photos;
+          return new DeferredList(deferredList).addCallback(function (results) {
+            results = results.map(function (result) { return result[0] ? result[1] : null;});
+            ps.photos = results.filter(function (result) { return result; });
             var form = {
               'post[type]'  : ps.type,
               'post[two]'   : joinText([
