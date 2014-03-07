@@ -29,6 +29,9 @@
 	投稿を非公開(Private)にする為のパッチ。  
 	対応サービス(Tumblr, Pinboard, Delicious, YahooBookmarks, Diigo, Zootool)
 
+* [menu.multi.requester.tbrl.js](https://raw.github.com/YungSang/patches-for-taberareloo/master/others/menu.multi.requester.tbrl.js)  
+	選択したテキスト、または入力文字列を [wedata@GitHub/MultiRequester](http://wedata.github.io/MultiRequester/) に登録されているアイテムで検索するパッチ
+
 * [menu.photo.operate.imgops.tbrl.js](https://raw.github.com/YungSang/patches-for-taberareloo/master/others/menu.photo.operate.imgops.tbrl.js)  
 	選択した画像を [ImgOps - Image Operations Meta-tool](http://imgops.com/) で操作／加工する (by @oumu)
 
