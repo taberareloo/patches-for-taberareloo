@@ -3,7 +3,7 @@
 //   "name"        : "Multi Requester"
 // , "description" : "Multi Requester for taberareloo"
 // , "include"     : ["background"]
-// , "version"     : "0.1.0"
+// , "version"     : "0.2.1"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/others/menu.multi.requester.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -68,7 +68,8 @@
     });
 
     items.forEach(function (item) {
-      if (item.data.urlEncode) {
+      var urlEncodeFunc = getURLEncodeFunc(item.data.urlEncode);
+      if (typeof urlEncodeFunc === 'undefined') {
         return;
       }
       Menus._register({
@@ -81,7 +82,7 @@
           }
           if (keyword) {
             chrome.tabs.create({
-              url    : item.data.url.replace("%s", encodeURIComponent(keyword)),
+              url    : item.data.url.replace("%s", urlEncodeFunc(keyword)),
               active : false
             });
           }
@@ -103,5 +104,41 @@
       }
     }, PARENT_MENU);
     Menus.create();
+  }
+
+  function str2array(str) {
+    var array = [], i, il = str.length;
+    for (i = 0 ; i < il ; i++) {
+      array.push(str.charCodeAt(i));
+    }
+    return array;
+  }
+
+  function getURLEncodeFunc(urlEncode) {
+    urlEncode = (urlEncode || 'UTF-8').toLocaleLowerCase();
+    switch (urlEncode) {
+    case 'utf-8':
+      return encodeURIComponent;
+    case 'euc-jp':
+      if (typeof Encoding === 'undefined') {
+        return;
+      }
+      return function (str) {
+        var array = str2array(str);
+        var converted_array = Encoding.convert(array, 'EUCJP', 'AUTO');
+        return Encoding.urlEncode(converted_array);
+      };
+    case 'shift_jis':
+      if (typeof Encoding === 'undefined') {
+        return;
+      }
+      return function (str) {
+        var array = str2array(str);
+        var converted_array = Encoding.convert(array, 'SJIS', 'AUTO');
+        return Encoding.urlEncode(converted_array);
+      };
+    default:
+      return;
+    }
   }
 })();
