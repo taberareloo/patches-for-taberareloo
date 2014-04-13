@@ -47,6 +47,3 @@ Model とは、Taberareloo から投稿する先のウェブ・サービス及�
 
 * [model.wripe.tbrl.js](https://raw.github.com/YungSang/patches-for-taberareloo/master/models/model.wripe.tbrl.js)  
   [http://wri.pe](http://wri.pe) 用モデル
-
-* [model.zootool.tbrl.js](https://raw.github.com/YungSang/patches-for-taberareloo/master/models/model.zootool.tbrl.js)  
-  [http://zootool.com](http://zootool.com) 用モデル
