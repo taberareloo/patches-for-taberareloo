@@ -4,7 +4,7 @@
 // , "description" : "Post to Google+"
 // , "include"     : ["background", "content", "popup"]
 // , "match"       : ["https://plus.google.com/*"]
-// , "version"     : "1.0.7"
+// , "version"     : "1.0.8"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/models/model.googleplus.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -142,54 +142,54 @@
         var self = this;
         return this.getInitialData(11).addCallback(function(data) {
           if (!data) return JSON.stringify([]);
-          data = JSON.parse(data[0]);
+
+          data = data[15][2];
 
           var aclEntries = [];
 
-          for (var i = 0, len = data['aclEntries'].length ; i < len ; i+=2) {
-            var scope = data.aclEntries[i].scope;
 
-            if (scope.scopeType === 'anyone') {
+          for (var i = 0, len = data.length ; i < len ; i++) {
+            var scope = data[i];
+            switch (scope[0][2]) {
+            case 1:
               aclEntries.push({
                 scopeType   : 'presets',
-                name        : 'Anyone',
-                id          : 1,
+                name        : scope[1],
+                id          : scope[0][2],
                 me          : true,
                 requiresKey : false
               });
-            }
-            else {
-              var id = scope.id.split('.')[1];
-              if (id === '1c') {
-                aclEntries.push({
-                  scopeType   : 'presets',
-                  name        : scope.name,
-                  id          : 3,
-                  me          : false,
-                  requiresKey : scope.requiresKey,
-                  groupType   : scope.groupType
-                });
-              }
-              else if (id === '1f') {
-                aclEntries.push({
-                  scopeType   : 'presets',
-                  name        : scope.name,
-                  id          : 4,
-                  me          : false,
-                  requiresKey : scope.requiresKey,
-                  groupType   : scope.groupType
-                });
-              }
-              else if (scope.scopeType != 'user') {
-                aclEntries.push({
-                  scopeType   : scope.scopeType,
-                  name        : scope.name,
-                  id          : id,
-                  me          : false,
-                  requiresKey : scope.requiresKey,
-                  groupType   : scope.groupType
-                });
-              }
+              break;
+            case 3:
+              aclEntries.push({
+                scopeType   : 'presets',
+                name        : scope[1],
+                id          : scope[0][2],
+                me          : false,
+                requiresKey : false,
+                groupType   : 'a'
+              });
+              break;
+            case 4:
+              aclEntries.push({
+                scopeType   : 'presets',
+                name        : scope[1],
+                id          : scope[0][2],
+                me          : false,
+                requiresKey : false,
+                groupType   : 'e'
+              });
+              break;
+            default:
+              aclEntries.push({
+                scopeType   : 'focusGroup',
+                name        : scope[1],
+                id          : scope[0][1],
+                me          : false,
+                requiresKey : false,
+                groupType   : 'p'
+              });
+              break;
             }
           }
 
