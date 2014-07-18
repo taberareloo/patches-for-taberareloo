@@ -4,7 +4,7 @@
 // , "description" : "Post to Google+"
 // , "include"     : ["background", "content", "popup"]
 // , "match"       : ["https://plus.google.com/*"]
-// , "version"     : "1.0.8"
+// , "version"     : "2.0.0"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/models/model.googleplus.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -52,7 +52,7 @@
         }
 
         var enable = false;
-        ['regular', 'photo', 'quote', 'link', 'video', 'favorite'].forEach(function(type) {
+        ['regular', 'photo', 'quote', 'link', 'video', 'favorite'].forEach(function (type) {
           var config = Models.getConfig({ type: type }, self);
           if ((config === 'default') || (config === 'enabled')) {
             enable = true;
@@ -63,7 +63,7 @@
           return;
         }
 
-        return getCookies('.google.com', 'SSID').addCallback(function(cookies) {
+        return getCookies('.google.com', 'SSID').then(function (cookies) {
           if (cookies.length) {
             try {
               self._getStreams();
@@ -73,7 +73,7 @@
           else {
             self.streams = null;
           }
-          self.timer = setTimeout(function() {
+          self.timer = setTimeout(function () {
             self.initialize();
           }, 60000);
         });
@@ -85,7 +85,7 @@
 
       getAuthCookie: function() {
         var that = this;
-        return getCookies('.google.com', 'SSID').addCallback(function(cookies) {
+        return getCookies('.google.com', 'SSID').then(function (cookies) {
           if (cookies.length) {
             return cookies[cookies.length-1].value;
           } else {
@@ -96,8 +96,8 @@
 
       getOZData : function() {
         var self = this;
-        return this.getInitialData(1).addCallback(function(oz1) {
-          return self.getInitialData(2).addCallback(function(oz2) {
+        return this.getInitialData(1).then(function (oz1) {
+          return self.getInitialData(2).then(function (oz2) {
             return {'1': oz1, '2': oz2};
           });
        });
@@ -114,14 +114,14 @@
           sendContent : {
             key : key
           }
-        }).addCallback(function(res) {
+        }).then(function (res) {
           var initialData = res.responseText.substr(4).replace(/(\\n|\n)/g, '');
-          return Sandbox.evalJSON(initialData).addCallback(function(json) {
+          return Sandbox.evalJSON(initialData).then(function (json) {
             var data = self.getDataByKey(json[0], 'idr');
             if (!data) {
               throw new Error(chrome.i18n.getMessage('error_notLoggedin', self.name));
             }
-            return Sandbox.evalJSON(data[1]).addCallback(function(json) {
+            return Sandbox.evalJSON(data[1]).then(function (json) {
               return json[key];
             });
           });
@@ -140,13 +140,12 @@
 
       getDefaultScope : function() {
         var self = this;
-        return this.getInitialData(11).addCallback(function(data) {
+        return this.getInitialData(11).then(function(data) {
           if (!data) return JSON.stringify([]);
 
           data = data[15][2];
 
           var aclEntries = [];
-
 
           for (var i = 0, len = data.length ; i < len ; i++) {
             var scope = data[i];
@@ -200,14 +199,14 @@
       post : function(ps) {
         var self = this;
         ps = update({}, ps);
-        return this.getAuthCookie().addCallback(function(cookie) {
-          return self.getOZData().addCallback(function(oz) {
-            return (ps.file ? self.upload(ps.file, oz) : succeed(null))
-              .addCallback(function(upload) {
+        return this.getAuthCookie().then(function (cookie) {
+          return self.getOZData().then(function (oz) {
+            return (ps.file ? self.upload(ps.file, oz) : Promise.resolve(null))
+              .then(function(upload) {
               ps.upload = upload;
               return ((!self.is_pages && ps.scope)
-                ? succeed(ps.scope) : self.getDefaultScope(oz))
-                .addCallback(function(scope) {
+                ? Promise.resolve(ps.scope) : self.getDefaultScope(oz))
+                .then(function (scope) {
                 ps.scope = scope;
                 return self._post(ps, oz);
               });
@@ -247,9 +246,9 @@
             'f.req' : JSON.stringify(data),
             at      : oz[1][15]
           }
-        }).addCallback(function(res) {
+        }).then(function(res) {
           var initialData = res.responseText.substr(4).replace(/(\\n|\n)/g, '');
-          return Sandbox.evalJSON(initialData).addCallback(function(json) {
+          return Sandbox.evalJSON(initialData).then(function (json) {
             var data = self.getDataByKey(json[0], 'lpd');
             return data;
           });
@@ -357,8 +356,8 @@
         return (
           (!ps.upload && !ps.reshare && (ps.type !== 'regular') && ps.pageUrl) ?
            this.getSnippetFromURL(ps.pageUrl, oz) :
-           succeed()
-        ).addCallback(function(snippet) {
+           Promise.resolve()
+        ).then(function (snippet) {
           var description = ps.description || '';
           if (ps.type === 'regular') {
             description = joinText([ps.item, ps.description], "\n");
@@ -594,7 +593,7 @@
         var url = this.HOME_URL + this.UPLOAD_URL;
         return request(url + '?authuser=0', {
           sendContent : JSON.stringify(data)
-        }).addCallback(function(res) {
+        }).then(function (res) {
           var session = JSON.parse(res.responseText);
           if (session.sessionStatus) {
             return session;
@@ -604,7 +603,7 @@
       },
 
       upload : function(file, oz) {
-        return this.openUploadSession(file.name, file.size, oz).addCallback(function(session) {
+        return this.openUploadSession(file.name, file.size, oz).then(function (session) {
           if (!session) {
             throw new Error("Couldn't upload an image properly");
             return null;
@@ -612,7 +611,7 @@
           return request(session.sessionStatus.externalFieldTransfers[0].putInfo.url, {
             mode        : 'raw',
             sendContent : file
-          }).addCallback(function(res) {
+          }).then(function (res) {
             var session = JSON.parse(res.responseText);
             if (session.sessionStatus) {
               var completionInfo = session.sessionStatus
@@ -640,16 +639,16 @@
 
       _getStreams : function() {
         var self = this;
-        this.getInitialData(12).addCallback(function(data) {
+        this.getInitialData(12).then(function (data) {
           var circles = [];
           if (data) {
-            data[0].forEach(function(circle) {
+            data[0].forEach(function (circle) {
               var code, id, name, has;
               id   = circle[0][0];
               name = circle[1][0];
               if (id && name) {
                 has = false;
-                circles.forEach(function(c) {
+                circles.forEach(function (c) {
                   if (!has && c[0].id === id) {
                     has = true;
                   }
@@ -703,10 +702,10 @@
 
       getPages : function() {
         var self = this;
-        return this.getInitialData(104).addCallback(function(data) {
+        return this.getInitialData(104).then(function (data) {
           var pages = [];
           if (data && data[1] && data[1][1] && data[1][1][0]) {
-            data[1][1][0].forEach(function(page) {
+            data[1][1][0].forEach(function (page) {
               if (page[0]) {
                 pages.push({
                   id   : page[0][30],
@@ -732,7 +731,7 @@
       },
 
       setCommunities : function(communities) {
-        communities.sort(function(a, b) {
+        communities.sort(function (a, b) {
           if (b[0].name > a[0].name) return -1;
           if (b[0].name < a[0].name) return 1;
           return 0;
@@ -742,7 +741,7 @@
 
       getCommunityCategories : function(community_id) {
         var self = this;
-        return this.getOZData().addCallback(function(oz) {
+        return this.getOZData().then(function (oz) {
           var url = self.HOME_URL + self.BASE_URL + '_/communities/readmembers';
           return request(url + '?' + queryString({
             hl     : 'en',
@@ -753,13 +752,13 @@
               'f.req' : JSON.stringify([community_id, [[4],[3]]]),
               at      : oz[1][15]
             }
-          }).addCallback(function(res) {
+          }).then(function (res) {
             var initialData = res.responseText.substr(4).replace(/(\\n|\n)/g, '');
-            return Sandbox.evalJSON(initialData).addCallback(function(json) {
+            return Sandbox.evalJSON(initialData).then(function (json) {
               var data = self.getDataByKey(json[0], 'sq.rsmr');
               var categories = [];
               if (data && data[2] && data[2][2] && data[2][2][0]) {
-                data[2][2][0].forEach(function(category) {
+                data[2][2][0].forEach(function (category) {
                   categories.push({
                     id   : category[0],
                     name : category[1]
@@ -797,11 +796,11 @@
 
         regex = url.match(/\/\/plus\.google\.com\/(?:u\/0\/)?communities\/(\d+)$/);
         if (regex) {
-          this.getCommunityCategories(regex[1]).addCallback(function(categories) {
+          this.getCommunityCategories(regex[1]).then(function (categories) {
             self.removeCommunityCategory(url, title, true);
             var communities = self.getCommunities();
             var name = title.replace(/ - Google\+$/, '');
-            categories.forEach(function(category) {
+            categories.forEach(function (category) {
               communities.push([{
                 scopeType : 'community',
                 name      : name + ' - ' + category.name,
@@ -827,7 +826,7 @@
         var _communities = [];
 
         var found = false;
-        communities.forEach(function(community) {
+        communities.forEach(function (community) {
           if (community[0].id == id) {
             if (category) {
               if (community[0].category == category) {
@@ -883,8 +882,8 @@
     Models.googlePlusPages = [];
     Models.getGooglePlusPages = function() {
       Models.removeGooglePlusPages();
-      return Models['Google+'].getPages().addCallback(function(pages) {
-        return pages.reverse().map(function(page) {
+      return Models['Google+'].getPages().then(function (pages) {
+        return pages.reverse().map(function (page) {
           var model = update({}, Models['Google+']);
           model.name     = 'Google+ Page - ' + page.name;
           model.ICON     = 'http:' + page.icon;
@@ -895,13 +894,13 @@
           Models.googlePlusPages.unshift(model);
           return model;
         }).reverse();
-      }).addErrback(function(e) {
+      }).catch(function (e) {
         alert('Google+ Pages'+ ': ' +
           (e.message.hasOwnProperty('status') ? '\n' + ('HTTP Status Code ' + e.message.status).indent(4) : '\n' + e.message.indent(4)));
       });
     };
     Models.removeGooglePlusPages = function() {
-      Models.googlePlusPages.forEach(function(model) {
+      Models.googlePlusPages.forEach(function (model) {
         Models.remove(model);
       });
       Models.googlePlusPages = [];
