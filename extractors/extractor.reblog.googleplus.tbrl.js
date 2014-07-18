@@ -4,7 +4,7 @@
 // , "description" : "Extract posts to reblog/reshare"
 // , "include"     : ["content"]
 // , "match"       : ["https://plus.google.com/*"]
-// , "version"     : "1.0.2"
+// , "version"     : "2.0.0"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/extractors/extractor.reblog.googleplus.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -37,7 +37,7 @@
         updateId : id,
         hl       : 'en',
         rt       : 'j'
-      })).addCallback(function (res) {
+      })).then(function (res) {
         var data, item;
 
         data = res.responseText.substr(5).replace(/(\\n|\n)/g, '');
