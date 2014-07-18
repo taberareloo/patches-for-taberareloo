@@ -4,7 +4,7 @@
 // , "namespace"   : "https://github.com/YungSang/patches-for-taberareloo"
 // , "description" : "Upload a full size image to Google+ always"
 // , "include"     : ["background"]
-// , "version"     : "1.3.0"
+// , "version"     : "2.0.0"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/patches/patch.model.googleplus.post.fullimage.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -24,10 +24,10 @@
       download : function(ps) {
         var self = this;
         return (
-          ps.file ? succeed(ps.file) :
-            download(ps.itemUrl, getFileExtension(ps.itemUrl)).addCallback(function(entry) {
+          ps.file ? Promise.resolve(ps.file) :
+            download(ps.itemUrl, getFileExtension(ps.itemUrl)).then(function (entry) {
               return getFileFromEntry(entry);
-            }).addErrback(function(e) {
+            }).catch(function (e) {
               throw new Error('Could not get an image file.');
             })
         );
@@ -38,8 +38,8 @@
       return target.queue.push(function () {
         var ps = args[0];
         return (
-          ((ps.type === 'photo') && !ps.file) ? target.download(ps) : succeed(ps.file)
-        ).addCallback(function(file) {
+          ((ps.type === 'photo') && !ps.file) ? target.download(ps) : Promise.resolve(ps.file)
+        ).then(function (file) {
           ps.file = file;
           return proceed([ps]);
         });
