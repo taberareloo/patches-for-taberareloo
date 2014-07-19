@@ -3,7 +3,7 @@
 //   "name"        : "Goo.gl Model"
 // , "description" : "Add Google URL Shortener for Twitter"
 // , "include"     : ["background"]
-// , "version"     : "1.0.1"
+// , "version"     : "2.0.0"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/models/model.googl.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -18,7 +18,7 @@
     POST_URL : 'http://goo.gl/api/shorten',
 
     getSecurityToken : function () {
-      return request(this.HOME_URL, { responseType: 'document' }).addCallback(function(res) {
+      return request(this.HOME_URL, { responseType: 'document' }).then(function (res) {
         var doc = res.response;
         var security_token = $X('//input[@name="security_token"]/@value', doc)[0];
         if (!security_token) {
@@ -31,19 +31,19 @@
     shorten : function (url) {
       var self = this;
       if(/\/\/goo\.gl\//.test(url)) {
-        return succeed(url);
+        return Promise.resolve(url);
       }
 
-      return this.getSecurityToken().addCallback(function (security_token) {
+      return this.getSecurityToken().then(function (security_token) {
         return request(self.POST_URL, {
           sendContent : {
             url            : url,
             security_token : security_token
           }
-        }).addCallback(function (res) {
+        }).then(function (res) {
           var json = JSON.parse(res.responseText);
           return json.short_url;
-        }).addErrback(function (res) {
+        }).catch(function (res) {
           return '';
         });
       });
