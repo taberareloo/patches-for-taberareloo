@@ -3,7 +3,7 @@
 //   "name"        : "Check Tumblr Daily Post Limit"
 // , "description" : "Display the current number of Today's posts in Tumblr"
 // , "include"     : ["background"]
-// , "version"     : "0.2.1"
+// , "version"     : "2.0.0"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/others/menu.tumblr.check.daily-post-limit.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -30,23 +30,23 @@
       timestamp = getResetTimestamp();
       posts  = 0;
       photos = 0;
-      var deferreds = [];
+      var promises = [];
 
       chrome.contextMenus.update(menu.id, {
         enabled : false
       });
 
-      maybeDeferred(TBRL.Notification.notify({
+      Promise.resolve(TBRL.Notification.notify({
         title   : title,
         message : 'Counting...'
-      })).addCallback(function (n) {
+      })).then(function (n) {
         notification = n;
 
-        (Tumblr.blogs ? succeed() : Tumblr.getTumblelogs()).addCallback(function(blogs) {
+        (Tumblr.blogs ? Promise.resolve() : Tumblr.getTumblelogs()).then(function (blogs) {
           Tumblr.blogs.forEach(function (id) {
-            deferreds.push(getPosts(id, 0));
+            promises.push(getPosts(id, 0));
           });
-          new DeferredHash(deferreds).addCallback(function (ress) {
+          promiseAllHash(promises).then(function (ress) {
             if (notification) {
               setTimeout(function () {
                 TBRL.Notification.notify({
@@ -64,7 +64,7 @@
               enabled : true
             }, function() {});
           });
-        }).addErrback(function (e) {
+        }).catch(function (e) {
           if (notification) {
             notification.close();
           }
@@ -84,7 +84,7 @@
         offset      : offset,
         reblog_info : true
       }
-    }).addCallback(function (res) {
+    }).then(function (res) {
       var data = JSON.parse(res.responseText);
       data.response.posts.forEach(function (post) {
         if (post.timestamp > timestamp) {
@@ -104,8 +104,8 @@
       if (data.response.posts[data.response.posts.length - 1].timestamp > timestamp) {
         return getPosts(id, offset + data.response.posts.length);
       }
-    }).addErrback(function (e) {
-      return succeed();
+    }).catch(function (e) {
+      return Promise.resolve();
     });
   }
 
