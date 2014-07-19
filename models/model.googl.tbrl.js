@@ -3,7 +3,7 @@
 //   "name"        : "Goo.gl Model"
 // , "description" : "Add Google URL Shortener for Twitter"
 // , "include"     : ["background"]
-// , "version"     : "2.0.0"
+// , "version"     : "2.0.1"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/models/model.googl.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -39,10 +39,10 @@
           sendContent : {
             url            : url,
             security_token : security_token
-          }
+          },
+          responseType : 'json'
         }).then(function (res) {
-          var json = JSON.parse(res.responseText);
-          return json.short_url;
+          return res.response ? res.response.short_url : '';
         }).catch(function (res) {
           return '';
         });

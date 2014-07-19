@@ -3,7 +3,7 @@
 //   "name"        : "Check Tumblr Daily Post Limit"
 // , "description" : "Display the current number of Today's posts in Tumblr"
 // , "include"     : ["background"]
-// , "version"     : "2.0.0"
+// , "version"     : "2.0.1"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/others/menu.tumblr.check.daily-post-limit.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -83,9 +83,10 @@
         api_key     : API_KEY,
         offset      : offset,
         reblog_info : true
-      }
+      },
+      responseType : 'json'
     }).then(function (res) {
-      var data = JSON.parse(res.responseText);
+      var data = res.response;
       data.response.posts.forEach(function (post) {
         if (post.timestamp > timestamp) {
           posts++;

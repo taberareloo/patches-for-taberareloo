@@ -3,7 +3,7 @@
 //   "name"        : "GimmeBar Model"
 // , "description" : "Post to gimmebar.com"
 // , "include"     : ["background"]
-// , "version"     : "2.0.0"
+// , "version"     : "2.0.1"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/models/model.gimmebar.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -25,16 +25,11 @@
 
     getCSRFToken : function() {
       var self = this;
-      return request(this.INIT_URL).then(function (res) {
-        if (res.responseText) {
-          var data = {};
-          try {
-            data = JSON.parse(res.responseText);
-          }
-          catch (e) {
-            throw new Error(chrome.i18n.getMessage('error_notLoggedin', self.name));
-          }
-          return data.csrf_token;
+      return request(this.INIT_URL, {
+        responseType : 'json'
+      }).then(function (res) {
+        if (res.response) {
+          return res.response.csrf_token;
         } else {
           throw new Error(chrome.i18n.getMessage('error_notLoggedin', self.name));
         }
@@ -84,9 +79,11 @@
       var self = this;
       return request(this.CHECK_URL + '?' + queryString({
         check : ps.itemUrl || ps.pageUrl
-      })).then(function (res) {
-        if (res.responseText) {
-          var data = JSON.parse(res.responseText);
+      }), {
+        responseType : 'json'
+      }).then(function (res) {
+        if (res.response) {
+          var data = res.response;
           sendContent.assimilator = JSON.stringify(data[0]);
           return self.getCSRFToken().then(function (csrftoken) {
             sendContent._csrf = csrftoken;

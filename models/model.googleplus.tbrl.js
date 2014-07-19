@@ -4,7 +4,7 @@
 // , "description" : "Post to Google+"
 // , "include"     : ["background", "content", "popup"]
 // , "match"       : ["https://plus.google.com/*"]
-// , "version"     : "2.0.0"
+// , "version"     : "2.0.1"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/models/model.googleplus.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -592,9 +592,10 @@
 
         var url = this.HOME_URL + this.UPLOAD_URL;
         return request(url + '?authuser=0', {
-          sendContent : JSON.stringify(data)
+          sendContent  : JSON.stringify(data),
+          responseType : 'json'
         }).then(function (res) {
-          var session = JSON.parse(res.responseText);
+          var session = res.response;
           if (session.sessionStatus) {
             return session;
           }
@@ -609,10 +610,11 @@
             return null;
           }
           return request(session.sessionStatus.externalFieldTransfers[0].putInfo.url, {
-            mode        : 'raw',
-            sendContent : file
+            mode         : 'raw',
+            sendContent  : file,
+            responseType : 'json'
           }).then(function (res) {
-            var session = JSON.parse(res.responseText);
+            var session = res.response;
             if (session.sessionStatus) {
               var completionInfo = session.sessionStatus
                 .additionalInfo['uploader_service.GoogleRupioAdditionalInfo'].completionInfo;
