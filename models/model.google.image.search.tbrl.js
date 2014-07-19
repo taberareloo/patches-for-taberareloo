@@ -3,7 +3,7 @@
 //   "name"        : "Google Image Search Model"
 // , "description" : "Search similar images by Google"
 // , "include"     : ["background"]
-// , "version"     : "0.1.1"
+// , "version"     : "2.0.0"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/models/model.google.image.search.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -32,7 +32,7 @@
           sendContent  : {
             encoded_image : ps.file
           }
-        }).addCallback(function (res) {
+        }).then(function (res) {
           self.removeListener();
           if (self.redirectUrl) {
             chrome.tabs.create({
@@ -48,7 +48,7 @@
           }, true),
           active : false
         });
-        return succeed();
+        return Promise.resolve();
       }
     },
 
