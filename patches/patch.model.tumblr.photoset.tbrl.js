@@ -4,7 +4,7 @@
 // , "description" : "Post Tumblr Photo Set"
 // , "include"     : ["background", "content"]
 // , "match"       : ["*://*/*"]
-// , "version"     : "0.1.1"
+// , "version"     : "2.0.0"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/patches/patch.model.tumblr.photoset.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -23,7 +23,7 @@
     }, null, 'Photo', true);
     Menus.create();
 
-    addAround(Models['Tumblr'], 'post', function(proceed, args, target, methodName) {
+    addAround(Models['Tumblr'], 'post', function (proceed, args, target, methodName) {
       var ps   = args[0];
       var self = target;
 
@@ -33,11 +33,11 @@
         delete ps['flavors']['html'];
       }
       var endpoint = Tumblr.TUMBLR_URL + 'new/' + ps.type;
-      return self.postForm(function(){
-        return self.getForm(endpoint).addCallback(function postUpdate (form) {
+      return self.postForm(function () {
+        return self.getForm(endpoint).then(function postUpdate (form) {
           var type;
           type = ps.type.capitalize();
-          return Tumblr[type].convertToForm(ps).addCallback(function (form2) {
+          return Tumblr[type].convertToForm(ps).then(function (form2) {
             // merging forms
             update(form, form2);
             self.appendTags(form, ps);
@@ -57,7 +57,7 @@
                 if (form['photo[]']) {
                   return request(Tumblr.TUMBLR_URL + 'svc/post/upload_photo', {
                     sendContent: form
-                  }).addCallback(function(res){
+                  }).then(function (res){
                     var response = JSON.parse(res.response);
 
                     if (response.meta && response.meta.msg === 'OK' && response.meta.status === 200) {
@@ -79,7 +79,7 @@
               }
 
               return self._post(form);
-            }()).addErrback(function (err) {
+            }()).catch(function (err) {
               if (self.retry) {
                 throw err;
               }
@@ -87,14 +87,14 @@
               Tumblr.form_key = Tumblr.channel_id = null;
               self.retry = true;
 
-              return self.getForm(endpoint).addCallback(postUpdate);
+              return self.getForm(endpoint).then(postUpdate);
             });
           });
         });
       });
     });
 
-    addAround(Models['Tumblr'].Photo, 'convertToForm', function(proceed, args, target, methodName) {
+    addAround(Models['Tumblr'].Photo, 'convertToForm', function (proceed, args, target, methodName) {
       var ps = args[0];
       if (ps.photos) {
         return Models['Tumblr'].PhotoSet.convertToForm(ps);
@@ -107,19 +107,19 @@
       PhotoSet : {
         convertToForm : function (ps) {
           var photos = [];
-          var deferredList = [];
+          var promiseList = [];
           ps.photos.forEach(function (photo) {
             if (photo.match(/^https?/)) {
-              var deferred = (photo ? getFinalUrl(photo) : succeed(null)).addCallback(function (finalUrl) {
-                return finalUrl;
-              });
-              deferredList.push(deferred);
+              promiseList.push(new Promise(function (resolve) {
+                (photo ? getFinalUrl(photo) : Promise.resolve(null)).then(function (finalUrl) {
+                  resolve(finalUrl);
+                });
+              }));
             } else {
-              deferredList.push(succeed(photo));
+              promiseList.push(Promise.resolve(photo));
             }
           });
-          return new DeferredList(deferredList).addCallback(function (results) {
-            results = results.map(function (result) { return result[0] ? result[1] : null;});
+          return Promise.all(promiseList).then(function (results) {
             ps.photos = results.filter(function (result) { return result; });
             var form = {
               'post[type]'  : ps.type,
@@ -170,7 +170,7 @@
         return true;
       },
       extract : function (ctx) {
-        return this.select(ctx).addCallback(function(nodes) {
+        return this.select(ctx).then(function (nodes) {
           var photos = nodes.map(function (node) {
             return node.src;
           });
@@ -184,98 +184,97 @@
       },
       select : function (ctx) {
         var self = this;
-        var deferred = new Deferred();
-        var doc = ctx.document || MochiKit.DOM.currentDocument();
+        return new Promise(function (resolve, reject) {
+          var doc = ctx.document || document;
 
-        var list = [];
-        var nodes = [];
-        var now_target = null;
-        function getImageElement(e) {
-          return $X(self.IMAGE_XPATH, e.target)[0];
-        }
-        function onMouseOver(e) {
-          var target = getImageElement(e);
-          if (target && !target.captureSelected) {
-            now_target = target;
-            target.originalOpacity = target.style.opacity;
-            target.style.opacity = self.TARGET_OPACITY;
+          var list = [];
+          var nodes = [];
+          var now_target = null;
+          function getImageElement(e) {
+            return $X(self.IMAGE_XPATH, e.target)[0];
           }
-        }
-        function onMouseOut(e) {
-          var target = getImageElement(e);
-          if (target && !target.captureSelected) {
-            now_target = null;
-            unpoint(target);
-          }
-        }
-        function onClick(e) {
-          cancel(e);
-          var target = getImageElement(e);
-          if (target) {
-            target.captureSelected = !target.captureSelected;
-            if (target.captureSelected) {
-              list.push(target);
-              nodes.push(target);
+          function onMouseOver(e) {
+            var target = getImageElement(e);
+            if (target && !target.captureSelected) {
+              now_target = target;
+              target.originalOpacity = target.style.opacity;
+              target.style.opacity = self.TARGET_OPACITY;
             }
-            else {
-              var index = list.indexOf(target);
-              if (index !== -1) {
-                list.splice(index, 1);
+          }
+          function onMouseOut(e) {
+            var target = getImageElement(e);
+            if (target && !target.captureSelected) {
+              now_target = null;
+              unpoint(target);
+            }
+          }
+          function onClick(e) {
+            cancel(e);
+            var target = getImageElement(e);
+            if (target) {
+              target.captureSelected = !target.captureSelected;
+              if (target.captureSelected) {
+                list.push(target);
+                nodes.push(target);
               }
-              index = nodes.indexOf(target);
-              if (index !== -1) {
-                nodes.splice(index, 1);
+              else {
+                var index = list.indexOf(target);
+                if (index !== -1) {
+                  list.splice(index, 1);
+                }
+                index = nodes.indexOf(target);
+                if (index !== -1) {
+                  nodes.splice(index, 1);
+                }
               }
             }
           }
-        }
-        function onKeyDown(e) {
-          cancel(e);
+          function onKeyDown(e) {
+            cancel(e);
 
-          switch (keyString(e)) {
-          case 'ESCAPE':
-            finalize();
-            deferred.cancel();
-            return;
-          case 'RETURN':
-            finalize();
-            if (nodes.length) {
-              deferred.callback(nodes);
+            switch (keyString(e)) {
+            case 'ESCAPE':
+              finalize();
+              reject();
+              return;
+            case 'RETURN':
+              finalize();
+              if (nodes.length) {
+                resolve(nodes);
+              }
+              else {
+                reject();
+              }
+              return;
             }
-            else {
-              deferred.cancel();
+          }
+          function unpoint(elm) {
+            if (elm.originalOpacity !== null) {
+              elm.style.opacity = elm.originalOpacity;
+              elm.originalOpacity = null;
             }
-            return;
           }
-        }
-        function unpoint(elm) {
-          if (elm.originalOpacity !== null) {
-            elm.style.opacity = elm.originalOpacity;
-            elm.originalOpacity = null;
+          function finalize() {
+            doc.removeEventListener('mouseover', onMouseOver, true);
+            doc.removeEventListener('mouseout', onMouseOut, true);
+            doc.removeEventListener('click', onClick, true);
+            doc.removeEventListener('keydown', onKeyDown, true);
+
+            list.forEach(function (elm) {
+              elm.captureSelected = null;
+              unpoint(elm);
+            });
+            if (now_target) {
+              now_target.captureSelected = null;
+              unpoint(now_target);
+            }
           }
-        }
-        function finalize() {
-          doc.removeEventListener('mouseover', onMouseOver, true);
-          doc.removeEventListener('mouseout', onMouseOut, true);
-          doc.removeEventListener('click', onClick, true);
-          doc.removeEventListener('keydown', onKeyDown, true);
 
-          list.forEach(function(elm) {
-            elm.captureSelected = null;
-            unpoint(elm);
-          });
-          if (now_target) {
-            now_target.captureSelected = null;
-            unpoint(now_target);
-          }
-        }
-
-        doc.addEventListener('mouseover', onMouseOver, true);
-        doc.addEventListener('mouseout', onMouseOut, true);
-        doc.addEventListener('click', onClick, true);
-        doc.addEventListener('keydown', onKeyDown, true);
-
-        return deferred;
+          doc.addEventListener('mouseover', onMouseOver, true);
+          doc.addEventListener('mouseout', onMouseOut, true);
+          doc.addEventListener('click', onClick, true);
+          doc.addEventListener('keydown', onKeyDown, true);
+        });
       }
     }]);
     return;
