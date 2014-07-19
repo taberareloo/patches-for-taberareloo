@@ -4,7 +4,7 @@
 // , "description" : "Capture a viewport"
 // , "include"     : ["background", "content"]
 // , "match"       : ["*://*/*"]
-// , "version"     : "0.9.7"
+// , "version"     : "2.0.0"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/others/menu.capture.window.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -157,15 +157,15 @@
       });
     });
 
-    var GIF_timer     = null;
-    var GIF_len       = 0;
-    var GIF_frames    = [];
-    var GIF_deferreds = [];
-    var GIF_tab       = null;
-    var GIF_pos       = {};
-    var GIF_dim       = {};
-    var GIF_gif       = null;
-    var GIF_timeout   = null;
+    var GIF_timer    = null;
+    var GIF_len      = 0;
+    var GIF_frames   = [];
+    var GIF_promises = [];
+    var GIF_tab      = null;
+    var GIF_pos      = {};
+    var GIF_dim      = {};
+    var GIF_gif      = null;
+    var GIF_timeout  = null;
 
     function captureGifFrame () {
       chrome.tabs.executeScript(GIF_tab.id, {
@@ -176,14 +176,14 @@
       }, function() {
       });
       chrome.tabs.captureVisibleTab(GIF_tab.windowId, { quality : CAP_QUALITY }, function (src) {
-        var deferred = new Deferred();
-        var img = new Image();
-        img.onload = function () {
-          deferred.callback();
-        };
-        img.src = src;
-        GIF_frames.push(img);
-        GIF_deferreds.push(deferred);
+        GIF_promises.push(new Promise(function (resolve) {
+          var img = new Image();
+          img.onload = function () {
+            resolve();
+          };
+          img.src = src;
+          GIF_frames.push(img);
+        }));
       });
     }
 
@@ -198,7 +198,7 @@
       }
       GIF_len = 0;
       GIF_frames.length = 0;
-      GIF_deferreds.length = 0;
+      GIF_promises.length = 0;
       GIF_tab = sender.tab;
       GIF_pos = req.pos;
       GIF_dim = req.dim;
@@ -220,7 +220,7 @@
         GIF_timeout = null;
       }
  
-      new DeferredList(GIF_deferreds).addCallback(function () {
+      Promise.all(GIF_promises).then(function () {
         if (!GIF_frames.length) {
           callback(null);
           return;
@@ -235,7 +235,7 @@
         });
         GIF_gif.on('finished', function (blob) {
           console.groupEnd();
-          fileToDataURL(blob).addCallback(function (url) {
+          fileToDataURL(blob).then(function (url) {
             callback(url);
           });
         });
@@ -277,7 +277,7 @@
         GIF_gif = null;
       }
       GIF_frames.length = 0;
-      GIF_deferreds.length = 0;
+      GIF_promises.length = 0;
       console.groupEnd();
       console.warn('captureGifAnimationAbort');
       if (callback) callback();
@@ -342,15 +342,15 @@
         dim.h -= scrollbar; // without horizontal scrollbar
       }
 
-      return succeed().addCallback(function () {
+      return defer().then(function () {
         switch (type) {
         case 'Region':
-          return self.selectRegion(ctx).addCallback(function (region) {
+          return self.selectRegion(ctx).then(function (region) {
             return self.capture(win, region.position, region.dimensions);
           });
 
         case 'Element':
-          return self.selectElement(ctx).addCallback(function (elm) {
+          return self.selectElement(ctx).then(function (elm) {
             var rect = elm.getBoundingClientRect();
             return self.capture(win, {
               x: Math.round(rect.left),
@@ -362,15 +362,18 @@
           return self.capture(win, { x : 0, y : 0 }, dim);
 
         case 'Page':
-          return self.capturePage(win, getViewportPosition(), dim);
+          return self.capturePage(win, {
+            x : document.body.scrollLeft,
+            y : document.body.scrollTop
+          }, dim);
 
         case 'GifAnimation':
-          return self.selectRegion(ctx).addCallback(function (region) {
+          return self.selectRegion(ctx).then(function (region) {
             return self.captureGifAnimation(win, region.position, region.dimensions);
           });
         }
         return null;
-      }).addCallback(function (file) {
+      }).then(function (file) {
         return {
           type: 'photo',
           item: ctx.title,
@@ -380,183 +383,183 @@
     },
 
     capturePage : function (win, pos, dim) {
-      var deferred = new Deferred();
-      chrome.runtime.sendMessage(TBRL.id, {
-        request    : 'capturePage',
-        originalX  : pos.x,
-        originalY  : pos.y,
-        pageWidth  : document.body.scrollWidth  || document.documentElement.scrollWidth,
-        pageHeight : document.body.scrollHeight || document.documentElement.scrollHeight,
-        viewWidth  : dim.w,
-        viewHeight : dim.h
-      }, function (res) {
-        base64ToFileEntry(res).addCallback(function (url) {
-          deferred.callback(url);
+      return new Promise(function (resolve) {
+        chrome.runtime.sendMessage(TBRL.id, {
+          request    : 'capturePage',
+          originalX  : pos.x,
+          originalY  : pos.y,
+          pageWidth  : document.body.scrollWidth  || document.documentElement.scrollWidth,
+          pageHeight : document.body.scrollHeight || document.documentElement.scrollHeight,
+          viewWidth  : dim.w,
+          viewHeight : dim.h
+        }, function (res) {
+          base64ToFileEntry(res).then(function (url) {
+            resolve(url);
+          });
         });
       });
-      return deferred;
     },
 
     captureGifAnimation : function (win, pos, dim) {
-      var deferred = new Deferred();
-      var doc = win.document;
+      return new Promise(function (resolve, reject) {
+        var doc = win.document;
 
-      var end_timer = null;
+        var end_timer = null;
 
-      function finalize() {
-        if (end_timer) {
-          clearTimeout(end_timer);
-          end_timer = null;
+        function finalize() {
+          if (end_timer) {
+            clearTimeout(end_timer);
+            end_timer = null;
+          }
+
+          win.removeEventListener('beforeunload', finalize, true);
+          win.removeEventListener('keydown', onKeyDown, true);
+
+          if (button.classList.contains('capturing')) {
+            chrome.runtime.sendMessage(TBRL.id, {
+              request : 'captureGifAnimationAbort'
+            }, function (res) {
+            });
+          }
+
+          region.parentNode.removeChild(region);
+          style.parentNode.removeChild(style);
         }
+        win.addEventListener('beforeunload', finalize, true);
 
-        win.removeEventListener('beforeunload', finalize, true);
-        win.removeEventListener('keydown', onKeyDown, true);
-
-        if (button.classList.contains('capturing')) {
-          chrome.runtime.sendMessage(TBRL.id, {
-            request : 'captureGifAnimationAbort'
-          }, function (res) {
-          });
-        }
-
-        region.parentNode.removeChild(region);
-        style.parentNode.removeChild(style);
-      }
-      win.addEventListener('beforeunload', finalize, true);
-
-      function onKeyDown(e) {
-        cancel(e);
-        switch (keyString(e)) {
-        case 'ESCAPE':
-          finalize();
-          deferred.cancel();
-          return;
-        }
-      }
-      win.addEventListener('keydown', onKeyDown, true);
-
-      var style = doc.createElement('style');
-      style.innerHTML = [
-        '#taberareloo_capture_region {',
-        '  box-sizing  : content-box;',
-        '}',
-        '#taberareloo_capture_region * {',
-        '  font-family : Arial, sans-serif;',
-        '  font-size   : 16px;',
-        '  line-height : 20px;',
-        '  box-sizing  : content-box;',
-        '}',
-        '#taberareloo_capture_region a {',
-        '  display         : inline-block;',
-        '  float           : right;',
-        '  border-radius   : 3px;',
-        '  padding         : 5px;',
-        '  background      : -webkit-gradient(linear, left top, left bottom, from(#acdeed), to(#acdeed));',
-        '  margin-left     : 10px;',
-        '  width           : 60px;',
-        '  height          : 20px;',
-        '  color           : #000;',
-        '  text-align      : center;',
-        '  text-decoration : none;',
-        '  font-weight     : bold;',
-        '}',
-        '#taberareloo_capture_region a:hover {',
-        '  color      : #FFF;',
-        '  background : -webkit-gradient(linear, left top, left bottom, from(#0066cc), to(#0e0e69));',
-        '}',
-        '#taberareloo_capture_region a.disabled {',
-        '  color      : #ccc;',
-        '  background : -webkit-gradient(linear, left top, left bottom, from(#666), to(#666));',
-        '  cursor     : wait',
-        '}'
-      ].join("\n");
-      doc.querySelector('head').appendChild(style);
-
-      var region = doc.createElement('div');
-      setStyle(region, {
-        'border'   : 'inset 20px rgba(0,0,0,0.7)',
-        'border-bottom-width' : '60px',
-        'position' : 'fixed',
-        'zIndex'   : '999999999',
-        'top'      : (pos.y - 20) + 'px',
-        'left'     : (pos.x - 20) + 'px',
-        'width'    : dim.w + 'px',
-        'height'   : dim.h + 'px'
-      });
-      region.setAttribute('id', 'taberareloo_capture_region');
-      doc.body.appendChild(region);
-      var ui = $N('div');
-      setStyle(ui, {
-        'position'    : 'absolute',
-        'top'         : (dim.h + 15) + 'px',
-        'width'       : '100%'
-      });
-      ui.innerHTML = [
-        '<a id="taberareloo_capture_button" href="#">Start</a>',
-        '<a id="taberareloo_capture_cancel" href="#">Cancel</a>',
-        '<div id="taberareloo_capture_message"></div>'
-      ].join("\n");
-      region.appendChild(ui);
-      var message = doc.querySelector("#taberareloo_capture_message");
-      setStyle(message, {
-        'color'   : 'white',
-        'padding' : '5px'
-      });
-      message.innerHTML = 'Max ' + GIF_MAX_SEC + ' seconds';
-      var btnCancel = doc.querySelector("#taberareloo_capture_cancel");
-      btnCancel.addEventListener('click', function (e) {
-        cancel(e);
-        finalize();
-        deferred.cancel();
-        return false;
-      }, true);
-      var button = doc.querySelector("#taberareloo_capture_button");
-      button.addEventListener('click', function onClick(e) {
-        if (e) {
+        function onKeyDown(e) {
           cancel(e);
-        }
-
-        if (end_timer) {
-          clearTimeout(end_timer);
-          end_timer = null;
-        }
-
-        if (button.classList.contains('disabled')) {
-          return false;
-        }
-
-        if (button.classList.contains('capturing')) {
-          button.classList.add('disabled');
-          chrome.runtime.sendMessage(TBRL.id, {
-            request : 'captureGifAnimationEnd'
-          }, function (res) {
-            button.classList.remove('capturing');
+          switch (keyString(e)) {
+          case 'ESCAPE':
             finalize();
-            if (res) {
-              base64ToFileEntry(res).addCallback(function (url) {
-                deferred.callback(url);
-              });
-            } else {
-              deferred.errback();
-            }
-          });
-        } else {
-          button.classList.add('capturing');
-          button.innerHTML = 'Stop';
-          chrome.runtime.sendMessage(TBRL.id, {
-            request : 'captureGifAnimationStart',
-            pos     : pos,
-            dim     : dim
-          }, function (res) {
-            end_timer = setTimeout(onClick, GIF_MAX_SEC * 1000);
-          });
+            reject();
+            return;
+          }
         }
+        win.addEventListener('keydown', onKeyDown, true);
 
-        return false;
-      }, true);
+        var style = doc.createElement('style');
+        style.innerHTML = [
+          '#taberareloo_capture_region {',
+          '  box-sizing  : content-box;',
+          '}',
+          '#taberareloo_capture_region * {',
+          '  font-family : Arial, sans-serif;',
+          '  font-size   : 16px;',
+          '  line-height : 20px;',
+          '  box-sizing  : content-box;',
+          '}',
+          '#taberareloo_capture_region a {',
+          '  display         : inline-block;',
+          '  float           : right;',
+          '  border-radius   : 3px;',
+          '  padding         : 5px;',
+          '  background      : -webkit-gradient(linear, left top, left bottom, from(#acdeed), to(#acdeed));',
+          '  margin-left     : 10px;',
+          '  width           : 60px;',
+          '  height          : 20px;',
+          '  color           : #000;',
+          '  text-align      : center;',
+          '  text-decoration : none;',
+          '  font-weight     : bold;',
+          '}',
+          '#taberareloo_capture_region a:hover {',
+          '  color      : #FFF;',
+          '  background : -webkit-gradient(linear, left top, left bottom, from(#0066cc), to(#0e0e69));',
+          '}',
+          '#taberareloo_capture_region a.disabled {',
+          '  color      : #ccc;',
+          '  background : -webkit-gradient(linear, left top, left bottom, from(#666), to(#666));',
+          '  cursor     : wait',
+          '}'
+        ].join("\n");
+        doc.querySelector('head').appendChild(style);
 
-      region.focus();
-      return deferred;
+        var region = doc.createElement('div');
+        setStyle(region, {
+          'border'   : 'inset 20px rgba(0,0,0,0.7)',
+          'border-bottom-width' : '60px',
+          'position' : 'fixed',
+          'zIndex'   : '999999999',
+          'top'      : (pos.y - 20) + 'px',
+          'left'     : (pos.x - 20) + 'px',
+          'width'    : dim.w + 'px',
+          'height'   : dim.h + 'px'
+        });
+        region.setAttribute('id', 'taberareloo_capture_region');
+        doc.body.appendChild(region);
+        var ui = $N('div');
+        setStyle(ui, {
+          'position'    : 'absolute',
+          'top'         : (dim.h + 15) + 'px',
+          'width'       : '100%'
+        });
+        ui.innerHTML = [
+          '<a id="taberareloo_capture_button" href="#">Start</a>',
+          '<a id="taberareloo_capture_cancel" href="#">Cancel</a>',
+          '<div id="taberareloo_capture_message"></div>'
+        ].join("\n");
+        region.appendChild(ui);
+        var message = doc.querySelector("#taberareloo_capture_message");
+        setStyle(message, {
+          'color'   : 'white',
+          'padding' : '5px'
+        });
+        message.innerHTML = 'Max ' + GIF_MAX_SEC + ' seconds';
+        var btnCancel = doc.querySelector("#taberareloo_capture_cancel");
+        btnCancel.addEventListener('click', function (e) {
+          cancel(e);
+          finalize();
+          reject();
+          return false;
+        }, true);
+        var button = doc.querySelector("#taberareloo_capture_button");
+        button.addEventListener('click', function onClick(e) {
+          if (e) {
+            cancel(e);
+          }
+
+          if (end_timer) {
+            clearTimeout(end_timer);
+            end_timer = null;
+          }
+
+          if (button.classList.contains('disabled')) {
+            return false;
+          }
+
+          if (button.classList.contains('capturing')) {
+            button.classList.add('disabled');
+            chrome.runtime.sendMessage(TBRL.id, {
+              request : 'captureGifAnimationEnd'
+            }, function (res) {
+              button.classList.remove('capturing');
+              finalize();
+              if (res) {
+                base64ToFileEntry(res).then(function (url) {
+                  resolve(url);
+                });
+              } else {
+                reject();
+              }
+            });
+          } else {
+            button.classList.add('capturing');
+            button.innerHTML = 'Stop';
+            chrome.runtime.sendMessage(TBRL.id, {
+              request : 'captureGifAnimationStart',
+              pos     : pos,
+              dim     : dim
+            }, function (res) {
+              end_timer = setTimeout(onClick, GIF_MAX_SEC * 1000);
+            });
+          }
+
+          return false;
+        }, true);
+
+        region.focus();
+      });
     }
   });
 
