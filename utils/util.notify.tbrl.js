@@ -3,7 +3,7 @@
 //   "name"        : "Notification for content scripts"
 // , "description" : "Notify a message from content scripts"
 // , "include"     : ["background"]
-// , "version"     : "0.1.0"
+// , "version"     : "2.0.0"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/utils/util.notify.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -25,7 +25,7 @@ Usage:
 
 (function() {
   TBRL.setRequestHandler('notify', function (req, sender, func) {
-    TBRL.Notification.notify(req.options).addCallback(function (notification) {
+    TBRL.Notification.notify(req.options).then(function (notification) {
       func(notification);
     });
   });
