@@ -3,7 +3,7 @@
 //   "name"        : "二次元画像詳細検索 Model"
 // , "description" : "Search similar images by 二次元画像詳細検索"
 // , "include"     : ["background"]
-// , "version"     : "0.1.0"
+// , "version"     : "2.0.0"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/models/model.ascii2d.image.search.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -41,7 +41,7 @@
       return request(this.SEARCH_URL, {
         sendContent : sendContent,
         multipart   : true
-      }).addCallback(function (res) {
+      }).then(function (res) {
         self.removeListener();
         if (self.redirectUrl) {
           chrome.tabs.create({
