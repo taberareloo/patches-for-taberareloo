@@ -9,7 +9,7 @@
 //     "*://www.tumblr.com/blog/*",
 //     "*://www.tumblr.com/tagged/*"
 //   ]
-// , "version"     : "0.3.3"
+// , "version"     : "2.0.0"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/userscripts/userscript.fix.tumblr.like.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -29,7 +29,7 @@
         form_key    : $X('id("tumblr_form_key")/@content')[0],
         'data[id]'  : $X('./div/@data-post-id', post)[0],
         'data[key]' : $X('./div/@data-reblog-key', post)[0]
-      }).addCallback(function() {
+      }).then(function () {
         like.classList.remove('liked');
       });
     }
@@ -38,7 +38,7 @@
         form_key    : $X('id("tumblr_form_key")/@content')[0],
         'data[id]'  : $X('./div/@data-post-id', post)[0],
         'data[key]' : $X('./div/@data-reblog-key', post)[0]
-      }).addCallback(function() {
+      }).then(function () {
         like.classList.add('liked');
       });
     }
