@@ -3,7 +3,7 @@
 //   "name"        : "Wedata"
 // , "description" : "Get items in a database of Wedata"
 // , "include"     : ["background"]
-// , "version"     : "2.0.0"
+// , "version"     : "2.0.1"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/utils/util.wedata.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -66,9 +66,8 @@ Usage:
           self.debug && console.info('Got data from the remote server');
           self.cache.set(data);
           return data.items;
-        }).catch(function (e) {
-          self.debug && console.info(e.message);
-          var res = e.message;
+        }).catch(function (res) {
+          self.debug && console.info(res);
           if (res.status && (res.status === 304)) {
             self.debug && console.info('Not Modified! Use data from a cache');
           }

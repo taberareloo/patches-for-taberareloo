@@ -4,7 +4,7 @@
 // , "description" : "Post to Google+"
 // , "include"     : ["background", "content", "popup"]
 // , "match"       : ["https://plus.google.com/*"]
-// , "version"     : "2.0.1"
+// , "version"     : "2.0.2"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/models/model.googleplus.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -898,7 +898,7 @@
         }).reverse();
       }).catch(function (e) {
         alert('Google+ Pages'+ ': ' +
-          (e.message.hasOwnProperty('status') ? '\n' + ('HTTP Status Code ' + e.message.status).indent(4) : '\n' + e.message.indent(4)));
+          (e.hasOwnProperty('status') ? '\n' + ('HTTP Status Code ' + e.status).indent(4) : '\n' + e.message.indent(4)));
       });
     };
     Models.removeGooglePlusPages = function() {
