@@ -4,7 +4,7 @@
 // , "description" : "Post Tumblr Photo Set"
 // , "include"     : ["background", "content"]
 // , "match"       : ["*://*/*"]
-// , "version"     : "2.0.0"
+// , "version"     : "2.0.1"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/patches/patch.model.tumblr.photoset.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -58,7 +58,7 @@
                   return request(Tumblr.TUMBLR_URL + 'svc/post/upload_photo', {
                     sendContent: form
                   }).then(function (res){
-                    var response = JSON.parse(res.response);
+                    var response = JSON.parse(res.responseText);
 
                     if (response.meta && response.meta.msg === 'OK' && response.meta.status === 200) {
                       delete form['photo[]'];
