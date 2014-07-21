@@ -4,7 +4,7 @@
 // , "description" : "Extract a tweet on a dashboard"
 // , "include"     : ["content"]
 // , "match"       : ["*://twitter.com/*"]
-// , "version"     : "1.3.1"
+// , "version"     : "2.0.0"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/extractors/extractor.quote.twitter.dashboard.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -20,13 +20,13 @@
 
     extract : function(ctx) {
       var node     = this.saved_node;
-      var link     = $X('.//a[contains(concat(" ",@class," ")," details ")]', node)[0];
-      var username = $X('.//strong[contains(concat(" ",@class," ")," fullname ")]/text()', node)[0];
+      var link     = $X('.//a[contains(concat(" ",@class," ")," js-permalink ")]', node)[0];
+      var username = $X('.//strong[contains(concat(" ",@class," ")," js-action-profile-name ")]/text() | .//span[contains(concat(" ",@class," ")," js-action-profile-name ")]/b/text()', node)[0];
 
       var selection = null;
       if (ctx.selection) {
         var node2 = ctx.window.getSelection().anchorNode;
-        node2 = $X('./ancestor-or-self::li[starts-with(@id, "stream-item-tweet-")]', node2)[0];
+        node2 = $X('./ancestor-or-self::*[starts-with(@id, "stream-item-tweet-")]', node2)[0];
         if (node == node2) {
           selection = ctx.selection;
         }
@@ -63,7 +63,7 @@
 
     getTweet : function(ctx) {
       var node = ctx.target;
-      this.saved_node = $X('./ancestor-or-self::li[starts-with(@id, "stream-item-tweet-")]', node)[0];
+      this.saved_node = $X('./ancestor-or-self::*[starts-with(@id, "stream-item-tweet-")]', node)[0];
       return this.saved_node;
     }
   },
@@ -76,8 +76,8 @@
 
     extract : function(ctx) {
       var node     = this.saved_node;
-      var link     = $X('.//a[contains(concat(" ",@class," ")," details ")]', node)[0];
-      var username = $X('.//strong[contains(concat(" ",@class," ")," fullname ")]/text()', node)[0];
+      var link     = $X('.//a[contains(concat(" ",@class," ")," js-permalink ")]', node)[0];
+      var username = $X('.//strong[contains(concat(" ",@class," ")," js-action-profile-name ")]/text() | .//span[contains(concat(" ",@class," ")," js-action-profile-name ")]/b/text()', node)[0];
 
       var selection;
       if (ctx.selection) {
@@ -118,7 +118,7 @@
       if (ctx.selection) {
         node = ctx.window.getSelection().anchorNode;
       }
-      this.saved_node = $X('./ancestor-or-self::li[starts-with(@id, "stream-item-tweet-")]', node)[0];
+      this.saved_node = $X('./ancestor-or-self::*[starts-with(@id, "stream-item-tweet-")]', node)[0];
       return this.saved_node;
     }
   }], 'Quote - Twitter', true);

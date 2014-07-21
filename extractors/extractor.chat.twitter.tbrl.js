@@ -4,7 +4,7 @@
 // , "description" : "Extract tweets as a conversation"
 // , "include"     : ["background", "content", "popup"]
 // , "match"       : ["*://twitter.com/*"]
-// , "version"     : "2.0.0"
+// , "version"     : "2.0.1"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/extractors/extractor.chat.twitter.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -160,7 +160,7 @@
         return ctx.href.match(/\/\/twitter\.com\/.*?\/(?:status|statuses)\/\d+/);
       },
       extract : function(ctx) {
-        var nodes = $X('id("page-container")//div[contains(concat(" ",@class," ")," js-stream-tweet ")]');
+        var nodes = $X('id("page-container")//div[contains(concat(" ",@class," ")," js-actionable-tweet ")]');
         var tweets = nodes.map(this.extractTweet);
         return {
           type    : 'conversation',
@@ -179,16 +179,16 @@
         );
         var selection = createFlavoredString(cloneElm);
         return {
-          account : $X('.//strong[contains(concat(" ",@class," ")," fullname ")]/text()', tweet)[0],
+          account : $X('.//strong[contains(concat(" ",@class," ")," js-action-profile-name ")]/text() | .//span[contains(concat(" ",@class," ")," js-action-profile-name ")]/b/text()', tweet)[0],
           body    : selection.raw.replace(/[\r\n]/g, ' ').trim(),
-          source  : $X('.//a[contains(concat(" ",@class," ")," details ")]', tweet)[0]
+          source  : $X('.//a[contains(concat(" ",@class," ")," js-permalink ")]', tweet)[0]
         };
       }
     },
     {
       name     : 'Chat - Twitter Dashboard',
       ICON     : Extractors['Quote - Twitter'].ICON,
-      li_xpath : './ancestor-or-self::li[starts-with(@id,"stream-item-tweet-")]',
+      li_xpath : './ancestor-or-self::*[starts-with(@id,"stream-item-tweet-")]',
 
       check : function(ctx) {
         return ctx.href.match('https?://twitter.com/') && !ctx.href.match(/\/\/twitter\.com\/.*?\/(?:status|statuses)\/\d+/);
