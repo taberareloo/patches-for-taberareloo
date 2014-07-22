@@ -3,7 +3,7 @@
 //   "name"        : "Gunosy RSS"
 // , "description" : "URL Generator for Gunosy RSS"
 // , "include"     : ["background"]
-// , "version"     : "0.1.2"
+// , "version"     : "2.0.0"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/others/menu.gunosy.rss.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -20,7 +20,7 @@
     title    : 'Generate URL for Gunosy RSS',
     contexts : ['all'],
     onclick  : function(info, tab) {
-      request('http://gunosy.com/edit/profile', { responseType: 'document' }).addCallback(function(res) {
+      request('http://gunosy.com/edit/profile', { responseType: 'document' }).then(function (res) {
         var doc = res.response;
 
         var user_name = $X('//input[@name="user[name]"]/@value', doc)[0];
@@ -31,7 +31,7 @@
         var user_id = $X('//form[@class="edit_user"]/@id', doc)[0];
         user_id = user_id.substring(10);
 
-        getCookies('gunosy.com', '_gunosy_session').addCallback(function(cookies) {
+        getCookies('gunosy.com', '_gunosy_session').then(function (cookies) {
           if (!cookies.length) return alert(chrome.i18n.getMessage('error_notLoggedin', NAME));
 
           var url = BASE_URL + user_name + '.rss' + queryString({
