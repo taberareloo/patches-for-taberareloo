@@ -3,7 +3,7 @@
 //   "name"        : "Collaba Model"
 // , "description" : "Post to collaba.jp"
 // , "include"     : ["background"]
-// , "version"     : "0.1.0"
+// , "version"     : "2.0.0"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/models/model.collaba.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -24,19 +24,19 @@
 
     getToken : function () {
       var self = this;
-      return getCookies('collaba.jp', 'logged_in').addCallback(function (cookies) {
+      return getCookies('collaba.jp', 'logged_in').then(function (cookies) {
         var cookie = cookies[0];
         if (!cookie || cookie !== 'yes') {
           new Error(chrome.i18n.getMessage('error_notLoggedin', self.name));
         }
-        return request(self.HOME_URL).addCallback(function (res) {
+        return request(self.HOME_URL).then(function (res) {
           var token = res.responseText.extract(/meta content="([^"]+?)" name="csrf-token"/);
           return {token : token};
         });
       });
     },
 
-    post : function (ps){
+    post : function (ps) {
       var self = this;
 
       var description = ps.description || '';
@@ -60,10 +60,10 @@
       }
 
       return (
-        ((ps.type === 'photo') && !ps.file) ? self.download(ps) : succeed(ps.file)
-      ).addCallback(function (file) {
+        ((ps.type === 'photo') && !ps.file) ? self.download(ps) : Promise.resolve(ps.file)
+      ).then(function (file) {
         ps.file = file;
-        return self.getToken().addCallback(function (token) {
+        return self.getToken().then(function (token) {
           var sendContent = {
             message    : description,
             is_twitter : 'false'
@@ -78,9 +78,10 @@
             multipart   : true,
             headers     : {
               'X-CSRF-Token' : token.token
-            }
-          }).addCallback(function (res) {
-            var json = JSON.parse(res.responseText);
+            },
+            responseType : 'json'
+          }).then(function (res) {
+            var json = res.response;
             if (json.state === false) {
               throw new Error('');
             }
@@ -92,10 +93,10 @@
     download : function (ps) {
       var self = this;
       return (
-        ps.file ? succeed(ps.file) :
-          download(ps.itemUrl, getFileExtension(ps.itemUrl)).addCallback(function(entry) {
+        ps.file ? Promise.resolve(ps.file) :
+          download(ps.itemUrl, getFileExtension(ps.itemUrl)).then(function (entry) {
             return getFileFromEntry(entry);
-          }).addErrback(function(e) {
+          }).catch(function (e) {
             throw new Error('Could not get an image file.');
           })
       );
