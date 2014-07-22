@@ -3,7 +3,7 @@
 //   "name"        : "Add Twitter Widgets to HatenaBlog"
 // , "description" : "Add Twitter Widgets to HatenaBlog on sharing a tweet"
 // , "include"     : ["background"]
-// , "version"     : "0.1.1"
+// , "version"     : "2.0.0"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/patches/patch.model.hatenablog.post.tweet.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -61,8 +61,8 @@
         title = ps.item;
       }
 
-      return self.getUserName().addCallback(function(userName) {
-        self.getApiKey().addCallback(function(apiKey){
+      return self.getUserName().then(function (userName) {
+        self.getApiKey().then(function (apiKey){
           var xml = self.generateXML({
             userName   : escapeHTML(userName),
             title      : escapeHTML(title),
