@@ -3,7 +3,7 @@
 //   "name"        : "Plurk Model"
 // , "description" : "Post to plurk.com"
 // , "include"     : ["background"]
-// , "version"     : "1.1.0"
+// , "version"     : "2.0.0"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/models/model.plurk.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -22,7 +22,7 @@
     },
 
     getUserID : function() {
-      return request(this.LINK).addCallback(function(res) {
+      return request(this.LINK).then(function (res) {
         var user_id =  res.responseText.extract(/"user_id": ([0-9]+),/);
         if (!user_id) {
           throw new Error(chrome.i18n.getMessage('error_notLoggedin', self.name));
@@ -59,7 +59,7 @@
         text = text.substring(0, maxLength - 3) + '...';
       }
 
-      return this.getUserID().addCallback(function(user_id) {
+      return this.getUserID().then(function (user_id) {
         return request(self.POST_URL, {
           sendContent : {
             posted      : (new Date()).toISOString(),
@@ -69,7 +69,7 @@
             no_comments : 0,
             uid         : user_id
           }
-        }).addCallback(function(res) {
+        }).then(function (res) {
         });
       });
     }
