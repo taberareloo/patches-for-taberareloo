@@ -3,7 +3,7 @@
 //   "name"        : "wri.pe Model"
 // , "description" : "Post to wri.pe"
 // , "include"     : ["background"]
-// , "version"     : "0.2.0"
+// , "version"     : "2.0.0"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/models/model.wripe.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -49,7 +49,7 @@
         ], "  \n");
       }
 
-      return request(this.SESS_URL).addCallback(function(res) {
+      return request(this.SESS_URL).then(function (res) {
         var json = JSON.parse(res.responseText);
 
         var sendContent = {
@@ -67,7 +67,7 @@
             'X-Requested-With' : 'XMLHttpRequest'
           }
         });
-      }).addErrback(function() {
+      }).catch(function () {
         throw new Error(chrome.i18n.getMessage('error_notLoggedin', self.name));
       });
     }
