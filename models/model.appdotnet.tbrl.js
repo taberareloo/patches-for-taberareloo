@@ -3,7 +3,7 @@
 //   "name"        : "App.Net Model"
 // , "description" : "Post to alpha.app.net"
 // , "include"     : ["background"]
-// , "version"     : "1.1.0"
+// , "version"     : "2.0.0"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/models/model.appdotnet.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -28,9 +28,9 @@
     getCSRFToken : function() {
       var self = this;
       return (
-        this.is_initialized ? succeed() : request(this.LINK)
-      ).addCallback(function() {
-        return getCookies('alpha.app.net', 'csrftoken').addCallback(function(cookies) {
+        this.is_initialized ? Promise.resolve() : request(this.LINK)
+      ).then(function () {
+        return getCookies('alpha.app.net', 'csrftoken').then(function (cookies) {
           if (cookies.length) {
             self.is_initialized = true;
             return cookies[cookies.length-1].value;
@@ -45,7 +45,7 @@
       var self = this;
       ps = update({}, ps);
       if (ps.type === 'photo') {
-        return Models['Gmail'].download(ps).addCallback(function(file) {
+        return Models['Gmail'].download(ps).then(function (file) {
           ps.file = file;
           return self.upload(ps);
         });
@@ -106,7 +106,7 @@
 
       this.addBeforeSendHeader();
 
-      return this.getCSRFToken().addCallback(function(csrftoken) {
+      return this.getCSRFToken().then(function (csrftoken) {
         return request(self.POST_URL + '?' + queryString({
           include_post_annotations : 1
         }), {
@@ -121,13 +121,13 @@
             }),
             'X-CSRFToken'      : csrftoken,
             'X-Requested-With' : 'XMLHttpRequest'
-          }
-        }).addCallback(function(res) {
+          },
+          responseType : 'json'
+        }).then(function (res) {
           self.removeBeforeSendHeader();
-        }).addErrback(function(e) {
+        }).catch(function (res) {
           self.removeBeforeSendHeader();
-          var res  = e.message;
-          var data = JSON.parse(res.responseText);
+          var data = res.response;
           self.is_initialized = false;
           if (data.meta.code === 403) {
             throw new Error(chrome.i18n.getMessage('error_notLoggedin', self.name));
@@ -147,7 +147,7 @@
 
       this.addBeforeSendHeader();
 
-      return this.getCSRFToken().addCallback(function(csrftoken) {
+      return this.getCSRFToken().then(function (csrftoken) {
         return request(self.UPLOAD_URL, {
           sendContent : {
             content : ps.file,
@@ -162,15 +162,15 @@
             }),
             'X-CSRFToken'      : csrftoken,
             'X-Requested-With' : 'XMLHttpRequest'
-          }
-        }).addCallback(function(res) {
+          },
+          responseType : 'json'
+        }).then(function (res) {
           self.removeBeforeSendHeader();
-          var data = JSON.parse(res.responseText);
+          var data = res.response;
           return self._post(ps, data.data);
-        }).addErrback(function(e) {
+        }).catch(function (res) {
           self.removeBeforeSendHeader();
-          var res  = e.message;
-          var data = JSON.parse(res.responseText);
+          var data = res.response;
           self.is_initialized = false;
           if (data.meta.code === 403) {
             throw new Error(chrome.i18n.getMessage('error_notLoggedin', self.name));
