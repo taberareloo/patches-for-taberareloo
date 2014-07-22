@@ -4,7 +4,7 @@
 // , "namespace"   : "http://yungsang.com/"
 // , "description" : "Post to twittaw.com"
 // , "include"     : ["background"]
-// , "version"     : "1.2.1"
+// , "version"     : "2.0.0"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/models/model.twittaw.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -24,7 +24,7 @@
     },
 
     getToken : function() {
-      return request(this.HOME_URL).addCallback(function(res) {
+      return request(this.HOME_URL).then(function (res) {
         var token =  res.responseText.extract(/name="token" value="([a-z0-9-]+?)"/);
         if (!token) {
           throw new Error(chrome.i18n.getMessage('error_notLoggedin', self.name));
@@ -47,7 +47,7 @@
 
     update : function(title) {
       var self = this;
-      return self.getToken().addCallback(function(token) {
+      return self.getToken().then(function (token) {
         return request(self.POST_URL, {
           sendContent : update(token, {title : title})
         });
