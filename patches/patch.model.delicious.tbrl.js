@@ -4,7 +4,7 @@
 // , "namespace"   : "https://github.com/YungSang/patches-for-taberareloo"
 // , "description" : "New Delicious Model for new design/API"
 // , "include"     : ["background"]
-// , "version"     : "0.1.0"
+// , "version"     : "2.0.0"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/patches/patch.model.delicious.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -22,9 +22,10 @@
           anchor   : -1,
           index    : 0,
           '_' : (new Date()).getTime()
-        }
-      }).addCallback(function (res) {
-        var json = JSON.parse(res.responseText);
+        },
+        responseType : 'json'
+      }).then(function (res) {
+        var json = res.response;
         if (json.error) {
           return [];
         }
@@ -45,9 +46,10 @@
         queryString :  {
           url : url,
           '_' : (new Date()).getTime()
-        }
-      }).addCallback(function (res) {
-        var json = JSON.parse(res.responseText);
+        },
+        responseType : 'json'
+      }).then(function (res) {
+        var json = res.response;
         if (json.error) {
           return {
             recommended : [],
@@ -67,9 +69,10 @@
         queryString :  {
           url : ps.itemUrl,
           '_' : (new Date()).getTime()
-        }
-      }).addCallback(function(res){
-        var json = JSON.parse(res.responseText);
+        },
+        responseType : 'json'
+      }).then(function (res){
+        var json = res.response;
         if (json.error) {
           throw new Error(chrome.i18n.getMessage('error_notLoggedin', self.name));
         }
