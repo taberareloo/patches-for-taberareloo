@@ -3,7 +3,7 @@
 //   "name"        : "pplog Model"
 // , "description" : "Post to pplog.net"
 // , "include"     : ["background"]
-// , "version"     : "0.2.0"
+// , "version"     : "2.0.0"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/models/model.pplog.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -24,7 +24,7 @@
 
     getToken : function () {
       var self = this;
-      return request(this.FORM_URL, {responseType : 'document'}).addCallback(function (res) {
+      return request(this.FORM_URL, {responseType : 'document'}).then(function (res) {
         var doc = res.response;
         var form = [].concat($X("id('new_post')", doc)).shift();
         if (!form) {
@@ -68,7 +68,7 @@
 
     update : function (ps, content) {
       var self = this;
-      return self.getToken().addCallback(function(token) {
+      return self.getToken().then(function (token) {
         return request(self.POST_URL, {
           sendContent : {
             utf8               : '✓',
