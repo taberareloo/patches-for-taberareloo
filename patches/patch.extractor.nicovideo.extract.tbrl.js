@@ -5,7 +5,7 @@
 // , "description" : "Fix extractor for Nico Nico Douga"
 // , "include"     : ["content"]
 // , "match"       : ["http://www.nicovideo.jp/watch/*"]
-// , "version"     : "1.0.3"
+// , "version"     : "2.0.0"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/patches/patch.extractor.nicovideo.extract.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -16,7 +16,7 @@
       var externalPlayerURL = 'http://ext.nicovideo.jp/thumb_' + ctx.pathname.slice(1) + '?thumb_mode=swf&ap=1&c=1';
 
       var video_id = ctx.pathname.extract(/watch\/(sm\d+)/);
-      return request('http://ext.nicovideo.jp/api/getthumbinfo/' + video_id).addCallback(function(res) {
+      return request('http://ext.nicovideo.jp/api/getthumbinfo/' + video_id).then(function (res) {
         var xml = res.responseXML;
 
         var status = xml.getElementsByTagName('nicovideo_thumb_response')[0].getAttribute('status');
