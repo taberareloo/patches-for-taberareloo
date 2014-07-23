@@ -3,12 +3,23 @@
 //   "name"        : "Check Tumblr Daily Post Limit"
 // , "description" : "Display the current number of Today's posts in Tumblr"
 // , "include"     : ["background"]
-// , "version"     : "0.2.1"
+// , "version"     : "0.2.2"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/others/menu.tumblr.check.daily-post-limit.tbrl.js"
 // }
 // ==/Taberareloo==
 
 (function() {
+  var version = chrome.runtime.getManifest().version;
+  version = version.split('.');
+  if (version.length > 3) {
+    version.pop();
+  }
+  version = version.join('.');
+  if (semver.gte(version, '3.0.12')) {
+    Patches.install('https://raw.githubusercontent.com/YungSang/patches-for-taberareloo/ready-for-v4.0.0/others/menu.tumblr.check.daily-post-limit.tbrl.js', true);
+    return;
+  }
+
   var API_URL = 'http://api.tumblr.com/v2/';
   var API_KEY = 'c1TjhCQ860vZlq2gK2EsU21iA7t0Tz4XxYHuJ6oJj6mf3tVDlJ';
 

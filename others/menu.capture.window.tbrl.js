@@ -4,12 +4,23 @@
 // , "description" : "Capture a viewport"
 // , "include"     : ["background", "content"]
 // , "match"       : ["*://*/*"]
-// , "version"     : "0.9.7"
+// , "version"     : "0.9.8"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/others/menu.capture.window.tbrl.js"
 // }
 // ==/Taberareloo==
 
 (function() {
+  var version = chrome.runtime.getManifest().version;
+  version = version.split('.');
+  if (version.length > 3) {
+    version.pop();
+  }
+  version = version.join('.');
+  if (semver.gte(version, '3.0.12')) {
+    Patches.install('https://raw.githubusercontent.com/YungSang/patches-for-taberareloo/ready-for-v4.0.0/others/menu.capture.window.tbrl.js', true);
+    return;
+  }
+
   var CAP_QUALITY  = 100;
   var GIF_MAX_SEC  = 10;
   var GIF_INTERVAL = 100;

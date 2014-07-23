@@ -3,12 +3,23 @@
 //   "name"        : "Gunosy RSS"
 // , "description" : "URL Generator for Gunosy RSS"
 // , "include"     : ["background"]
-// , "version"     : "0.1.2"
+// , "version"     : "0.1.3"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/others/menu.gunosy.rss.tbrl.js"
 // }
 // ==/Taberareloo==
 
 (function() {
+  var version = chrome.runtime.getManifest().version;
+  version = version.split('.');
+  if (version.length > 3) {
+    version.pop();
+  }
+  version = version.join('.');
+  if (semver.gte(version, '3.0.12')) {
+    Patches.install('https://raw.githubusercontent.com/YungSang/patches-for-taberareloo/ready-for-v4.0.0/others/menu.gunosy.rss.tbrl.js', true);
+    return;
+  }
+
   var NAME      = 'Gunosy';
   var BASE_URL  = 'http://gunosy-rss.herokuapp.com/';
 

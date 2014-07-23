@@ -3,12 +3,23 @@
 //   "name"        : "Plurk Model"
 // , "description" : "Post to plurk.com"
 // , "include"     : ["background"]
-// , "version"     : "1.1.0"
+// , "version"     : "1.1.1"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/models/model.plurk.tbrl.js"
 // }
 // ==/Taberareloo==
 
 (function() {
+  var version = chrome.runtime.getManifest().version;
+  version = version.split('.');
+  if (version.length > 3) {
+    version.pop();
+  }
+  version = version.join('.');
+  if (semver.gte(version, '3.0.12')) {
+    Patches.install('https://raw.githubusercontent.com/YungSang/patches-for-taberareloo/ready-for-v4.0.0/models/model.plurk.tbrl.js', true);
+    return;
+  }
+
   Models.register({
     name       : 'Plurk',
     ICON       : 'http://statics.plurk.com/b872d9e40dbce69e5cde4787ccb74e60.png',

@@ -3,7 +3,7 @@
 //   "name"        : "Wedata"
 // , "description" : "Get items in a database of Wedata"
 // , "include"     : ["background"]
-// , "version"     : "0.1.1"
+// , "version"     : "0.1.2"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/utils/util.wedata.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -16,6 +16,17 @@ Usage:
 */
 
 (function (exports) {
+  var version = chrome.runtime.getManifest().version;
+  version = version.split('.');
+  if (version.length > 3) {
+    version.pop();
+  }
+  version = version.join('.');
+  if (semver.gte(version, '3.0.12')) {
+    Patches.install('https://raw.githubusercontent.com/YungSang/patches-for-taberareloo/ready-for-v4.0.0/utils/util.wedata.tbrl.js', true);
+    return;
+  }
+
   var Wedata = exports.Wedata = {};
 
   Wedata.Database = function (name, url, debug) {

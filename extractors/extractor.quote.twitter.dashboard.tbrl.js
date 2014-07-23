@@ -2,14 +2,28 @@
 // {
 //   "name"        : "Quote Extractor for Twitter Dashboard"
 // , "description" : "Extract a tweet on a dashboard"
-// , "include"     : ["content"]
+// , "include"     : ["background", "content"]
 // , "match"       : ["*://twitter.com/*"]
-// , "version"     : "1.3.1"
+// , "version"     : "1.3.2"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/extractors/extractor.quote.twitter.dashboard.tbrl.js"
 // }
 // ==/Taberareloo==
 
 (function() {
+  if (inContext('background')) {
+    var version = chrome.runtime.getManifest().version;
+    version = version.split('.');
+    if (version.length > 3) {
+      version.pop();
+    }
+    version = version.join('.');
+    if (semver.gte(version, '3.0.12')) {
+      Patches.install('https://raw.githubusercontent.com/YungSang/patches-for-taberareloo/ready-for-v4.0.0/extractors/extractor.quote.twitter.dashboard.tbrl.js', true);
+      return;
+    }
+    return;
+  }
+
   Extractors.register([
   {
     name : 'Photo - Twitter Dashboard',

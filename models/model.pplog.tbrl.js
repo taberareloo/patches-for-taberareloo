@@ -3,12 +3,23 @@
 //   "name"        : "pplog Model"
 // , "description" : "Post to pplog.net"
 // , "include"     : ["background"]
-// , "version"     : "0.2.0"
+// , "version"     : "0.2.1"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/models/model.pplog.tbrl.js"
 // }
 // ==/Taberareloo==
 
 (function() {
+  var version = chrome.runtime.getManifest().version;
+  version = version.split('.');
+  if (version.length > 3) {
+    version.pop();
+  }
+  version = version.join('.');
+  if (semver.gte(version, '3.0.12')) {
+    Patches.install('https://raw.githubusercontent.com/YungSang/patches-for-taberareloo/ready-for-v4.0.0/models/model.pplog.tbrl.js', true);
+    return;
+  }
+
   Models.register({
     name      : 'pplog',
     ICON      : 'https://dltvadzlmcsl3.cloudfront.net/assets/favicon-a0817290258726ffdc238a41b29fdd58.ico',

@@ -4,12 +4,23 @@
 // , "namespace"   : "https://github.com/YungSang/patches-for-taberareloo"
 // , "description" : "New Delicious Model for new design/API"
 // , "include"     : ["background"]
-// , "version"     : "0.1.0"
+// , "version"     : "0.1.1"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/patches/patch.model.delicious.tbrl.js"
 // }
 // ==/Taberareloo==
 
 (function() {
+  var version = chrome.runtime.getManifest().version;
+  version = version.split('.');
+  if (version.length > 3) {
+    version.pop();
+  }
+  version = version.join('.');
+  if (semver.gte(version, '3.0.12')) {
+    Patches.install('https://raw.githubusercontent.com/YungSang/patches-for-taberareloo/ready-for-v4.0.0/patches/patch.model.delicious.tbrl.js', true);
+    return;
+  }
+
   update(Models['Delicious'], {
     LOGIN_URL : 'https://delicious.com/',
 

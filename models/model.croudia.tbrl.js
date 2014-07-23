@@ -3,12 +3,23 @@
 //   "name"        : "Croudia Model"
 // , "description" : "Post to croudia.com"
 // , "include"     : ["background"]
-// , "version"     : "0.1.5"
+// , "version"     : "0.1.6"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/models/model.croudia.tbrl.js"
 // }
 // ==/Taberareloo==
 
 (function () {
+  var version = chrome.runtime.getManifest().version;
+  version = version.split('.');
+  if (version.length > 3) {
+    version.pop();
+  }
+  version = version.join('.');
+  if (semver.gte(version, '3.0.12')) {
+    Patches.install('https://raw.githubusercontent.com/YungSang/patches-for-taberareloo/ready-for-v4.0.0/models/model.croudia.tbrl.js', true);
+    return;
+  }
+
   Models.register({
     name      : 'Croudia',
     ICON      : 'https://croudia.com/favicon.ico',

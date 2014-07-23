@@ -4,12 +4,23 @@
 // , "namespace"   : "https://github.com/YungSang/patches-for-taberareloo"
 // , "description" : "Post to Twitter surely"
 // , "include"     : ["background"]
-// , "version"     : "1.2.2"
+// , "version"     : "1.2.3"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/patches/patch.model.twitter.createstatus.tbrl.js"
 // }
 // ==/Taberareloo==
 
 (function() {
+  var version = chrome.runtime.getManifest().version;
+  version = version.split('.');
+  if (version.length > 3) {
+    version.pop();
+  }
+  version = version.join('.');
+  if (semver.gte(version, '3.0.12')) {
+    Patches.install('https://raw.githubusercontent.com/YungSang/patches-for-taberareloo/ready-for-v4.0.0/patches/patch.model.twitter.createstatus.tbrl.js', true);
+    return;
+  }
+
   addAround(Models['Twitter'], 'createStatus', function(proceed, args, target, methodName) {
     var ps = update({}, args[0]);
     if (ps.body) {

@@ -3,12 +3,23 @@
 //   "name"        : "Multi Requester"
 // , "description" : "Multi Requester for taberareloo"
 // , "include"     : ["background"]
-// , "version"     : "0.2.1"
+// , "version"     : "0.2.2"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/others/menu.multi.requester.tbrl.js"
 // }
 // ==/Taberareloo==
 
 (function() {
+  var version = chrome.runtime.getManifest().version;
+  version = version.split('.');
+  if (version.length > 3) {
+    version.pop();
+  }
+  version = version.join('.');
+  if (semver.gte(version, '3.0.12')) {
+    Patches.install('https://raw.githubusercontent.com/YungSang/patches-for-taberareloo/ready-for-v4.0.0/others/menu.multi.requester.tbrl.js', true);
+    return;
+  }
+
   var DATABASE_URL = 'http://wedata.github.io/MultiRequester/items.json';
 
   var WEDATA_LIB = 'https://raw.github.com/YungSang/patches-for-taberareloo/master/utils/util.wedata.tbrl.js';

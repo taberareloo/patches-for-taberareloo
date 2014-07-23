@@ -3,14 +3,28 @@
 //   "name"        : "Fix extractor for Nico Nico Douga"
 // , "namespace"   : "https://github.com/YungSang/patches-for-taberareloo"
 // , "description" : "Fix extractor for Nico Nico Douga"
-// , "include"     : ["content"]
+// , "include"     : ["background", "content"]
 // , "match"       : ["http://www.nicovideo.jp/watch/*"]
-// , "version"     : "1.0.3"
+// , "version"     : "1.0.4"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/patches/patch.extractor.nicovideo.extract.tbrl.js"
 // }
 // ==/Taberareloo==
 
 (function() {
+  if (inContext('background')) {
+    var version = chrome.runtime.getManifest().version;
+    version = version.split('.');
+    if (version.length > 3) {
+      version.pop();
+    }
+    version = version.join('.');
+    if (semver.gte(version, '3.0.12')) {
+      Patches.install('https://raw.githubusercontent.com/YungSang/patches-for-taberareloo/ready-for-v4.0.0/patches/patch.extractor.nicovideo.extract.tbrl.js', true);
+      return;
+    }
+    return;
+  }
+
   update(Extractors['Video - Nico Nico Douga'], {
     extract : function(ctx) {
       var externalPlayerURL = 'http://ext.nicovideo.jp/thumb_' + ctx.pathname.slice(1) + '?thumb_mode=swf&ap=1&c=1';

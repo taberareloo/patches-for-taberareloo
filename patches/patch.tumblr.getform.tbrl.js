@@ -5,12 +5,23 @@
 // , "description" : "Set 'Send to Twitter/Facebook' automatically"
 // , "include"     : ["background", "content"]
 // , "match"       : ["*://www.tumblr.com/dashboard*"]
-// , "version"     : "1.7.2"
+// , "version"     : "1.7.3"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/patches/patch.tumblr.getform.tbrl.js"
 // }
 // ==/Taberareloo==
 
 (function() {
+  var version = chrome.runtime.getManifest().version;
+  version = version.split('.');
+  if (version.length > 3) {
+    version.pop();
+  }
+  version = version.join('.');
+  if (semver.gte(version, '3.0.12')) {
+    Patches.install('https://raw.githubusercontent.com/YungSang/patches-for-taberareloo/ready-for-v4.0.0/patches/patch.model.tumblr.getform.tbrl.js', true);
+    return;
+  }
+
   if (inContext('background')) {
     function getShareOption(channel_id) {
       return request('http://www.tumblr.com/dashboard').addCallback(function(res) {

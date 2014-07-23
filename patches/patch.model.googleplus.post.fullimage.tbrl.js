@@ -4,12 +4,23 @@
 // , "namespace"   : "https://github.com/YungSang/patches-for-taberareloo"
 // , "description" : "Upload a full size image to Google+ always"
 // , "include"     : ["background"]
-// , "version"     : "1.3.0"
+// , "version"     : "1.3.1"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/patches/patch.model.googleplus.post.fullimage.tbrl.js"
 // }
 // ==/Taberareloo==
 
 (function() {
+  var version = chrome.runtime.getManifest().version;
+  version = version.split('.');
+  if (version.length > 3) {
+    version.pop();
+  }
+  version = version.join('.');
+  if (semver.gte(version, '3.0.12')) {
+    Patches.install('https://raw.githubusercontent.com/YungSang/patches-for-taberareloo/ready-for-v4.0.0/patches/patch.model.googleplus.post.fullimage.tbrl.js', true);
+    return;
+  }
+
   var timer = setInterval(function () {
     if (Models['Google+']) {
       clearInterval(timer);

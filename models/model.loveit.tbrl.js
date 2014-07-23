@@ -3,12 +3,22 @@
 //   "name"        : "LoveIt Model"
 // , "description" : "Post to loveit.com"
 // , "include"     : ["background"]
-// , "version"     : "1.0.3"
+// , "version"     : "1.0.4"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/models/model.loveit.tbrl.js"
 // }
 // ==/Taberareloo==
 
 (function() {
+  var version = chrome.runtime.getManifest().version;
+  version = version.split('.');
+  if (version.length > 3) {
+    version.pop();
+  }
+  version = version.join('.');
+  if (semver.gte(version, '3.0.12')) {
+    Patches.install('https://raw.githubusercontent.com/YungSang/patches-for-taberareloo/ready-for-v4.0.0/models/model.loveit.tbrl.js', true);
+    return;
+  }
 
   Models.register({
     name      : 'LoveIt',

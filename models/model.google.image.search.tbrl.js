@@ -3,12 +3,23 @@
 //   "name"        : "Google Image Search Model"
 // , "description" : "Search similar images by Google"
 // , "include"     : ["background"]
-// , "version"     : "0.1.1"
+// , "version"     : "0.1.2"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/models/model.google.image.search.tbrl.js"
 // }
 // ==/Taberareloo==
 
 (function() {
+  var version = chrome.runtime.getManifest().version;
+  version = version.split('.');
+  if (version.length > 3) {
+    version.pop();
+  }
+  version = version.join('.');
+  if (semver.gte(version, '3.0.12')) {
+    Patches.install('https://raw.githubusercontent.com/YungSang/patches-for-taberareloo/ready-for-v4.0.0/models/model.google.image.search.tbrl.js', true);
+    return;
+  }
+
   Models.register({
     name : 'Google Image Search',
     ICON : 'http://www.google.com/images/icons/product/images-32.gif',
