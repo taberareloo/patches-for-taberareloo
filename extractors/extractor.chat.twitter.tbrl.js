@@ -4,7 +4,7 @@
 // , "description" : "Extract tweets as a conversation"
 // , "include"     : ["background", "content", "popup"]
 // , "match"       : ["*://twitter.com/*"]
-// , "version"     : "0.5.1"
+// , "version"     : "0.5.3"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/extractors/extractor.chat.twitter.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -34,7 +34,7 @@
           content: info
         });
       }
-    }, null, 'Quote', true);
+    }, null, 'Link', true);
     Menus.create();
     return;
   }
@@ -216,7 +216,7 @@
           };
         });
       }
-    }], 'Quote - Twitter', true);
+    }], 'Link', true);
     return;
   }
 
