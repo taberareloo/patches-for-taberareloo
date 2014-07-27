@@ -5,21 +5,23 @@
 // , "description" : "Repin at Pinterest"
 // , "include"     : ["background", "content"]
 // , "match"       : ["http://pinterest.com/*", "http://www.pinterest.com/*"]
-// , "version"     : "0.7.3"
+// , "version"     : "0.7.4"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/patches/patch.model.pinterest.repin.tbrl.js"
 // }
 // ==/Taberareloo==
 
 (function() {
-  var version = chrome.runtime.getManifest().version;
-  version = version.split('.');
-  if (version.length > 3) {
-    version.pop();
-  }
-  version = version.join('.');
-  if (semver.gte(version, '3.0.12')) {
-    Patches.install('https://raw.githubusercontent.com/YungSang/patches-for-taberareloo/ready-for-v4.0.0/patches/patch.model.pinterest.repin.tbrl.js', true);
-    return;
+  if (inContext('background')) {
+    var version = chrome.runtime.getManifest().version;
+    version = version.split('.');
+    if (version.length > 3) {
+      version.pop();
+    }
+    version = version.join('.');
+    if (semver.gte(version, '3.0.12')) {
+      Patches.install('https://raw.githubusercontent.com/YungSang/patches-for-taberareloo/ready-for-v4.0.0/patches/patch.model.pinterest.repin.tbrl.js', true);
+      return;
+    }
   }
 
   if (inContext('background')) {

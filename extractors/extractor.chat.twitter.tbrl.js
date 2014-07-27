@@ -4,7 +4,7 @@
 // , "description" : "Extract tweets as a conversation"
 // , "include"     : ["background", "content", "popup"]
 // , "match"       : ["*://twitter.com/*"]
-// , "version"     : "0.5.3"
+// , "version"     : "0.5.4"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/extractors/extractor.chat.twitter.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -12,15 +12,17 @@
 // ported from https://gist.github.com/Constellation/125251
 
 (function() {
-  var version = chrome.runtime.getManifest().version;
-  version = version.split('.');
-  if (version.length > 3) {
-    version.pop();
-  }
-  version = version.join('.');
-  if (semver.gte(version, '3.0.12')) {
-    Patches.install('https://raw.githubusercontent.com/YungSang/patches-for-taberareloo/ready-for-v4.0.0/extractors/extractor.chat.twitter.tbrl.js', true);
-    return;
+  if (inContext('background')) {
+    var version = chrome.runtime.getManifest().version;
+    version = version.split('.');
+    if (version.length > 3) {
+      version.pop();
+    }
+    version = version.join('.');
+    if (semver.gte(version, '3.0.12')) {
+      Patches.install('https://raw.githubusercontent.com/YungSang/patches-for-taberareloo/ready-for-v4.0.0/extractors/extractor.chat.twitter.tbrl.js', true);
+      return;
+    }
   }
 
   if (inContext('background')) {

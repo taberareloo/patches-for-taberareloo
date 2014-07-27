@@ -4,21 +4,23 @@
 // , "description" : "Create a context menu dynamically to post without the popup window"
 // , "include"     : ["background", "content"]
 // , "match"       : ["*://*/*"]
-// , "version"     : "0.8.1"
+// , "version"     : "0.8.2"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/others/menu.taberareloo.no-popup.tbrl.js"
 // }
 // ==/Taberareloo==
 
 (function() {
-  var version = chrome.runtime.getManifest().version;
-  version = version.split('.');
-  if (version.length > 3) {
-    version.pop();
-  }
-  version = version.join('.');
-  if (semver.gte(version, '3.0.12')) {
-    Patches.uninstall(Patches['menu.taberareloo.no-popup.tbrl.js'], true);
-    return;
+  if (inContext('background')) {
+    var version = chrome.runtime.getManifest().version;
+    version = version.split('.');
+    if (version.length > 3) {
+      version.pop();
+    }
+    version = version.join('.');
+    if (semver.gte(version, '3.0.12')) {
+      Patches.uninstall(Patches['menu.taberareloo.no-popup.tbrl.js'], true);
+      return;
+    }
   }
 
   if (inContext('background')) {

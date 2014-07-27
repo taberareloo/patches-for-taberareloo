@@ -5,21 +5,23 @@
 // , "description" : "Omit to check HTTPS"
 // , "include"     : ["background", "content"]
 // , "match"       : ["*://*/*"]
-// , "version"     : "1.5.1"
+// , "version"     : "1.5.2"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/patches/patch.util.checkhttps.tbrl.js"
 // }
 // ==/Taberareloo==
 
 (function() {
-  var version = chrome.runtime.getManifest().version;
-  version = version.split('.');
-  if (version.length > 3) {
-    version.pop();
-  }
-  version = version.join('.');
-  if (semver.gte(version, '3.0.12')) {
-    Patches.uninstall(Patches['patch.util.checkhttps.tbrl.js'], true);
-    return;
+  if (inContext('background')) {
+    var version = chrome.runtime.getManifest().version;
+    version = version.split('.');
+    if (version.length > 3) {
+      version.pop();
+    }
+    version = version.join('.');
+    if (semver.gte(version, '3.0.12')) {
+      Patches.uninstall(Patches['patch.util.checkhttps.tbrl.js'], true);
+      return;
+    }
   }
 
   addAround(window, 'checkHttps', function(proceed, args, target, methodName) {
