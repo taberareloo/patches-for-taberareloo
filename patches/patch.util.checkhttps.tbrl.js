@@ -5,7 +5,7 @@
 // , "description" : "Omit to check HTTPS"
 // , "include"     : ["background", "content"]
 // , "match"       : ["*://*/*"]
-// , "version"     : "1.5.2"
+// , "version"     : "1.5.3"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/patches/patch.util.checkhttps.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -19,7 +19,9 @@
     }
     version = version.join('.');
     if (semver.gte(version, '3.0.12')) {
-      Patches.uninstall(Patches['patch.util.checkhttps.tbrl.js'], true);
+      setTimeout(function () {
+        Patches.uninstall(Patches['patch.util.checkhttps.tbrl.js'], true);
+      }, 500);
       return;
     }
   }

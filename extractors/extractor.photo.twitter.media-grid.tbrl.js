@@ -4,14 +4,16 @@
 // , "description" : "Extract tweets on a media grid page"
 // , "include"     : ["background", "content"]
 // , "match"       : ["*://twitter.com/*"]
-// , "version"     : "0.2.1"
+// , "version"     : "0.2.2"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/extractors/extractor.photo.twitter.media-grid.tbrl.js"
 // }
 // ==/Taberareloo==
 
 (function() {
   if (inContext('background')) {
-    Patches.uninstall(Patches['extractor.photo.twitter.media-grid.tbrl.js'], true);
+    setTimeout(function () {
+      Patches.uninstall(Patches['extractor.photo.twitter.media-grid.tbrl.js'], true);
+    }, 500);
     return;
   }
 
