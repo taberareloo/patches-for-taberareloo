@@ -5,7 +5,7 @@
 // , "description" : "Set 'Send to Twitter/Facebook' automatically"
 // , "include"     : ["background", "content"]
 // , "match"       : ["*://www.tumblr.com/dashboard*"]
-// , "version"     : "2.0.0"
+// , "version"     : "2.0.1"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/patches/patch.tumblr.getform.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -23,6 +23,10 @@
         }
         else {
           div = $X('//li/div', doc)[0];
+        }
+
+        if (!div) {
+          throw new Error(chrome.i18n.getMessage('error_notLoggedin', 'Tumblr'));
         }
 
         var twitter     = div.getAttribute('data-twitter')     === 'true';
