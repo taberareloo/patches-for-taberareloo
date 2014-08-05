@@ -9,7 +9,7 @@
 //     "*://www.tumblr.com/blog/*",
 //     "*://www.tumblr.com/tagged/*"
 //   ]
-// , "version"     : "0.3.4"
+// , "version"     : "2.0.1"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/userscripts/userscript.fix.tumblr.like.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -30,7 +30,7 @@
   }
 
   function doAction(action, data) {
-    return request('http://www.tumblr.com/svc/' + action, {
+    return request('https://www.tumblr.com/svc/' + action, {
       sendContent : data
     });
   }
