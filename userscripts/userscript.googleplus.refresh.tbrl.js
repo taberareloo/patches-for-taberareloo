@@ -4,26 +4,12 @@
 // , "description" : "Get new posts on Google+ automatically"
 // , "include"     : ["background", "content"]
 // , "match"       : ["https://plus.google.com/*"]
-// , "version"     : "0.7.5"
+// , "version"     : "2.0.0"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/userscripts/userscript.googleplus.refresh.tbrl.js"
 // }
 // ==/Taberareloo==
 
 (function() {
-  if (inContext('background')) {
-    var version = chrome.runtime.getManifest().version;
-    version = version.split('.');
-    if (version.length > 3) {
-      version.pop();
-    }
-    version = version.join('.');
-    if (semver.gte(version, '3.0.12')) {
-      Patches.install('https://raw.githubusercontent.com/YungSang/patches-for-taberareloo/ready-for-v4.0.0/userscripts/userscript.googleplus.refresh.tbrl.js', true);
-      return;
-    }
-    return;
-  }
-
   if (inContext('background')) {
     var auto_refresh = (localStorage.getItem('googleplus_auto_refresh') === 'true') || false;
 
@@ -76,7 +62,7 @@
           previous_notification.close();
           previous_notification = null;
         }
-        maybeDeferred(TBRL.Notification.notify(notification)).addCallback(function (n) {
+        Promise.resolve(TBRL.Notification.notify(notification)).then(function (n) {
           previous_notification = n;
         });
       }

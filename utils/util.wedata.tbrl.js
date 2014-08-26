@@ -3,7 +3,7 @@
 //   "name"        : "Wedata"
 // , "description" : "Get items in a database of Wedata"
 // , "include"     : ["background"]
-// , "version"     : "0.1.2"
+// , "version"     : "2.0.1"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/utils/util.wedata.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -11,22 +11,11 @@
 /*
 Usage:
   var database = new Wedata.Database('iview-for-taberareloo', 'http://wedata.github.io/iview/items.json');
-  database.get().addCallback(function (items) {
+  database.get().then(function (items) {
   });
 */
 
 (function (exports) {
-  var version = chrome.runtime.getManifest().version;
-  version = version.split('.');
-  if (version.length > 3) {
-    version.pop();
-  }
-  version = version.join('.');
-  if (semver.gte(version, '3.0.12')) {
-    Patches.install('https://raw.githubusercontent.com/YungSang/patches-for-taberareloo/ready-for-v4.0.0/utils/util.wedata.tbrl.js', true);
-    return;
-  }
-
   var Wedata = exports.Wedata = {};
 
   Wedata.Database = function (name, url, debug) {
@@ -52,7 +41,7 @@ Usage:
           t : (new Date()).getTime()
         },
         headers : headers
-      }).addCallback(function (res) {
+      }).then(function (res) {
         return {
           resource_url  : url,
           last_modified : res.getResponseHeader('Last-Modified'),
@@ -66,20 +55,19 @@ Usage:
 
       if (refresh) {
         self.debug && console.info('Refresh! Get data from the remote server');
-        return self.getFromRemote(self.url).addCallback(function (data) {
+        return self.getFromRemote(self.url).then(function (data) {
           self.cache.set(data);
           return data.items;
         });
       }
 
-      return this.cache.get().addCallback(function (cache) {
-        return self.getFromRemote(self.url, cache.last_modified).addCallback(function (data) {
+      return this.cache.get().then(function (cache) {
+        return self.getFromRemote(self.url, cache.last_modified).then(function (data) {
           self.debug && console.info('Got data from the remote server');
           self.cache.set(data);
           return data.items;
-        }).addErrback(function (e) {
-          self.debug && console.info(e.message);
-          var res = e.message;
+        }).catch(function (res) {
+          self.debug && console.info(res);
           if (res.status && (res.status === 304)) {
             self.debug && console.info('Not Modified! Use data from a cache');
           }
@@ -88,9 +76,9 @@ Usage:
           }
           return cache.items;
         });
-      }).addErrback(function (e) {
+      }).catch(function (e) {
         self.debug && console.info('Get data from the remote server');
-        return self.getFromRemote(self.url).addCallback(function (data) {
+        return self.getFromRemote(self.url).then(function (data) {
           self.cache.set(data);
           return data.items;
         });
@@ -100,90 +88,90 @@ Usage:
 
   update(Wedata.Cache.prototype, {
     getDirectory : function (name) {
-      var deferred = new Deferred();
-      var rfs = window.requestFileSystem || window.webkitRequestFileSystem;
-      rfs(window.PERSISTENT, 1024 * 1024, function (fs) {
-          fs.root.getDirectory(name, { create : true },
-            function (dirEntry) {
-              deferred.callback(dirEntry);
-            },
-            function (e) {
-              deferred.errback(e);
-            }
-          );
-        },
-        function (e) {
-          deferred.errback(e);
-        }
-      );
-      return deferred;
+      return new Promise(function (resolve, reject) {
+        var rfs = window.requestFileSystem || window.webkitRequestFileSystem;
+        rfs(window.PERSISTENT, 1024 * 1024, function (fs) {
+            fs.root.getDirectory(name, { create : true },
+              function (dirEntry) {
+                resolve(dirEntry);
+              },
+              function (e) {
+                reject(e);
+              }
+            );
+          },
+          function (e) {
+            reject(e);
+          }
+        );
+      });
     },
 
     set : function (data) {
       var self = this;
-      var deferred = new Deferred();
-      this.getDirectory(self.dir).addCallback(function (dirEntry) {
-        dirEntry.getFile(self.file, { create: true },
-          function (fileEntry) {
-            fileEntry.createWriter(
-              function (fileWriter) {
-                fileWriter.onwriteend = function () {
-                  this.onwriteend = null;
-                  this.truncate(this.position);
-                  deferred.callback(fileEntry);
-                };
-                fileWriter.onerror = function (e) {
-                  deferred.errback(e);
-                };
-                var blob = new Blob(
-                  [ JSON.stringify(data) ],
-                  { type : 'text/plain' }
-                );
-                fileWriter.write(blob);
-              },
-              function (e) {
-                deferred.errback(e);
-              }
-            );
-          },
-          function (e) {
-            deferred.errback(e);
-          }
-        );
+      return new Promise(function (resolve, reject) {
+        self.getDirectory(self.dir).then(function (dirEntry) {
+          dirEntry.getFile(self.file, { create: true },
+            function (fileEntry) {
+              fileEntry.createWriter(
+                function (fileWriter) {
+                  fileWriter.onwriteend = function () {
+                    this.onwriteend = null;
+                    this.truncate(this.position);
+                    resolve(fileEntry);
+                  };
+                  fileWriter.onerror = function (e) {
+                    reject(e);
+                  };
+                  var blob = new Blob(
+                    [ JSON.stringify(data) ],
+                    { type : 'text/plain' }
+                  );
+                  fileWriter.write(blob);
+                },
+                function (e) {
+                  reject(e);
+                }
+              );
+            },
+            function (e) {
+              reject(e);
+            }
+          );
+        });
       });
-      return deferred;
     },
 
     get : function () {
       var self = this;
-      var deferred = new Deferred();
-      this.getDirectory(self.dir).addCallback(function (dirEntry) {
-        dirEntry.getFile(self.file, {},
-          function (fileEntry) {
-            fileEntry.file(
-              function (file) {
-                var reader = new FileReader();
-                reader.onloadend = function (evt) {
-                  if (evt.target.readyState === FileReader.DONE) {
-                    deferred.callback(JSON.parse(evt.target.result));
-                  }
-                };
-                reader.onerror = function () {
-                  deferred.errback();
-                };
-                reader.readAsText(file);
-              },
-              function (e) {
-                deferred.errback(e);
-              }
-            );
-          },
-          function (e) {
-            deferred.errback(e);
-          }
-        );
+      return new Promise(function (resolve, reject) {
+        self.getDirectory(self.dir).then(function (dirEntry) {
+          dirEntry.getFile(self.file, {},
+            function (fileEntry) {
+              fileEntry.file(
+                function (file) {
+                  var reader = new FileReader();
+                  reader.onloadend = function (evt) {
+                    if (evt.target.readyState === FileReader.DONE) {
+                      resolve(JSON.parse(evt.target.result));
+                    }
+                  };
+                  reader.onerror = function () {
+                    reject();
+                  };
+                  reader.readAsText(file);
+                },
+                function (e) {
+                  reject(e);
+                }
+              );
+            },
+            function (e) {
+              reject(e);
+            }
+          );
+        });
       });
-      return deferred;
     }
   });
 })(this);

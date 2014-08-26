@@ -3,22 +3,12 @@
 //   "name"        : "LoveIt Model"
 // , "description" : "Post to loveit.com"
 // , "include"     : ["background"]
-// , "version"     : "1.0.4"
+// , "version"     : "2.0.0"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/models/model.loveit.tbrl.js"
 // }
 // ==/Taberareloo==
 
 (function() {
-  var version = chrome.runtime.getManifest().version;
-  version = version.split('.');
-  if (version.length > 3) {
-    version.pop();
-  }
-  version = version.join('.');
-  if (semver.gte(version, '3.0.12')) {
-    Patches.install('https://raw.githubusercontent.com/YungSang/patches-for-taberareloo/ready-for-v4.0.0/models/model.loveit.tbrl.js', true);
-    return;
-  }
 
   Models.register({
     name      : 'LoveIt',
@@ -37,9 +27,9 @@
 
     getCSRFToken : function() {
       var self = this;
-      return getCookies('loveit.com', 'au').addCallback(function(cookies) {
+      return getCookies('loveit.com', 'au').then(function (cookies) {
         if (cookies.length) {
-          return request(self.LINK, { responseType: 'document' }).addCallback(function(res) {
+          return request(self.LINK, { responseType: 'document' }).then(function (res) {
             return $X('//meta[@name="csrf-token"]/@content', res.response)[0];
           });
         } else {
@@ -50,9 +40,9 @@
 
     getCollections : function() {
       var self = this;
-      return request(this.FORM_URL, { responseType : 'document' }).addCallback(function(res) {
+      return request(this.FORM_URL, { responseType : 'document' }).then(function (res) {
         var collections = [];
-        $X('id("fancy_board_id")/option', res.response).forEach(function(option) {
+        $X('id("fancy_board_id")/option', res.response).forEach(function (option) {
           if ($X('./@value', option)[0] !== 'create_new') {
             collections.push({
               id   : $X('./@value', option)[0],
@@ -66,11 +56,11 @@
 
     getMostRecentCollectionId : function() {
       var self = this;
-      return getCookies('loveit.com', 'most_recent_board_id').addCallback(function(cookies) {
+      return getCookies('loveit.com', 'most_recent_board_id').then(function (cookies) {
         if (cookies.length) {
           return cookies[cookies.length-1].value;
         } else {
-          return self.getCollections().addCallback(function(collections) {
+          return self.getCollections().then(function (collections) {
             return collections && collections[0] && collections[0].id;
           });
         }
@@ -94,11 +84,11 @@
         link_title     : ps.page
       };
 
-      return this.getCSRFToken().addCallback(function(csrftoken) {
+      return this.getCSRFToken().then(function (csrftoken) {
         return (
           ps.file ? self.uploadImage(ps, csrftoken) : self.uploadImagefromURL(ps, csrftoken)
-        ).addCallback(function(image) {
-          return self.getMostRecentCollectionId().addCallback(function(collection_id) {
+        ).then(function (image) {
+          return self.getMostRecentCollectionId().then(function (collection_id) {
             return request(self.POST_URL, {
               sendContent : update(sendContent, {
                 'images[0][image_id]'      : image.id,
@@ -109,9 +99,10 @@
               headers : {
                 'X-CSRF-Token'     : csrftoken,
                 'X-Requested-With' : 'XMLHttpRequest'
-              }
-            }).addCallback(function(res) {
-              var json = JSON.parse(res.responseText);
+              },
+              responseType : 'json'
+            }).then(function (res) {
+              var json = res.response;
               if (!json.success_html) {
                 throw new Error("Could not post it");
               }
@@ -132,7 +123,7 @@
           'X-CSRF-Token'     : csrftoken,
           'X-Requested-With' : 'XMLHttpRequest'
         }
-      }).addCallback(function(res) {
+      }).then(function (res) {
         try {
           var json = JSON.parse(res.responseText);
           if (json && json.image) {
@@ -159,7 +150,7 @@
           'X-CSRF-Token'     : csrftoken,
           'X-Requested-With' : 'XMLHttpRequest'
         }
-      }).addCallback(function(res) {
+      }).then(function (res) {
         try {
           var json = JSON.parse(res.responseText);
           if (json && json.image) {

@@ -3,7 +3,7 @@
 //   "name"        : "WordPress Model"
 // , "description" : "Post to WordPress"
 // , "include"     : ["background"]
-// , "version"     : "0.2.2"
+// , "version"     : "2.0.0"
 // }
 // ==/Taberareloo==
 
@@ -39,7 +39,7 @@
           controller : 'posts',
           method     : 'create_post'
         }
-      }).addCallback(function (res) {
+      }).then(function (res) {
         return JSON.parse(res.responseText).nonce;
       });
     },
@@ -76,13 +76,14 @@
         sendContent.attachment = ps.file;
       }
 
-      return this.getNonce().addCallback(function (nonce) {
+      return this.getNonce().then(function (nonce) {
         return request(self.WP_URL + self.POST_API, {
           sendContent : update(sendContent, {
             nonce   : nonce,
-          })
-        }).addCallback(function (res) {
-          var json = JSON.parse(res.responseText);
+          }),
+          responseType : 'json'
+        }).then(function (res) {
+          var json = res.response;
           if (json.status !== 'ok') {
             throw new Error(chrome.i18n.getMessage('error_notLoggedin', self.name));
           }

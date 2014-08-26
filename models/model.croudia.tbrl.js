@@ -3,23 +3,12 @@
 //   "name"        : "Croudia Model"
 // , "description" : "Post to croudia.com"
 // , "include"     : ["background"]
-// , "version"     : "0.1.6"
+// , "version"     : "2.0.0"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/models/model.croudia.tbrl.js"
 // }
 // ==/Taberareloo==
 
 (function () {
-  var version = chrome.runtime.getManifest().version;
-  version = version.split('.');
-  if (version.length > 3) {
-    version.pop();
-  }
-  version = version.join('.');
-  if (semver.gte(version, '3.0.12')) {
-    Patches.install('https://raw.githubusercontent.com/YungSang/patches-for-taberareloo/ready-for-v4.0.0/models/model.croudia.tbrl.js', true);
-    return;
-  }
-
   Models.register({
     name      : 'Croudia',
     ICON      : 'https://croudia.com/favicon.ico',
@@ -38,9 +27,9 @@
     getForm : function () {
       var self = this;
       return (
-        this.is_initialized ? succeed() : request(this.LOGIN_URL)
-      ).addCallback(function () {
-        return request(self.FORM_URL, {responseType: 'document'}).addCallback(function (res) {
+        this.is_initialized ? Promise.resolve() : request(this.LOGIN_URL)
+      ).then(function () {
+        return request(self.FORM_URL, {responseType: 'document'}).then(function (res) {
           var doc = res.response;
           var form = formContents(doc);
           if (!form.utf8) {
@@ -83,19 +72,19 @@
     update : function (ps, voice) {
       var self = this;
 
-      return self.getForm().addCallback(function(form) {
+      return self.getForm().then(function (form) {
         delete form.commit;
         delete form['image_file[file]'];
         form.utf8 = '✓';
         form['voice[tweet]'] = voice;
-        return ((ps.type === 'photo') ? self.download(ps) : succeed(null)).addCallback(function(file) {
+        return ((ps.type === 'photo') ? self.download(ps) : Promise.resolve(null)).then(function (file) {
           if (file) {
             form['image_file[file]'] = file;
           }
           return request(self.POST_URL, {
             sendContent : form,
             multipart   : true
-          }).addCallback(function(res) {
+          }).then(function (res) {
             var error = res.responseText.extract(/window.parent.error_popup\('(.+)'\);/);
             if (error) {
               throw new Error(error);
@@ -107,8 +96,8 @@
 
     download : function (ps) {
       return (
-        ps.file ? succeed(ps.file)
-          : download(ps.itemUrl).addCallback(function(entry) {
+        ps.file ? Promise.resolve(ps.file)
+          : download(ps.itemUrl).then(function (entry) {
             return getFileFromEntry(entry);
           })
       );

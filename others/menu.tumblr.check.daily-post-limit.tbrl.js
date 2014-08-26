@@ -3,23 +3,12 @@
 //   "name"        : "Check Tumblr Daily Post Limit"
 // , "description" : "Display the current number of Today's posts in Tumblr"
 // , "include"     : ["background"]
-// , "version"     : "0.2.2"
+// , "version"     : "2.0.1"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/others/menu.tumblr.check.daily-post-limit.tbrl.js"
 // }
 // ==/Taberareloo==
 
 (function() {
-  var version = chrome.runtime.getManifest().version;
-  version = version.split('.');
-  if (version.length > 3) {
-    version.pop();
-  }
-  version = version.join('.');
-  if (semver.gte(version, '3.0.12')) {
-    Patches.install('https://raw.githubusercontent.com/YungSang/patches-for-taberareloo/ready-for-v4.0.0/others/menu.tumblr.check.daily-post-limit.tbrl.js', true);
-    return;
-  }
-
   var API_URL = 'http://api.tumblr.com/v2/';
   var API_KEY = 'c1TjhCQ860vZlq2gK2EsU21iA7t0Tz4XxYHuJ6oJj6mf3tVDlJ';
 
@@ -41,23 +30,23 @@
       timestamp = getResetTimestamp();
       posts  = 0;
       photos = 0;
-      var deferreds = [];
+      var promises = [];
 
       chrome.contextMenus.update(menu.id, {
         enabled : false
       });
 
-      maybeDeferred(TBRL.Notification.notify({
+      Promise.resolve(TBRL.Notification.notify({
         title   : title,
         message : 'Counting...'
-      })).addCallback(function (n) {
+      })).then(function (n) {
         notification = n;
 
-        (Tumblr.blogs ? succeed() : Tumblr.getTumblelogs()).addCallback(function(blogs) {
+        (Tumblr.blogs ? Promise.resolve() : Tumblr.getTumblelogs()).then(function (blogs) {
           Tumblr.blogs.forEach(function (id) {
-            deferreds.push(getPosts(id, 0));
+            promises.push(getPosts(id, 0));
           });
-          new DeferredHash(deferreds).addCallback(function (ress) {
+          promiseAllHash(promises).then(function (ress) {
             if (notification) {
               setTimeout(function () {
                 TBRL.Notification.notify({
@@ -75,7 +64,7 @@
               enabled : true
             }, function() {});
           });
-        }).addErrback(function (e) {
+        }).catch(function (e) {
           if (notification) {
             notification.close();
           }
@@ -94,9 +83,10 @@
         api_key     : API_KEY,
         offset      : offset,
         reblog_info : true
-      }
-    }).addCallback(function (res) {
-      var data = JSON.parse(res.responseText);
+      },
+      responseType : 'json'
+    }).then(function (res) {
+      var data = res.response;
       data.response.posts.forEach(function (post) {
         if (post.timestamp > timestamp) {
           posts++;
@@ -115,8 +105,8 @@
       if (data.response.posts[data.response.posts.length - 1].timestamp > timestamp) {
         return getPosts(id, offset + data.response.posts.length);
       }
-    }).addErrback(function (e) {
-      return succeed();
+    }).catch(function (e) {
+      return Promise.resolve();
     });
   }
 

@@ -2,28 +2,14 @@
 // {
 //   "name"        : "Reblog Extractor for Google+"
 // , "description" : "Extract posts to reblog/reshare"
-// , "include"     : ["background", "content"]
+// , "include"     : ["content"]
 // , "match"       : ["https://plus.google.com/*"]
-// , "version"     : "1.0.3"
+// , "version"     : "2.0.0"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/extractors/extractor.reblog.googleplus.tbrl.js"
 // }
 // ==/Taberareloo==
 
 (function() {
-  if (inContext('background')) {
-    var version = chrome.runtime.getManifest().version;
-    version = version.split('.');
-    if (version.length > 3) {
-      version.pop();
-    }
-    version = version.join('.');
-    if (semver.gte(version, '3.0.12')) {
-      Patches.install('https://raw.githubusercontent.com/YungSang/patches-for-taberareloo/ready-for-v4.0.0/extractors/extractor.reblog.googleplus.tbrl.js', true);
-      return;
-    }
-    return;
-  }
-
   if (Extractors['ReBlog - Google+']) {
     Extractors.remove('ReBlog - Google+');
   }
@@ -51,7 +37,7 @@
         updateId : id,
         hl       : 'en',
         rt       : 'j'
-      })).addCallback(function (res) {
+      })).then(function (res) {
         var data, item;
 
         data = res.responseText.substr(5).replace(/(\\n|\n)/g, '');

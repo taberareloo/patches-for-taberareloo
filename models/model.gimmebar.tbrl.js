@@ -3,23 +3,12 @@
 //   "name"        : "GimmeBar Model"
 // , "description" : "Post to gimmebar.com"
 // , "include"     : ["background"]
-// , "version"     : "1.0.1"
+// , "version"     : "2.0.1"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/models/model.gimmebar.tbrl.js"
 // }
 // ==/Taberareloo==
 
 (function() {
-  var version = chrome.runtime.getManifest().version;
-  version = version.split('.');
-  if (version.length > 3) {
-    version.pop();
-  }
-  version = version.join('.');
-  if (semver.gte(version, '3.0.12')) {
-    Patches.install('https://raw.githubusercontent.com/YungSang/patches-for-taberareloo/ready-for-v4.0.0/models/model.gimmebar.tbrl.js', true);
-    return;
-  }
-
   Models.register({
     name      : 'GimmeBar',
     ICON      : 'https://gimmebar.com/img/favicon.png',
@@ -36,16 +25,11 @@
 
     getCSRFToken : function() {
       var self = this;
-      return request(this.INIT_URL).addCallback(function(res) {
-        if (res.responseText) {
-          var data = {};
-          try {
-            data = JSON.parse(res.responseText);
-          }
-          catch (e) {
-            throw new Error(chrome.i18n.getMessage('error_notLoggedin', self.name));
-          }
-          return data.csrf_token;
+      return request(this.INIT_URL, {
+        responseType : 'json'
+      }).then(function (res) {
+        if (res.response) {
+          return res.response.csrf_token;
         } else {
           throw new Error(chrome.i18n.getMessage('error_notLoggedin', self.name));
         }
@@ -83,7 +67,7 @@
         return this.post_video(ps, sendContent);
       }
 
-      return this.getCSRFToken().addCallback(function(csrftoken) {
+      return this.getCSRFToken().then(function (csrftoken) {
         sendContent._csrf = csrftoken;
         return request(self.POST_URL, {
           sendContent : sendContent
@@ -95,18 +79,20 @@
       var self = this;
       return request(this.CHECK_URL + '?' + queryString({
         check : ps.itemUrl || ps.pageUrl
-      })).addCallback(function(res) {
-        if (res.responseText) {
-          var data = JSON.parse(res.responseText);
+      }), {
+        responseType : 'json'
+      }).then(function (res) {
+        if (res.response) {
+          var data = res.response;
           sendContent.assimilator = JSON.stringify(data[0]);
-          return self.getCSRFToken().addCallback(function(csrftoken) {
+          return self.getCSRFToken().then(function (csrftoken) {
             sendContent._csrf = csrftoken;
             return request(self.POST_URL, {
               sendContent : sendContent
             });
           });
         }
-      }).addErrback(function(e) {
+      }).catch(function (e) {
         throw new Error('Not supported a video post on this site.');
       });
     },
@@ -114,9 +100,9 @@
     upload : function(ps, sendContent) {
       var self = this;
 
-      return fileToDataURL(ps.file).addCallback(function (dataURL) {
+      return fileToDataURL(ps.file).then(function (dataURL) {
         sendContent.raw = dataURL;
-        return self.getCSRFToken().addCallback(function(csrftoken) {
+        return self.getCSRFToken().then(function (csrftoken) {
           sendContent._csrf = csrftoken;
           return request(self.POST_URL, {
             sendContent : sendContent

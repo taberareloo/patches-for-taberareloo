@@ -5,25 +5,12 @@
 // , "description" : "Repin at Pinterest"
 // , "include"     : ["background", "content"]
 // , "match"       : ["http://pinterest.com/*", "http://www.pinterest.com/*"]
-// , "version"     : "0.7.4"
+// , "version"     : "2.0.0"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/patches/patch.model.pinterest.repin.tbrl.js"
 // }
 // ==/Taberareloo==
 
 (function() {
-  if (inContext('background')) {
-    var version = chrome.runtime.getManifest().version;
-    version = version.split('.');
-    if (version.length > 3) {
-      version.pop();
-    }
-    version = version.join('.');
-    if (semver.gte(version, '3.0.12')) {
-      Patches.install('https://raw.githubusercontent.com/YungSang/patches-for-taberareloo/ready-for-v4.0.0/patches/patch.model.pinterest.repin.tbrl.js', true);
-      return;
-    }
-  }
-
   if (inContext('background')) {
     var app_version = "46ab";
 
@@ -33,9 +20,9 @@
         var self = this;
         var pin_id = ps.favorite.id;
         return (
-          ps.pinboard ? succeed([{id : ps.pinboard}]) : self._getBoards(true)
-        ).addCallback(function(boards) {
-          return self.getCSRFToken().addCallback(function(csrftoken) {
+          ps.pinboard ? Promise.resolve([{id : ps.pinboard}]) : self._getBoards(true)
+        ).then(function (boards) {
+          return self.getCSRFToken().then(function (csrftoken) {
             return request(REPIN_URL, {
               sendContent : {
                 data : JSON.stringify({
@@ -57,10 +44,10 @@
                 'X-CSRFToken'      : csrftoken,
                 'X-NEW-APP'        : 1,
                 'X-Requested-With' : 'XMLHttpRequest'
-              }
-            }).addCallback(function(res) {
-              var json = JSON.parse(res.responseText);
-              app_version = json.client_context.app_version;
+              },
+              responseType : 'json'
+            }).then(function (res) {
+              app_version = res.response.client_context.app_version;
             });
           });
         });
@@ -81,7 +68,7 @@
 
       return request('http://pinterest.com/pin/' + pin_id, {
         responseType: 'document'
-      }).addCallback(function(res) {
+      }).then(function (res) {
         var doc = res.response;
 
         ctx.title = $X('//title/text()', doc)[0];

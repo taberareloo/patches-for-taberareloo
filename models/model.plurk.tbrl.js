@@ -3,23 +3,12 @@
 //   "name"        : "Plurk Model"
 // , "description" : "Post to plurk.com"
 // , "include"     : ["background"]
-// , "version"     : "1.1.1"
+// , "version"     : "2.0.0"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/models/model.plurk.tbrl.js"
 // }
 // ==/Taberareloo==
 
 (function() {
-  var version = chrome.runtime.getManifest().version;
-  version = version.split('.');
-  if (version.length > 3) {
-    version.pop();
-  }
-  version = version.join('.');
-  if (semver.gte(version, '3.0.12')) {
-    Patches.install('https://raw.githubusercontent.com/YungSang/patches-for-taberareloo/ready-for-v4.0.0/models/model.plurk.tbrl.js', true);
-    return;
-  }
-
   Models.register({
     name       : 'Plurk',
     ICON       : 'http://statics.plurk.com/b872d9e40dbce69e5cde4787ccb74e60.png',
@@ -33,7 +22,7 @@
     },
 
     getUserID : function() {
-      return request(this.LINK).addCallback(function(res) {
+      return request(this.LINK).then(function (res) {
         var user_id =  res.responseText.extract(/"user_id": ([0-9]+),/);
         if (!user_id) {
           throw new Error(chrome.i18n.getMessage('error_notLoggedin', self.name));
@@ -70,7 +59,7 @@
         text = text.substring(0, maxLength - 3) + '...';
       }
 
-      return this.getUserID().addCallback(function(user_id) {
+      return this.getUserID().then(function (user_id) {
         return request(self.POST_URL, {
           sendContent : {
             posted      : (new Date()).toISOString(),
@@ -80,7 +69,7 @@
             no_comments : 0,
             uid         : user_id
           }
-        }).addCallback(function(res) {
+        }).then(function (res) {
         });
       });
     }

@@ -4,29 +4,21 @@
 // , "namespace"   : "https://github.com/YungSang/patches-for-taberareloo"
 // , "description" : "Set 'Send to Twitter/Facebook' automatically"
 // , "include"     : ["background", "content"]
-// , "match"       : ["*://www.tumblr.com/dashboard*"]
-// , "version"     : "1.7.5"
+// , "match"       : [
+//     "*://www.tumblr.com/dashboard*",
+//     "*://www.tumblr.com/likes*",
+//     "*://www.tumblr.com/blog/*",
+//     "*://www.tumblr.com/tagged/*"
+//   ]
+// , "version"     : "2.0.2"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/patches/patch.tumblr.getform.tbrl.js"
 // }
 // ==/Taberareloo==
 
 (function() {
   if (inContext('background')) {
-    var version = chrome.runtime.getManifest().version;
-    version = version.split('.');
-    if (version.length > 3) {
-      version.pop();
-    }
-    version = version.join('.');
-    if (semver.gte(version, '3.0.12')) {
-      Patches.install('https://raw.githubusercontent.com/YungSang/patches-for-taberareloo/ready-for-v4.0.0/patches/patch.tumblr.getform.tbrl.js', true);
-      return;
-    }
-  }
-
-  if (inContext('background')) {
     function getShareOption(channel_id) {
-      return request('http://www.tumblr.com/dashboard').addCallback(function(res) {
+      return request('http://www.tumblr.com/dashboard').then(function (res) {
         var html = res.responseText.replace(/\s+/g, ' ');
         var selectbox = html.extract(/<% \} else \{ %>(<div id="tumblelog_choices".*<\/ul><\/div><\/div><\/div>)<% \} %><\/div>/);
         var doc = createHTML(selectbox);
@@ -36,6 +28,10 @@
         }
         else {
           div = $X('//li/div', doc)[0];
+        }
+
+        if (!div) {
+          throw new Error(chrome.i18n.getMessage('error_notLoggedin', 'Tumblr'));
         }
 
         var twitter     = div.getAttribute('data-twitter')     === 'true';
@@ -51,28 +47,28 @@
       });
     }
 
-    addAround(Models['Tumblr'], 'getForm', function(proceed, args, target, methodName) {
-      return proceed(args).addCallback(function(form) {
+    addAround(Models['Tumblr'], 'getForm', function (proceed, args, target, methodName) {
+      return proceed(args).then(function (form) {
         var dmy_form = {};
         target.appendTags(dmy_form, {});
-        return getShareOption(dmy_form.channel_id).addCallback(function(option) {
+        return getShareOption(dmy_form.channel_id).then(function (option) {
           form = update(form, {
             channel_id      : option.id,
-            send_to_twitter : option.twitter  ? 'on' : '',
-            send_to_fbog    : option.facebook ? 'on' : ''
+            send_to_twitter : option.twitter,
+            send_to_fbog    : option.facebook
           });
           return form;
         });
       });
     });
-    addAround(Models['Tumblr'], 'favor', function(proceed, args, target, methodName) {
+    addAround(Models['Tumblr'], 'favor', function (proceed, args, target, methodName) {
       var dmy_form = {};
       target.appendTags(dmy_form, {});
-      return getShareOption(dmy_form.channel_id).addCallback(function(option) {
+      return getShareOption(dmy_form.channel_id).then(function (option) {
         args[0].favorite.form = update(args[0].favorite.form, {
           channel_id      : option.id,
-          send_to_twitter : option.twitter  ? 'on' : '',
-          send_to_fbog    : option.facebook ? 'on' : ''
+          send_to_twitter : option.twitter,
+          send_to_fbog    : option.facebook
         });
         return proceed(args);
       });
@@ -92,7 +88,7 @@
       ctx.post_type  = post.getAttribute('data-type');
 
       var that = Extractors['ReBlog'];
-      return that.getFormKeyAndChannelId(ctx).addCallback(function() {
+      return that.getFormKeyAndChannelId(ctx).then(function () {
         return that.extractByEndpoint(ctx, that.TUMBLR_URL + 'reblog/' + ctx.reblog_id + '/' + ctx.reblog_key);
       });
     }

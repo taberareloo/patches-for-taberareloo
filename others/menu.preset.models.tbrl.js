@@ -4,7 +4,7 @@
 // , "description" : "Post to preset models"
 // , "include"     : ["background", "content"]
 // , "match"       : ["*://*/*"]
-// , "version"     : "0.9.0"
+// , "version"     : "2.0.0"
 // }
 // ==/Taberareloo==
 
@@ -16,7 +16,7 @@
 
   var PRESET_EVENTS  = {};
   var PRESET_ACTIONS = [];
-  Object.keys(PRESET_MODELS).forEach(function(i) {
+  Object.keys(PRESET_MODELS).forEach(function (i) {
     PRESET_EVENTS[i] = {
       name  : 'Taberareloo.preset_' + i,
       title : 'Preset ' + i + ' (' + PRESET_MODELS[i].join(', ') + ')',
@@ -30,7 +30,7 @@
   });
 
   if (inContext('background')) {
-    Object.keys(PRESET_MODELS).forEach(function(i) {
+    Object.keys(PRESET_MODELS).forEach(function (i) {
       Menus._register({
         title    : PRESET_EVENTS[i].title,
         contexts : ['all'],
@@ -53,15 +53,15 @@
 
     TBRL.setRequestHandler('postToPresetModels', function (req, sender, func) {
       var ps = req.content;
-      var models = PRESET_MODELS[req.preset].filter(function(name) {
-        return Models.values.some(function(model) {
+      var models = PRESET_MODELS[req.preset].filter(function (name) {
+        return Models.values.some(function (model) {
           return model.name === name;
         });
       });
-      var posters = models.map(function(name) {
+      var posters = models.map(function (name) {
         return Models[name];
       });
-      posters = posters.filter(function(m) {
+      posters = posters.filter(function (m) {
         return (ps.favorite && ps.favorite.name === (m.typeName || m.name)) || (m.check && m.check(ps));
       });
       if (!posters.length) {
@@ -77,8 +77,8 @@
       group   : 'Taberareloo',
       actions : PRESET_ACTIONS
     };
-    chrome.runtime.sendMessage(CHROME_GESTURES, action, function(res) {});
-    chrome.runtime.sendMessage(CHROME_KEYCONFIG, action, function(res) {});
+    chrome.runtime.sendMessage(CHROME_GESTURES, action, function (res) {});
+    chrome.runtime.sendMessage(CHROME_KEYCONFIG, action, function (res) {});
     return;
   }
 
@@ -122,7 +122,7 @@
     }
     update(ctx, TBRL.createContext((query && document.querySelector(query)) || TBRL.getContextMenuTarget()));
 
-    TBRL.extract(ctx, Extractors.check(ctx)[0]).addCallback(function(ps) {
+    TBRL.extract(ctx, Extractors.check(ctx)[0]).then(function (ps) {
       chrome.runtime.sendMessage(TBRL.id, {
         request : "postToPresetModels",
         content : checkHttps(update({
@@ -172,7 +172,7 @@
       }
     }
 
-    TBRL.extract(ctx, ext).addCallback(function(ps) {
+    TBRL.extract(ctx, ext).then(function (ps) {
       chrome.runtime.sendMessage(TBRL.id, {
         request : "postToPresetModels",
         content : checkHttps(update({
@@ -184,12 +184,12 @@
     });
   }
 
-  Object.keys(PRESET_EVENTS).forEach(function(i) {
+  Object.keys(PRESET_EVENTS).forEach(function (i) {
     window.addEventListener(PRESET_EVENTS[i].name, PRESET_EVENTS[i].func, false);
   });
 
-  document.addEventListener('unload', function() {
-    Object.keys(PRESET_EVENTS).forEach(function(i) {
+  document.addEventListener('unload', function () {
+    Object.keys(PRESET_EVENTS).forEach(function (i) {
       window.removeEventListener(PRESET_EVENTS[i].name, PRESET_EVENTS[i].func, false);
     });
   }, false);

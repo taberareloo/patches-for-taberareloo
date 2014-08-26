@@ -3,23 +3,12 @@
 //   "name"        : "Goo.gl Model"
 // , "description" : "Add Google URL Shortener for Twitter"
 // , "include"     : ["background"]
-// , "version"     : "1.0.2"
+// , "version"     : "2.0.1"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/models/model.googl.tbrl.js"
 // }
 // ==/Taberareloo==
 
 (function() {
-  var version = chrome.runtime.getManifest().version;
-  version = version.split('.');
-  if (version.length > 3) {
-    version.pop();
-  }
-  version = version.join('.');
-  if (semver.gte(version, '3.0.12')) {
-    Patches.install('https://raw.githubusercontent.com/YungSang/patches-for-taberareloo/ready-for-v4.0.0/models/model.googl.tbrl.js', true);
-    return;
-  }
-
   Models.Twitter.SHORTEN_SERVICE = 'goo.gl';
 
   Models.register({
@@ -29,7 +18,7 @@
     POST_URL : 'http://goo.gl/api/shorten',
 
     getSecurityToken : function () {
-      return request(this.HOME_URL, { responseType: 'document' }).addCallback(function(res) {
+      return request(this.HOME_URL, { responseType: 'document' }).then(function (res) {
         var doc = res.response;
         var security_token = $X('//input[@name="security_token"]/@value', doc)[0];
         if (!security_token) {
@@ -42,19 +31,19 @@
     shorten : function (url) {
       var self = this;
       if(/\/\/goo\.gl\//.test(url)) {
-        return succeed(url);
+        return Promise.resolve(url);
       }
 
-      return this.getSecurityToken().addCallback(function (security_token) {
+      return this.getSecurityToken().then(function (security_token) {
         return request(self.POST_URL, {
           sendContent : {
             url            : url,
             security_token : security_token
-          }
-        }).addCallback(function (res) {
-          var json = JSON.parse(res.responseText);
-          return json.short_url;
-        }).addErrback(function (res) {
+          },
+          responseType : 'json'
+        }).then(function (res) {
+          return res.response ? res.response.short_url : '';
+        }).catch(function (res) {
           return '';
         });
       });

@@ -3,54 +3,42 @@
 //   "name"        : "Multi Requester"
 // , "description" : "Multi Requester for taberareloo"
 // , "include"     : ["background"]
-// , "version"     : "0.2.2"
+// , "version"     : "2.0.1"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/others/menu.multi.requester.tbrl.js"
 // }
 // ==/Taberareloo==
 
 (function() {
-  var version = chrome.runtime.getManifest().version;
-  version = version.split('.');
-  if (version.length > 3) {
-    version.pop();
-  }
-  version = version.join('.');
-  if (semver.gte(version, '3.0.12')) {
-    Patches.install('https://raw.githubusercontent.com/YungSang/patches-for-taberareloo/ready-for-v4.0.0/others/menu.multi.requester.tbrl.js', true);
-    return;
-  }
-
   var DATABASE_URL = 'http://wedata.github.io/MultiRequester/items.json';
 
-  var WEDATA_LIB = 'https://raw.github.com/YungSang/patches-for-taberareloo/master/utils/util.wedata.tbrl.js';
+  var WEDATA_LIB = 'https://raw.githubusercontent.com/YungSang/patches-for-taberareloo/ready-for-v4.0.0/utils/util.wedata.tbrl.js';
 
   var database = null;
 
   Patches.require = Patches.require || function (url) {
-    var deferred;
+    var promise;
     var name = window.url.parse(url).path.split(/[\/\\]/).pop();
     var patch = this[name];
     if (patch) {
       var preference = this.getPreferences(patch.name) || {};
       if (preference.disabled) {
-        this.setPreferences(patch.name, MochiKit.Base.update(preference, {
-          disabled : false
-        }));
-        deferred = this.loadAndRegister(patch.fileEntry, patch.metadata);
+        preference.disabled = false;
+        this.setPreferences(patch.name, preference);
+        promise = this.loadAndRegister(patch.fileEntry, patch.metadata);
       } else {
-        return succeed(true);
+        return Promise.resolve(true);
       }
     } else {
-      deferred = this.install(url, true);
+      promise = this.install(url, true);
     }
-    return deferred.addCallback(function (patch) {
+    return promise.then(function (patch) {
       return !!patch;
     });
   };
 
-  Patches.require(WEDATA_LIB).addCallback(function (installed) {
+  Patches.require(WEDATA_LIB).then(function (installed) {
     database = new Wedata.Database('multi_requester', DATABASE_URL);
-    database.get().addCallback(function (data) {
+    database.get().then(function (data) {
       initialize(JSON.parse(data));
     });
   });

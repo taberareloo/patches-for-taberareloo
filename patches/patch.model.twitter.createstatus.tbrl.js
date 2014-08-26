@@ -4,38 +4,27 @@
 // , "namespace"   : "https://github.com/YungSang/patches-for-taberareloo"
 // , "description" : "Post to Twitter surely"
 // , "include"     : ["background"]
-// , "version"     : "1.2.3"
+// , "version"     : "2.0.0"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/patches/patch.model.twitter.createstatus.tbrl.js"
 // }
 // ==/Taberareloo==
 
 (function() {
-  var version = chrome.runtime.getManifest().version;
-  version = version.split('.');
-  if (version.length > 3) {
-    version.pop();
-  }
-  version = version.join('.');
-  if (semver.gte(version, '3.0.12')) {
-    Patches.install('https://raw.githubusercontent.com/YungSang/patches-for-taberareloo/ready-for-v4.0.0/patches/patch.model.twitter.createstatus.tbrl.js', true);
-    return;
-  }
-
-  addAround(Models['Twitter'], 'createStatus', function(proceed, args, target, methodName) {
+  addAround(Models['Twitter'], 'createStatus', function (proceed, args, target, methodName) {
     var ps = update({}, args[0]);
     if (ps.body) {
       ps.body = ps.body.trimTag().replace(/\s+/g, ' ');
     }
-    return proceed([ps]).addCallback(function(status) {
+    return proceed([ps]).then(function (status) {
       return status;
-    }).addErrback(function(e) {
-console.log(e.message);
+    }).catch(function (errmsg) {
+console.log(errmsg);
       var over = '';
-      if (typeof e.message === 'string') {
-        over = e.message.extract(/post \((\d+) over\)/);
+      if (typeof errmsg === 'string') {
+        over = errmsg.extract(/post \((\d+) over\)/);
       }
       if (!over) {
-        throw e;
+        throw errmsg;
       }
       var len;
       if (ps.body) {
@@ -54,22 +43,11 @@ console.log(e.message);
         over -= len;
       }
       if (over > 0) {
-        throw e;
+        throw errmsg;
       }
-      return target[methodName](ps).addCallback(function(status) {
+      return target[methodName](ps).then(function (status) {
         return status;
       });
     });
-  });
-
-  update(Models['Twitter'], {
-    getActualLength : function(status) {
-      var ret = status.split('\n').map(function (s) {
-        s = s.replace(/(https:\/\/[^ ]+)/g, '12345678901234567890123');
-        s = s.replace(/(http:\/\/[^ ]+)/g, '1234567890123456789012');
-        return s;
-      }).join('\n');
-      return ret.length;
-    }
   });
 })();
