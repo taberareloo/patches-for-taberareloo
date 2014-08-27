@@ -4,7 +4,7 @@
 // , "namespace"   : "https://github.com/YungSang/patches-for-taberareloo"
 // , "description" : "Post to Twitter surely"
 // , "include"     : ["background"]
-// , "version"     : "2.0.0"
+// , "version"     : "2.0.1"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/patches/patch.model.twitter.createstatus.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -17,14 +17,17 @@
     }
     return proceed([ps]).then(function (status) {
       return status;
-    }).catch(function (errmsg) {
-console.log(errmsg);
+    }).catch(function (e) {
+console.log(e);
       var over = '';
-      if (typeof errmsg === 'string') {
-        over = errmsg.extract(/post \((\d+) over\)/);
+      if (typeof e === 'string') {
+        over = e.extract(/post \((\d+) over\)/);
+      }
+      if (typeof e.message === 'string') {
+        over = e.message.extract(/post \((\d+) over\)/);
       }
       if (!over) {
-        throw errmsg;
+        throw e;
       }
       var len;
       if (ps.body) {
@@ -43,7 +46,7 @@ console.log(errmsg);
         over -= len;
       }
       if (over > 0) {
-        throw errmsg;
+        throw e;
       }
       return target[methodName](ps).then(function (status) {
         return status;
