@@ -4,7 +4,7 @@
 // , "description" : "Extract an article on Feedly"
 // , "include"     : ["content"]
 // , "match"       : ["*://feedly.com/*"]
-// , "version"     : "0.5.1"
+// , "version"     : "0.5.2"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/extractors/extractor.feedly.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -179,7 +179,7 @@
       try {
         item.target = $X('//*[contains(concat(" ",@class," ")," selectedEntry ")]')[0] || null;
         if (!item.target) {
-          throw 'get_current_item error';
+          throw new Error('get_current_item error');
         } else {
           item.parent = $X('ancestor-or-self::div[contains(concat(" ",@class," ")," inlineFrame ")]', item.target)[0] || null;
           item.body = $X('.//div[contains(concat(" ",@class," ")," u100Entry ")]', item.parent)[0] || null;

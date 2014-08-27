@@ -4,7 +4,7 @@
 // , "description" : "Extract an article on Feedeen"
 // , "include"     : ["content"]
 // , "match"       : ["*://feedeen.com/*"]
-// , "version"     : "0.0.3"
+// , "version"     : "0.0.4"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/extractors/extractor.feedeen.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -159,7 +159,7 @@
       try {
         var fd_expanded = document.querySelector('.fd_expanded');
         if (!fd_expanded) {
-          throw 'get_current_item error';
+          throw new Error('get_current_item error');
         } else {
           item.target = fd_expanded;
           item.parent = fd_expanded;
