@@ -4,7 +4,7 @@
 // , "description" : "Extract an article on Feedeen"
 // , "include"     : ["content"]
 // , "match"       : ["*://feedeen.com/*", "*://*.feedeen.com/*"]
-// , "version"     : "0.0.4"
+// , "version"     : "0.1.0"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/extractors/extractor.feedeen.tbrl.js"
 // }
 // ==/Taberareloo==
