@@ -3,8 +3,8 @@
 //   "name"        : "Extractor for Feedeen"
 // , "description" : "Extract an article on Feedeen"
 // , "include"     : ["content"]
-// , "match"       : ["*://feedeen.com/*"]
-// , "version"     : "0.0.4"
+// , "match"       : ["*://feedeen.com/*", "*://*.feedeen.com/*"]
+// , "version"     : "0.1.0"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/extractors/extractor.feedeen.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -17,7 +17,7 @@
     {
       name: 'Feedeen',
       getItem: function (ctx, getOnly) {
-        if (!ctx.href.match(/\/\/feedeen.com\/d/)) {
+        if (!ctx.href.match(/\/\/(?:www\.)?feedeen.com\/d/)) {
           return null;
         }
 
@@ -45,7 +45,7 @@
 
     {
       name: 'Quote - Feedeen',
-      ICON: 'http://feedeen.com/favicon.ico',
+      ICON: 'https://www.feedeen.com/favicon.ico',
       check: function (ctx) {
         return Extractors.Feedeen.getItem(ctx, true) && ctx.selection;
       },
@@ -57,7 +57,7 @@
 
     {
       name: 'ReBlog - Feedeen',
-      ICON: 'http://feedeen.com/favicon.ico',
+      ICON: 'https://www.feedeen.com/favicon.ico',
       check: function (ctx) {
         var item = Extractors.Feedeen.getItem(ctx, true);
         return item && (
@@ -72,7 +72,7 @@
 
     {
       name: 'Photo - Feedeen',
-      ICON: 'http://feedeen.com/favicon.ico',
+      ICON: 'https://www.feedeen.com/favicon.ico',
       check: function (ctx) {
         return Extractors.Feedeen.getItem(ctx, true) && ctx.onImage;
       },
@@ -84,7 +84,7 @@
 
     {
       name: 'Link - Feedeen',
-      ICON: 'http://feedeen.com/favicon.ico',
+      ICON: 'https://www.feedeen.com/favicon.ico',
       check: function (ctx) {
         return Extractors.Feedeen.getItem(ctx, true);
       },
@@ -99,7 +99,7 @@
     name  : 'Feedeen + Taberareloo',
     check : function () {
       var key = TBRL.config.post.shortcutkey_ldr_plus_taberareloo;
-      if (/^https?:\/\/feedeen.com\/d/.test(location.href) && TBRL.config.post.ldr_plus_taberareloo && key) {
+      if (/^https?:\/\/(?:www\.)?feedeen.com\/d/.test(location.href) && TBRL.config.post.ldr_plus_taberareloo && key) {
         this.key = key;
         return true;
       } else {
