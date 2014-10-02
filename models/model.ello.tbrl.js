@@ -3,7 +3,7 @@
 //   "name"        : "Ello Model"
 // , "description" : "Post to ello.co"
 // , "include"     : ["background"]
-// , "version"     : "0.1.1"
+// , "version"     : "0.1.2"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/models/model.ello.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -86,7 +86,7 @@
       if (ps.body) {
         data.push({
           kind : 'text',
-          data : '“' + ps.body + '”'
+          data : ps.body
         });
       }
 
