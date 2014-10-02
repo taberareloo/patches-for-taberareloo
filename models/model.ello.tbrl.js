@@ -3,7 +3,7 @@
 //   "name"        : "Ello Model"
 // , "description" : "Post to ello.co"
 // , "include"     : ["background"]
-// , "version"     : "0.1.0"
+// , "version"     : "0.1.1"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/models/model.ello.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -20,7 +20,7 @@
     META_URL : 'https://ello.co/api/v1/direct_upload_metadata',
 
     check : function (ps) {
-      return (/(regular|photo|quote|link|video)/).test(ps.type);
+      return (/(regular|photo|quote|link)/).test(ps.type);
     },
 
     getToken : function () {
