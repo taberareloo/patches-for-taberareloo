@@ -3,7 +3,7 @@
 //   "name"        : "Ello Model"
 // , "description" : "Post to ello.co"
 // , "include"     : ["background"]
-// , "version"     : "0.1.2"
+// , "version"     : "0.2.0"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/models/model.ello.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -41,11 +41,9 @@
     post : function (ps) {
       var self = this;
       return this.getToken().then(function (token) {
-        if (ps.type === 'photo') {
-          return self.download(ps).then(function (file) {
-            return self.upload(ps, token, file).then(function (imageUrl) {
-              return self.update(ps, token, imageUrl);
-            });
+        if (ps.type === 'photo' && ps.file) {
+          return self.upload(ps, token).then(function (imageUrl) {
+            return self.update(ps, token, imageUrl);
           });
         }
         else {
@@ -74,13 +72,32 @@
         });
         data.push({
           kind : 'text',
-          data : joinText([ps.page, ps.pageUrl], "\n")
+          data : joinText([
+            ps.page ? '**' + ps.page + '**' : '',
+            ps.pageUrl
+          ], "\n")
+        });
+      }
+      else if (ps.type === 'photo') {
+        data.push({
+          kind : 'text',
+          data : '![](' + ps.itemUrl + ')'
+        });
+        data.push({
+          kind : 'text',
+          data : joinText([
+            ps.page ? '**' + ps.page + '**' : '',
+            ps.pageUrl
+          ], "\n")
         });
       }
       else {
         data.push({
           kind : 'text',
-          data : joinText([ps.item || ps.page, ps.itemUrl || ps.pageUrl], "\n")
+          data : joinText([
+            (ps.item || ps.page) ? '**' + (ps.item || ps.page) + '**' : '',
+            ps.itemUrl || ps.pageUrl
+          ], "\n")
         });
       }
       if (ps.body) {
@@ -102,15 +119,6 @@
       });
     },
 
-    download : function (ps) {
-      return (
-        ps.file ? Promise.resolve(ps.file)
-          : download(ps.itemUrl).then(function (entry) {
-            return getFileFromEntry(entry);
-          })
-      );
-    },
-
     getUploadMetadata : function (token) {
       return request(this.META_URL, {
         responseType: 'json'
@@ -119,18 +127,18 @@
       });
     },
 
-    upload : function (ps, token, file) {
+    upload : function (ps, token) {
       return this.getUploadMetadata(token).then(function (metadata) {
         return request(metadata.endpoint, {
           sendContent : {
-            key                   : metadata.prefix + '/' + file.name,
+            key                   : metadata.prefix + '/' + ps.file.name,
             AWSAccessKeyId        : metadata.access_key,
             acl                   : 'public-read',
             success_action_status : '201',
             policy                : metadata.policy,
             signature             : metadata.signature,
-            'Content-Type'        : file.type,
-            file                  : file
+            'Content-Type'        : ps.file.type,
+            file                  : ps.file
           }
         }).then(function (res) {
           var xml = res.responseXML;
