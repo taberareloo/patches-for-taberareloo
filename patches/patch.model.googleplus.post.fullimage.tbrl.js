@@ -4,7 +4,7 @@
 // , "namespace"   : "https://github.com/YungSang/patches-for-taberareloo"
 // , "description" : "Upload a full size image to Google+ always"
 // , "include"     : ["background"]
-// , "version"     : "2.0.0"
+// , "version"     : "2.0.1"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/patches/patch.model.googleplus.post.fullimage.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -36,7 +36,7 @@
 
     addAround(Models['Google+'], 'post', function(proceed, args, target, methodName) {
       return target.queue.push(function () {
-        var ps = args[0];
+        var ps = update({}, args[0]);
         return (
           ((ps.type === 'photo') && !ps.file) ? target.download(ps) : Promise.resolve(ps.file)
         ).then(function (file) {
