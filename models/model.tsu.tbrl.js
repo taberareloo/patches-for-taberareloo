@@ -4,7 +4,7 @@
 // , "description" : "Post to tsu.co"
 // , "include"     : ["background", "content"]
 // , "match"       : ["http://www.tsu.co/*"]
-// , "version"     : "0.4.0"
+// , "version"     : "0.5.0"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/models/model.tsu.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -83,11 +83,19 @@
           body = this.decodeHTMLEntities(body);
         }
 
+        var description = (ps.description || '').trim();
+        if (ps.tags && ps.tags.length) {
+          var tags = ps.tags.map(function (tag) {
+            return '#' + tag;
+          }).join(' ');
+          description = joinText([description, tags], "\n\n");
+        }
+
         var data = {
           utf8               : '✓',
           authenticity_token : token,
           title              : (ps.type === 'regular') ? (ps.item || ps.page) : '',
-          message            : (ps.description || '').trim() || '\u200B',
+          message            : description || '\u200B',
           has_link           : ps.pageUrl ? 'true' : 'false',
           link               : ps.pageUrl,
           link_title         : ps.page,
