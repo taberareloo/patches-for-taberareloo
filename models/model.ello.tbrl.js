@@ -3,7 +3,7 @@
 //   "name"        : "Ello Model"
 // , "description" : "Post to ello.co"
 // , "include"     : ["background"]
-// , "version"     : "0.2.0"
+// , "version"     : "0.2.1"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/models/model.ello.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -55,6 +55,12 @@
     update : function (ps, token, imageUrl) {
       var data = [];
 
+      if (ps.type === 'regular' && ps.item) {
+        data.push({
+          kind : 'text',
+          data : '**' + ps.item + '**'
+        });
+      }
       if (ps.description) {
         data.push({
           kind : 'text',
@@ -91,7 +97,7 @@
           ], "\n")
         });
       }
-      else {
+      else if (ps.type !== 'regular') {
         data.push({
           kind : 'text',
           data : joinText([
