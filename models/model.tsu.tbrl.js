@@ -4,7 +4,7 @@
 // , "description" : "Post to tsu.co"
 // , "include"     : ["background", "content"]
 // , "match"       : ["http://www.tsu.co/*"]
-// , "version"     : "0.3.0"
+// , "version"     : "0.4.0"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/models/model.tsu.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -22,7 +22,7 @@
       META_URL : 'http://www.tsu.co/posts/parse_url',
 
       check : function (ps) {
-        return (/(regular|photo|quote|link|video)/).test(ps.type) && !ps.file;
+        return (/(regular|photo|quote|link|video)/).test(ps.type);
       },
 
       getToken : function () {
@@ -92,9 +92,9 @@
           link               : ps.pageUrl,
           link_title         : ps.page,
           link_description   : body,
-          link_image_path    : (ps.type === 'photo') ? ps.itemUrl : '',
+          link_image_path    : (ps.type === 'photo' && !ps.file) ? ps.itemUrl : '',
           provider_domain    : '',
-          picture            : '',
+          picture            : ps.file,
           edit_picture_url   : '',
           privacy            : ps.private ? 1 : 0,
           from_popup         : 1
