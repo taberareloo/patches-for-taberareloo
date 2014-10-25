@@ -1,0 +1,92 @@
+// ==Taberareloo==
+// {
+//   "name"        : "tsū Model"
+// , "description" : "Post to tsu.co"
+// , "include"     : ["background"]
+// , "version"     : "0.1.0"
+// , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/models/model.tsu.tbrl.js"
+// }
+// ==/Taberareloo==
+
+(function() {
+  Models.register({
+    name      : 'tsū',
+    ICON      : 'http://tsu-production-app.s3.amazonaws.com/assets/favicon-8a200fdedff0c42cc21c9c50be34f13a.ico',
+    LINK      : 'http://www.tsu.co/',
+    LOGIN_URL : 'http://www.tsu.co/users/sign_in',
+
+    HOME_URL : 'http://www.tsu.co/',
+    POST_URL : 'http://www.tsu.co/posts',
+    META_URL : 'http://www.tsu.co/posts/parse_url?url=',
+
+    check : function (ps) {
+      return (/(regular|photo|quote|link)/).test(ps.type) && !ps.file;
+    },
+
+    getToken : function () {
+      var self = this;
+      return request(this.HOME_URL, {
+        responseType: 'document'
+      }).then(function (res) {
+        var doc = res.response;
+        var notLoggedin = $X('id("sign-in")', doc)[0];
+        if (notLoggedin) {
+          throw new Error(chrome.i18n.getMessage('error_notLoggedin', self.name));
+        }
+        return $X('//meta[@name="csrf-token"]/@content', doc)[0];
+      });
+    },
+
+    post : function (ps) {
+      var self = this;
+      return this.getToken().then(function (token) {
+        return self.update(ps, token);
+      });
+    },
+
+    decodeHTMLEntities : function(str) {
+      var div = $N('div');
+      div.innerHTML = str;
+      return div.innerText;
+    },
+
+    update : function (ps, token) {
+      var body = ps.body || '';
+      if (body) {
+        body = body.replace(/\r\n/g, "\n");
+        body = body.replace(/\n<br(\s*\/)?>/ig, "\n");
+        body = body.replace(/<br(\s*\/)?>\n/ig, "\n");
+        body = body.replace(/<br(\s*\/)?>/ig, "\n");
+        body = body.trimTag().trim();
+        body = this.decodeHTMLEntities(body);
+        description = joinText([description, '“' + body + '”'], "\n\n");
+      }
+
+      var data = {
+        utf8               : '✓',
+        authenticity_token : token,
+        title              : (ps.type === 'regular') ? (ps.item || ps.page) : '',
+        message            : ps.description.trim() || '\u200B',
+        has_link           : ps.pageUrl ? 'true' : 'false',
+        link               : ps.pageUrl,
+        link_title         : ps.page,
+        link_description   : body,
+        link_image_path    : (ps.type === 'photo') ? ps.itemUrl : '',
+        provider_domain    : '',
+        picture            : '',
+        edit_picture_url   : '',
+        privacy            : ps.private ? 1 : 0,
+        from_popup         : 1
+      };
+
+      return request(this.POST_URL, {
+        multipart   : true,
+        sendContent : data,
+        headers     : {
+          'X-CSRF-Token'     : token,
+          'X-Requested-With' : 'XMLHttpRequest'
+        }
+      });
+    }
+  });
+})();
