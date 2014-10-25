@@ -4,7 +4,7 @@
 // , "description" : "Post to tsu.co"
 // , "include"     : ["background", "content"]
 // , "match"       : ["http://www.tsu.co/*"]
-// , "version"     : "0.5.0"
+// , "version"     : "0.5.1"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/models/model.tsu.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -94,9 +94,9 @@
         var data = {
           utf8               : '✓',
           authenticity_token : token,
-          title              : (ps.type === 'regular') ? (ps.item || ps.page) : '',
+          title              : (ps.type === 'regular') ? ps.item : '',
           message            : description || '\u200B',
-          has_link           : ps.pageUrl ? 'true' : 'false',
+          has_link           : (ps.type !== 'regular' && ps.pageUrl) ? 'true' : 'false',
           link               : ps.pageUrl,
           link_title         : ps.page,
           link_description   : body,
