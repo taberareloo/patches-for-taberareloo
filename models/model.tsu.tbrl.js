@@ -3,7 +3,7 @@
 //   "name"        : "tsū Model"
 // , "description" : "Post to tsu.co"
 // , "include"     : ["background"]
-// , "version"     : "0.1.0"
+// , "version"     : "0.2.0"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/models/model.tsu.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -17,10 +17,10 @@
 
     HOME_URL : 'http://www.tsu.co/',
     POST_URL : 'http://www.tsu.co/posts',
-    META_URL : 'http://www.tsu.co/posts/parse_url?url=',
+    META_URL : 'http://www.tsu.co/posts/parse_url',
 
     check : function (ps) {
-      return (/(regular|photo|quote|link)/).test(ps.type) && !ps.file;
+      return (/(regular|photo|quote|link|video)/).test(ps.type) && !ps.file;
     },
 
     getToken : function () {
@@ -40,17 +40,24 @@
     post : function (ps) {
       var self = this;
       return this.getToken().then(function (token) {
-        return self.update(ps, token);
+        if (ps.type === 'video') {
+          return self.getMetadata(ps.pageUrl, token).then(function (metadata) {
+            return self.update(ps, token, metadata);
+          });
+        }
+        else {
+          return self.update(ps, token);
+        }
       });
     },
 
-    decodeHTMLEntities : function(str) {
+    decodeHTMLEntities : function (str) {
       var div = $N('div');
       div.innerHTML = str;
       return div.innerText;
     },
 
-    update : function (ps, token) {
+    update : function (ps, token, metadata) {
       var body = ps.body || '';
       if (body) {
         body = body.replace(/\r\n/g, "\n");
@@ -79,6 +86,11 @@
         from_popup         : 1
       };
 
+      if (metadata) {
+        data.link_description = body || metadata.description;
+        data.link_image_path  = metadata.pictures[0] && metadata.pictures[0].link_image_path;
+      }
+
       return request(this.POST_URL, {
         multipart   : true,
         sendContent : data,
@@ -86,6 +98,20 @@
           'X-CSRF-Token'     : token,
           'X-Requested-With' : 'XMLHttpRequest'
         }
+      });
+    },
+
+    getMetadata : function (url, token) {
+      return request(this.META_URL + '?' + queryString({
+        url : url
+      }), {
+        responseType : 'json',
+        headers      : {
+          'X-CSRF-Token'     : token,
+          'X-Requested-With' : 'XMLHttpRequest'
+        }
+      }).then(function (res) {
+        return res.response;
       });
     }
   });
