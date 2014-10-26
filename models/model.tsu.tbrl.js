@@ -4,7 +4,7 @@
 // , "description" : "Post to tsu.co"
 // , "include"     : ["background", "content"]
 // , "match"       : ["http://www.tsu.co/*"]
-// , "version"     : "0.5.1"
+// , "version"     : "0.6.0"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/models/model.tsu.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -43,10 +43,15 @@
         var self = this;
         return this.getToken().then(function (token) {
           return request(ps.favorite.share, {
-            method  : 'PATCH',
-            headers : {
+            method       : 'PATCH',
+            responseType : 'json',
+            headers      : {
               'X-CSRF-Token'     : token,
               'X-Requested-With' : 'XMLHttpRequest'
+            }
+          }).then(function (res) {
+            if (res.response.error) {
+              throw new Error(res.response.message);
             }
           });
         });
@@ -104,8 +109,7 @@
           provider_domain    : '',
           picture            : ps.file,
           edit_picture_url   : '',
-          privacy            : ps.private ? 1 : 0,
-          from_popup         : 1
+          privacy            : ps.private ? 1 : 0
         };
 
         if (metadata) {
@@ -119,6 +123,12 @@
           headers     : {
             'X-CSRF-Token'     : token,
             'X-Requested-With' : 'XMLHttpRequest'
+          }
+        }).then(function (res) {
+          var text = res.responseText;
+          var m = text.match(/if\(true\)\{\s+var evac_error_message = "(.*)";/)
+          if (m) {
+            throw new Error(m[1]);
           }
         });
       },
