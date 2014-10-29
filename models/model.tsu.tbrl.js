@@ -3,8 +3,8 @@
 //   "name"        : "tsū Model"
 // , "description" : "Post to tsu.co"
 // , "include"     : ["background", "content"]
-// , "match"       : ["http://www.tsu.co/*"]
-// , "version"     : "0.6.0"
+// , "match"       : ["*://www.tsu.co/*"]
+// , "version"     : "0.6.1"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/models/model.tsu.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -13,13 +13,13 @@
   if (inContext('background')) {
     Models.register({
       name      : 'tsū',
-      ICON      : 'http://tsu-production-app.s3.amazonaws.com/assets/favicon-8a200fdedff0c42cc21c9c50be34f13a.ico',
-      LINK      : 'http://www.tsu.co/',
-      LOGIN_URL : 'http://www.tsu.co/users/sign_in',
+      ICON      : 'https://tsu-production-app.s3.amazonaws.com/assets/favicon-8a200fdedff0c42cc21c9c50be34f13a.ico',
+      LINK      : 'https://www.tsu.co/',
+      LOGIN_URL : 'https://www.tsu.co/users/sign_in',
 
-      HOME_URL : 'http://www.tsu.co/',
-      POST_URL : 'http://www.tsu.co/posts',
-      META_URL : 'http://www.tsu.co/posts/parse_url',
+      HOME_URL : 'https://www.tsu.co/',
+      POST_URL : 'https://www.tsu.co/posts',
+      META_URL : 'https://www.tsu.co/posts/parse_url',
 
       check : function (ps) {
         return (/(regular|photo|quote|link|video)/).test(ps.type);
@@ -191,7 +191,7 @@
 
     Extractors.register({
       name     : 'ReBlog - tsū',
-      ICON     : 'http://tsu-production-app.s3.amazonaws.com/assets/favicon-8a200fdedff0c42cc21c9c50be34f13a.ico',
+      ICON     : 'https://tsu-production-app.s3.amazonaws.com/assets/favicon-8a200fdedff0c42cc21c9c50be34f13a.ico',
       HOME_URL : 'http://www.tsu.co',
 
       check : function (ctx) {
