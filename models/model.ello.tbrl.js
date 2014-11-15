@@ -3,7 +3,7 @@
 //   "name"        : "Ello Model"
 // , "description" : "Post to ello.co"
 // , "include"     : ["background"]
-// , "version"     : "0.2.1"
+// , "version"     : "0.2.2"
 // , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/models/model.ello.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -31,7 +31,7 @@
         var doc = res.response;
         var token = $X('//meta[@name="csrf-token"]/@content', doc)[0];
         var url = $X('//meta[@property="og:url"]/@content', doc)[0];
-        if (url !== 'http://ello.co/settings') {
+        if (url !== 'https://ello.co/settings') {
           throw new Error(chrome.i18n.getMessage('error_notLoggedin', self.name));
         }
         return token;
