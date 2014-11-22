@@ -1,6 +1,6 @@
 # Patches for Taberareloo
 
-ここは、[Taberareloo](https://github.com/Constellation/taberareloo) のパッチ・レポジトリです。
+ここは、[Taberareloo](https://github.com/taberareloo/taberareloo) のパッチ・レポジトリです。
 
 ## 必要なもの
 

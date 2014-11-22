@@ -1,6 +1,6 @@
 # Patches for Taberareloo
 
-Here is a patch repository for [Taberareloo](https://github.com/Constellation/taberareloo).
+Here is a patch repository for [Taberareloo](https://github.com/taberareloo/taberareloo).
 
 ## Requirements
 
