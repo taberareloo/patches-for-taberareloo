@@ -4,7 +4,7 @@
 // , "description" : "Post to gimmebar.com"
 // , "include"     : ["background"]
 // , "version"     : "2.0.1"
-// , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/models/model.gimmebar.tbrl.js"
+// , "downloadURL" : "https://raw.github.com/taberareloo/patches-for-taberareloo/master/models/model.gimmebar.tbrl.js"
 // }
 // ==/Taberareloo==
 

@@ -4,7 +4,7 @@
 // , "description" : "Sample patch for context menu"
 // , "include"     : ["background"]
 // , "version"     : "1.0.0"
-// , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/samples/menu.sample.tbrl.js"
+// , "downloadURL" : "https://raw.github.com/taberareloo/patches-for-taberareloo/master/samples/menu.sample.tbrl.js"
 
 // }
 // ==/Taberareloo==

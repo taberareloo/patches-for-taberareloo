@@ -4,7 +4,7 @@
 // , "description" : "Menu for 書籍横断検索システム http://book.tsuhankensaku.com/hon/"
 // , "include"     : ["background"]
 // , "version"     : "0.1.0"
-// , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/others/menu.book.meta.search.tbrl.js"
+// , "downloadURL" : "https://raw.github.com/taberareloo/patches-for-taberareloo/master/others/menu.book.meta.search.tbrl.js"
 // }
 // ==/Taberareloo==
 

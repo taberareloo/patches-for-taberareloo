@@ -5,7 +5,7 @@
 // , "include"     : ["content"]
 // , "match"       : ["http://b.hatena.ne.jp/entry/*"]
 // , "version"     : "1.2.1"
-// , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/extractors/extractor.quote.hatebu.comment.tbrl.js"
+// , "downloadURL" : "https://raw.github.com/taberareloo/patches-for-taberareloo/master/extractors/extractor.quote.hatebu.comment.tbrl.js"
 // }
 // ==/Taberareloo==
 

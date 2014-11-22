@@ -1,11 +1,11 @@
 // ==Taberareloo==
 // {
 //   "name"        : "New Delicious Model"
-// , "namespace"   : "https://github.com/YungSang/patches-for-taberareloo"
+// , "namespace"   : "https://github.com/taberareloo/patches-for-taberareloo"
 // , "description" : "New Delicious Model for new design/API"
 // , "include"     : ["background"]
 // , "version"     : "2.0.0"
-// , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/patches/patch.model.delicious.tbrl.js"
+// , "downloadURL" : "https://raw.github.com/taberareloo/patches-for-taberareloo/master/patches/patch.model.delicious.tbrl.js"
 // }
 // ==/Taberareloo==
 

@@ -24,7 +24,7 @@ A patch must have a metadata about its patch.
 	// , "include"     : ["background", "content"]
 	// , "match"       : ["https://*/*"]
 	// , "version"     : "1.0.0"
-	// , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/patches/patch_file_name.tbrl.js"
+	// , "downloadURL" : "https://raw.github.com/taberareloo/patches-for-taberareloo/master/patches/patch_file_name.tbrl.js"
 	// }
 	// ==/Taberareloo==
 

@@ -4,7 +4,7 @@
 // , "description" : "Search similar images by 二次元画像詳細検索"
 // , "include"     : ["background"]
 // , "version"     : "2.0.0"
-// , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/models/model.ascii2d.image.search.tbrl.js"
+// , "downloadURL" : "https://raw.github.com/taberareloo/patches-for-taberareloo/master/models/model.ascii2d.image.search.tbrl.js"
 // }
 // ==/Taberareloo==
 

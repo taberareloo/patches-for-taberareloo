@@ -4,7 +4,7 @@
 // , "description" : "Get items in a database of Wedata"
 // , "include"     : ["background"]
 // , "version"     : "2.0.1"
-// , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/utils/util.wedata.tbrl.js"
+// , "downloadURL" : "https://raw.github.com/taberareloo/patches-for-taberareloo/master/utils/util.wedata.tbrl.js"
 // }
 // ==/Taberareloo==
 

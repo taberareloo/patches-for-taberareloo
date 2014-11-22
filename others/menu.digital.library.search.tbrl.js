@@ -4,7 +4,7 @@
 // , "description" : "Menu for 近代デジタルライブラリー http://kindai.ndl.go.jp/"
 // , "include"     : ["background"]
 // , "version"     : "0.1.0"
-// , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/others/menu.digital.library.search.tbrl.js"
+// , "downloadURL" : "https://raw.github.com/taberareloo/patches-for-taberareloo/master/others/menu.digital.library.search.tbrl.js"
 // }
 // ==/Taberareloo==
 

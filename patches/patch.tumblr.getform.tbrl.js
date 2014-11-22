@@ -1,7 +1,7 @@
 // ==Taberareloo==
 // {
 //   "name"        : "Send to Twitter/Facebook from Tumblr"
-// , "namespace"   : "https://github.com/YungSang/patches-for-taberareloo"
+// , "namespace"   : "https://github.com/taberareloo/patches-for-taberareloo"
 // , "description" : "Set 'Send to Twitter/Facebook' automatically"
 // , "include"     : ["background", "content"]
 // , "match"       : [
@@ -11,7 +11,7 @@
 //     "*://www.tumblr.com/tagged/*"
 //   ]
 // , "version"     : "2.0.2"
-// , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/patches/patch.tumblr.getform.tbrl.js"
+// , "downloadURL" : "https://raw.github.com/taberareloo/patches-for-taberareloo/master/patches/patch.tumblr.getform.tbrl.js"
 // }
 // ==/Taberareloo==
 

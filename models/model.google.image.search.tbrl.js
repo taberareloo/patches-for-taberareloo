@@ -4,7 +4,7 @@
 // , "description" : "Search similar images by Google"
 // , "include"     : ["background"]
 // , "version"     : "2.0.0"
-// , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/models/model.google.image.search.tbrl.js"
+// , "downloadURL" : "https://raw.github.com/taberareloo/patches-for-taberareloo/master/models/model.google.image.search.tbrl.js"
 // }
 // ==/Taberareloo==
 

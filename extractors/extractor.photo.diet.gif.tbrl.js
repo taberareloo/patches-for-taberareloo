@@ -5,7 +5,7 @@
 // , "include"     : ["background", "content"]
 // , "match"       : ["*://*/*"]
 // , "version"     : "1.1.0"
-// , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/extractors/extractor.photo.diet.gif.tbrl.js"
+// , "downloadURL" : "https://raw.github.com/taberareloo/patches-for-taberareloo/master/extractors/extractor.photo.diet.gif.tbrl.js"
 // }
 // ==/Taberareloo==
 

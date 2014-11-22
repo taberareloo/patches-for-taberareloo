@@ -5,7 +5,7 @@
 // , "include"     : ["content"]
 // , "match"       : ["http://v.youku.com/v_show/*"]
 // , "version"     : "1.2.0"
-// , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/extractors/extractor.video.youku.tbrl.js"
+// , "downloadURL" : "https://raw.github.com/taberareloo/patches-for-taberareloo/master/extractors/extractor.video.youku.tbrl.js"
 // }
 // ==/Taberareloo==
 

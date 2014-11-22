@@ -4,7 +4,7 @@
 // , "description" : "Add Twitter Widgets to HatenaBlog on sharing a tweet"
 // , "include"     : ["background"]
 // , "version"     : "2.0.0"
-// , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/patches/patch.model.hatenablog.post.tweet.tbrl.js"
+// , "downloadURL" : "https://raw.github.com/taberareloo/patches-for-taberareloo/master/patches/patch.model.hatenablog.post.tweet.tbrl.js"
 // }
 // ==/Taberareloo==
 

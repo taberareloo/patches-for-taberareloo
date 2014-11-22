@@ -4,7 +4,7 @@
 // , "description" : "Add Google URL Shortener for Twitter"
 // , "include"     : ["background"]
 // , "version"     : "2.0.1"
-// , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/models/model.googl.tbrl.js"
+// , "downloadURL" : "https://raw.github.com/taberareloo/patches-for-taberareloo/master/models/model.googl.tbrl.js"
 // }
 // ==/Taberareloo==
 

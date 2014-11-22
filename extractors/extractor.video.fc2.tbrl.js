@@ -5,7 +5,7 @@
 // , "include"     : ["content"]
 // , "match"       : ["http://video.fc2.com/content/*"]
 // , "version"     : "1.2.0"
-// , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/extractors/extractor.video.fc2.tbrl.js"
+// , "downloadURL" : "https://raw.github.com/taberareloo/patches-for-taberareloo/master/extractors/extractor.video.fc2.tbrl.js"
 // }
 // ==/Taberareloo==
 

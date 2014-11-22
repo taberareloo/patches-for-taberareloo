@@ -1,11 +1,11 @@
 // ==Taberareloo==
 // {
 //   "name"        : "Upload a full size image to Google+"
-// , "namespace"   : "https://github.com/YungSang/patches-for-taberareloo"
+// , "namespace"   : "https://github.com/taberareloo/patches-for-taberareloo"
 // , "description" : "Upload a full size image to Google+ always"
 // , "include"     : ["background"]
 // , "version"     : "2.0.1"
-// , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/patches/patch.model.googleplus.post.fullimage.tbrl.js"
+// , "downloadURL" : "https://raw.github.com/taberareloo/patches-for-taberareloo/master/patches/patch.model.googleplus.post.fullimage.tbrl.js"
 // }
 // ==/Taberareloo==
 

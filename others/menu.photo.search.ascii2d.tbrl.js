@@ -4,7 +4,7 @@
 // , "description" : "Search similar images at ascii2d.net"
 // , "include"     : ["background"]
 // , "version"     : "1.0.1"
-// , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/others/menu.photo.search.ascii2d.tbrl.js"
+// , "downloadURL" : "https://raw.github.com/taberareloo/patches-for-taberareloo/master/others/menu.photo.search.ascii2d.tbrl.js"
 // }
 // ==/Taberareloo==
 

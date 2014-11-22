@@ -1,12 +1,12 @@
 // ==Taberareloo==
 // {
 //   "name"        : "Repin at Pinterest"
-// , "namespace"   : "https://github.com/YungSang/patches-for-taberareloo"
+// , "namespace"   : "https://github.com/taberareloo/patches-for-taberareloo"
 // , "description" : "Repin at Pinterest"
 // , "include"     : ["background", "content"]
 // , "match"       : ["http://pinterest.com/*", "http://www.pinterest.com/*"]
 // , "version"     : "2.0.0"
-// , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/patches/patch.model.pinterest.repin.tbrl.js"
+// , "downloadURL" : "https://raw.github.com/taberareloo/patches-for-taberareloo/master/patches/patch.model.pinterest.repin.tbrl.js"
 // }
 // ==/Taberareloo==
 

@@ -4,7 +4,7 @@
 // , "description" : "Menu for Google's I'm Feeling Lucky Search"
 // , "include"     : ["background"]
 // , "version"     : "1.0.1"
-// , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/others/menu.google.feelinglucky.search.tbrl.js"
+// , "downloadURL" : "https://raw.github.com/taberareloo/patches-for-taberareloo/master/others/menu.google.feelinglucky.search.tbrl.js"
 // }
 // ==/Taberareloo==
 

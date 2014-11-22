@@ -5,7 +5,7 @@
 // , "include"     : ["background", "content", "popup"]
 // , "match"       : ["*://*/*"]
 // , "version"     : "0.1.0"
-// , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/others/menu.paiza.io.tbrl.js"
+// , "downloadURL" : "https://raw.github.com/taberareloo/patches-for-taberareloo/master/others/menu.paiza.io.tbrl.js"
 // }
 // ==/Taberareloo==
 

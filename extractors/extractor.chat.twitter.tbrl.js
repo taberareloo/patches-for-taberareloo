@@ -5,7 +5,7 @@
 // , "include"     : ["background", "content", "popup"]
 // , "match"       : ["*://twitter.com/*"]
 // , "version"     : "2.0.2"
-// , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/extractors/extractor.chat.twitter.tbrl.js"
+// , "downloadURL" : "https://raw.github.com/taberareloo/patches-for-taberareloo/master/extractors/extractor.chat.twitter.tbrl.js"
 // }
 // ==/Taberareloo==
 

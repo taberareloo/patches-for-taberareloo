@@ -10,7 +10,7 @@
 //     "*://www.tumblr.com/tagged/*"
 //   ]
 // , "version"     : "2.0.1"
-// , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/userscripts/userscript.fix.tumblr.like.tbrl.js"
+// , "downloadURL" : "https://raw.github.com/taberareloo/patches-for-taberareloo/master/userscripts/userscript.fix.tumblr.like.tbrl.js"
 // }
 // ==/Taberareloo==
 

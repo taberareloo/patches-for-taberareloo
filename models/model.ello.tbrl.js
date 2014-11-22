@@ -4,7 +4,7 @@
 // , "description" : "Post to ello.co"
 // , "include"     : ["background"]
 // , "version"     : "0.2.2"
-// , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/models/model.ello.tbrl.js"
+// , "downloadURL" : "https://raw.github.com/taberareloo/patches-for-taberareloo/master/models/model.ello.tbrl.js"
 // }
 // ==/Taberareloo==
 

@@ -1,12 +1,12 @@
 // ==Taberareloo==
 // {
 //   "name"        : "Fix extractor for Nico Nico Douga"
-// , "namespace"   : "https://github.com/YungSang/patches-for-taberareloo"
+// , "namespace"   : "https://github.com/taberareloo/patches-for-taberareloo"
 // , "description" : "Fix extractor for Nico Nico Douga"
 // , "include"     : ["content"]
 // , "match"       : ["http://www.nicovideo.jp/watch/*"]
 // , "version"     : "2.0.0"
-// , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/patches/patch.extractor.nicovideo.extract.tbrl.js"
+// , "downloadURL" : "https://raw.github.com/taberareloo/patches-for-taberareloo/master/patches/patch.extractor.nicovideo.extract.tbrl.js"
 // }
 // ==/Taberareloo==
 

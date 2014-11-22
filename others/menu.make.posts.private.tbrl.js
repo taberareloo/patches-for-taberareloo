@@ -4,7 +4,7 @@
 // , "description" : "Make posts private"
 // , "include"     : ["background"]
 // , "version"     : "1.0.2"
-// , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/others/menu.make.posts.private.tbrl.js"
+// , "downloadURL" : "https://raw.github.com/taberareloo/patches-for-taberareloo/master/others/menu.make.posts.private.tbrl.js"
 // }
 // ==/Taberareloo==
 

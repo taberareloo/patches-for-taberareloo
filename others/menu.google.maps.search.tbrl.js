@@ -4,7 +4,7 @@
 // , "description" : "Menu for Google Maps Search"
 // , "include"     : ["background"]
 // , "version"     : "0.1.2"
-// , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/others/menu.google.maps.search.tbrl.js"
+// , "downloadURL" : "https://raw.github.com/taberareloo/patches-for-taberareloo/master/others/menu.google.maps.search.tbrl.js"
 // }
 // ==/Taberareloo==
 

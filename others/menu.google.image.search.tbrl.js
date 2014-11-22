@@ -4,7 +4,7 @@
 // , "description" : "Menu for Google Image Search"
 // , "include"     : ["background"]
 // , "version"     : "2.0.1"
-// , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/others/menu.google.image.search.tbrl.js"
+// , "downloadURL" : "https://raw.github.com/taberareloo/patches-for-taberareloo/master/others/menu.google.image.search.tbrl.js"
 // }
 // ==/Taberareloo==
 

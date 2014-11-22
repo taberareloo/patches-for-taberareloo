@@ -5,7 +5,7 @@
 // , "include"     : ["background", "content"]
 // , "match"       : ["*://www.tsu.co/*"]
 // , "version"     : "0.6.1"
-// , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/models/model.tsu.tbrl.js"
+// , "downloadURL" : "https://raw.github.com/taberareloo/patches-for-taberareloo/master/models/model.tsu.tbrl.js"
 // }
 // ==/Taberareloo==
 

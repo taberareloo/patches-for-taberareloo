@@ -4,7 +4,7 @@
 // , "description" : "View Tumblr Dashboard page with the post"
 // , "include"     : ["background"]
 // , "version"     : "0.2.1"
-// , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/others/menu.tumblr.view.dashboard.tbrl.js"
+// , "downloadURL" : "https://raw.github.com/taberareloo/patches-for-taberareloo/master/others/menu.tumblr.view.dashboard.tbrl.js"
 // }
 // ==/Taberareloo==
 

@@ -5,7 +5,7 @@
 // , "include"     : ["background", "content", "popup"]
 // , "match"       : ["https://plus.google.com/*"]
 // , "version"     : "2.0.2"
-// , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/models/model.googleplus.tbrl.js"
+// , "downloadURL" : "https://raw.github.com/taberareloo/patches-for-taberareloo/master/models/model.googleplus.tbrl.js"
 // }
 // ==/Taberareloo==
 

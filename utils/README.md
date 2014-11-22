@@ -5,8 +5,8 @@ Util とは、Taberareloo 内部で使用するユーティリティ・スクリ
 
 ## パッチ一覧
 
-* [util.notify.tbrl.js](https://raw.github.com/YungSang/patches-for-taberareloo/master/utils/util.notify.tbrl.js)  
+* [util.notify.tbrl.js](https://raw.github.com/taberareloo/patches-for-taberareloo/master/utils/util.notify.tbrl.js)  
 	コンテンツ側のスクリプトからデスクトップ通知を利用する為のパッチ
 
-* [util.wedata.tbrl.js](https://raw.github.com/YungSang/patches-for-taberareloo/master/utils/util.wedata.tbrl.js)  
+* [util.wedata.tbrl.js](https://raw.github.com/taberareloo/patches-for-taberareloo/master/utils/util.wedata.tbrl.js)  
 	wedata のデータを取得する為のパッチ

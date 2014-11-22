@@ -5,7 +5,7 @@
 // , "include"     : ["background", "content"]
 // , "match"       : ["*://*/*"]
 // , "version"     : "2.0.1"
-// , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/patches/patch.model.tumblr.photoset.tbrl.js"
+// , "downloadURL" : "https://raw.github.com/taberareloo/patches-for-taberareloo/master/patches/patch.model.tumblr.photoset.tbrl.js"
 // }
 // ==/Taberareloo==
 

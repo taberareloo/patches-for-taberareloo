@@ -5,7 +5,7 @@
 // , "include"     : ["content"]
 // , "match"       : ["*://feedly.com/*"]
 // , "version"     : "0.5.2"
-// , "downloadURL" : "https://raw.github.com/YungSang/patches-for-taberareloo/master/extractors/extractor.feedly.tbrl.js"
+// , "downloadURL" : "https://raw.github.com/taberareloo/patches-for-taberareloo/master/extractors/extractor.feedly.tbrl.js"
 // }
 // ==/Taberareloo==
 
