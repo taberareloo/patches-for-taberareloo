@@ -4,7 +4,7 @@
 // , "description" : "Post to tsu.co"
 // , "include"     : ["background", "content"]
 // , "match"       : ["*://www.tsu.co/*"]
-// , "version"     : "0.6.1"
+// , "version"     : "0.7.0"
 // , "downloadURL" : "https://raw.github.com/taberareloo/patches-for-taberareloo/master/models/model.tsu.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -18,7 +18,7 @@
       LOGIN_URL : 'https://www.tsu.co/users/sign_in',
 
       HOME_URL : 'https://www.tsu.co/',
-      POST_URL : 'https://www.tsu.co/posts',
+      POST_URL : 'https://www.tsu.co/api/v1/posts/create',
       META_URL : 'https://www.tsu.co/posts/parse_url',
 
       check : function (ps) {
@@ -100,7 +100,7 @@
           utf8               : '✓',
           authenticity_token : token,
           title              : (ps.type === 'regular') ? ps.item : '',
-          message            : description || '\u200B',
+          text               : description || '\u200B',
           has_link           : (ps.type !== 'regular' && ps.pageUrl) ? 'true' : 'false',
           link               : ps.pageUrl,
           link_title         : ps.page,
