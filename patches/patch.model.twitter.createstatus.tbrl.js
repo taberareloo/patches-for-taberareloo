@@ -4,7 +4,7 @@
 // , "namespace"   : "https://github.com/taberareloo/patches-for-taberareloo"
 // , "description" : "Post to Twitter surely"
 // , "include"     : ["background"]
-// , "version"     : "2.0.1"
+// , "version"     : "2.1.0"
 // , "downloadURL" : "https://raw.github.com/taberareloo/patches-for-taberareloo/master/patches/patch.model.twitter.createstatus.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -30,14 +30,14 @@ console.log(e);
         throw e;
       }
       var len;
-      if (ps.body) {
-        len = ps.body.length;
-        ps.body = ps.body.slice(0, -1 * over);
-        over -= len;
-      }
-      if ((over > 0) && ps.item) {
+      if (ps.item) {
         len = ps.item.length;
         ps.item = ps.item.slice(0, -1 * over);
+        over -= len;
+      }
+      if ((over > 0) && ps.body) {
+        len = ps.body.length;
+        ps.body = ps.body.slice(0, -1 * over);
         over -= len;
       }
       if ((over > 0) && ps.description) {
