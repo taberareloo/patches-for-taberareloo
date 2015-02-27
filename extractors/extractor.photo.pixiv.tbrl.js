@@ -4,7 +4,7 @@
 // , "description" : "Extract a pixiv photo"
 // , "include"     : ["content"]
 // , "match"       : ["http://www.pixiv.net/member_illust.php?*"]
-// , "version"     : "1.0.0"
+// , "version"     : "1.0.1"
 // , "downloadURL" : "https://raw.github.com/taberareloo/patches-for-taberareloo/master/extractors/extractor.photo.pixiv.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -111,7 +111,7 @@
     getInfo : function (ctx, illustID, doc) {
       var isUgoira = this.isUgoiraPage({document : doc}),
         img = this.getImageElement({document : doc}, illustID),
-        url = img ? img.src : '',
+        url = img ? (img.src || img.dataset.src) : '',
         info = {
           imageURL  : url,
           pageTitle : doc.title,
