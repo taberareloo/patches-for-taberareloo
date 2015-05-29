@@ -4,7 +4,7 @@
 // , "description" : "Extract a pixiv photo"
 // , "include"     : ["content"]
 // , "match"       : ["http://www.pixiv.net/member_illust.php?*"]
-// , "version"     : "1.0.1"
+// , "version"     : "1.0.2"
 // , "downloadURL" : "https://raw.github.com/taberareloo/patches-for-taberareloo/master/extractors/extractor.photo.pixiv.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -15,15 +15,6 @@
     ICON           : 'http://www.pixiv.net/favicon.ico',
     REFERRER       : 'http://www.pixiv.net/',
     PAGE_URL       : 'http://www.pixiv.net/member_illust.php?mode=medium&illust_id=',
-    API_URL        : 'http://spapi.pixiv.net/iphone/illust.php?illust_id=',
-    API_DATA_NAMES : [
-      'id', 'user_id', 'extension', 'title', 'img_dir', 'nickname',
-      'thumbnail_url', 'unknown01', 'unknown02', 'medium_url',
-      'unknown03', 'unknown04', 'date', 'tags', 'tools', 'rate', 'score',
-      'view', 'description', 'page_number', 'unknown05', 'unknown06',
-      'bookmark_number', 'comment_number', 'username', 'unknown07', 'r18',
-      'unknown08', 'unknown09', 'profile_icon_url'
-    ],
     DIR_IMG_RE     : new RegExp(
       '^https?://(?:[^.]+\\.)?pixiv\\.net/' +
         'img\\d+/(?:works/\\d+x\\d+|img)/[^/]+/' +
@@ -33,7 +24,7 @@
       '^https?://(?:[^.]+\\.)?pixiv\\.net/' +
         '(?:c/\\d+x\\d+/img-master|img-inf|img-original)' +
         '/img/\\d+/\\d+/\\d+/\\d+/\\d+/\\d+' +
-        '/(\\d+)(?:-[\\da-f]{32})?(?:_p(\\d+))?'
+        '/(\\d+)(?:-[\\da-f]{32})?(?:_(?:p|ugoira)(\\d+))?'
     ),
     IMG_PAGE_RE    : /^https?:\/\/(?:[^.]+\.)?pixiv\.net\/member_illust\.php/,
     // via http://help.pixiv.net/171/
@@ -67,7 +58,9 @@
           if (retry) {
             retry = false;
 
-            return that.fixImageExtensionFromAPI(info).then(getImage);
+            if (that.DATE_IMG_RE.test(info.imageURL)) {
+              return that.fixImageExtensionFromList(info).then(getImage);
+            }
           }
 
           throw new Error(err);
@@ -119,18 +112,14 @@
         };
 
       if (!img || (!this.DIR_IMG_RE.test(url) && !this.DATE_IMG_RE.test(url))) {
-        if (isUgoira) {
-          return this.fixImageURLforUgoiraFromAPI(info);
-        }
-
         // for limited access about mypixiv & age limit on login, and delete
         throw new Error(chrome.i18n.getMessage('error_http404'));
       }
 
       return update(info, {
-        imageURL : (this.DATE_IMG_RE.test(url) && (/\/img-inf\//.test(url) || isUgoira)) ?
+        imageURL : this.DATE_IMG_RE.test(url) && !isUgoira && /\/img-inf\//.test(url) ?
           this.getLargeThumbnailURL(url) :
-          (this.getFullSizeImageURL(ctx, info) || url)
+          (this.getFullSizeImageURL(ctx, info, isUgoira) || url)
       });
     },
     isImagePage : function (target, mode) {
@@ -148,7 +137,8 @@
       return Boolean(ctx.document.querySelector('._ugoku-illust-player-container'));
     },
     getImageElement : function (ctx, illustID) {
-      var anchor = 'a[href*="illust_id=' + (illustID || queryHash(ctx.search).illust_id) + '"]';
+      var currentIllustID = illustID || queryHash(ctx.search).illust_id,
+          anchor = `a[href*="illust_id=${currentIllustID}"]`;
 
       return ctx.document.querySelector([
         // mode=medium on login
@@ -162,11 +152,25 @@
         // r18 on logout
         '.cool-work-main > .sensored > img',
         // ugoira on logout
-        anchor + ' > img'
+        anchor + ` > img[src*="${currentIllustID}"]`
       ].join(', '));
     },
-    getFullSizeImageURL : function (ctx, info) {
+    getFullSizeImageURL : function (ctx, info, isUgoira) {
       var cleanedURL = this.getCleanedURL(info.imageURL);
+
+      if (isUgoira) {
+        var urlObj = new URL(cleanedURL);
+
+        urlObj.pathname = urlObj.pathname.replace(
+          /^\/c\/\d+x\d+\/img-master\/|\/img-inf\//,
+          '/img-original/'
+        ).replace(
+          /(\/\d+(?:-[\da-f]{32})?_)[^.\/]+\./,
+          `$1ugoira${this.getPageNumber(ctx)}.`
+        );
+
+        return urlObj.toString();
+      }
 
       // for manga, illust book
       if (!(
@@ -242,75 +246,23 @@
       var urlObj = new URL(url),
         pathname = urlObj.pathname;
 
-      if (/^\/img-inf\//.test(pathname)) {
-        urlObj.pathname = pathname.replace(/(\/\d+(?:_[\da-f]{10})?_)[^_.]+\./, '$1s.');
-      } else if (
-        /^\/c\/\d+x\d+\/img-master\//.test(pathname) &&
-          /\/\d+(?:-[\da-f]{32})?_(?:master|square)\d+\./.test(pathname)
-      ) {
-        var maxQuality = pathname.extract(/\/\d+(?:-[\da-f]{32})?_(?:master|square)(\d+)\./);
-
-        urlObj.pathname = pathname.replace(
-          /^\/c\/\d+x\d+\/img-master\//,
-          '/c/' + maxQuality + 'x' + maxQuality + '/img-master/'
-        ).replace(/(\/\d+(?:-[\da-f]{32})?_)square(\d+\.)/, '$1master$2');
-      }
+      urlObj.pathname = pathname.replace(/(\/\d+(?:_[\da-f]{10})?_)[^_.]+\./, '$1s.');
 
       return urlObj.toString();
     },
-    getImageData : function (illustID) {
-      var that = this;
-      return request(
-        this.API_URL + illustID + '&PHPSESSID=' + this.getLocalCookie('PHPSESSID')
-      ).then(function (res) {
-        var text = res.responseText.trim();
-
-        if (!text) {
-          throw new Error(chrome.i18n.getMessage('error_http404'));
-        }
-
-        return that.getCSVList(text).reduce(function (data, str, idx) {
-          var item = str.replace(/^"|"$/g, '');
-
-          data[that.API_DATA_NAMES[idx]] = item;
-
-          return data;
-        }, {});
-      });
-    },
-    fixImageExtensionFromAPI : function (info) {
-      var that = this;
-      return this.getImageData(info.illustID).then(function (data) {
-        var url = info.imageURL;
-
-        info.imageURL = url.replace(new RegExp(getFileExtension(url) + '$'), data.extension);
-
-        return info;
-      }).catch(function (err) {
-        if (
-          err.message === chrome.i18n.getMessage('error_http404') &&
-          that.DATE_IMG_RE.test(info.imageURL)
-        ) {
-          return that.fixImageExtensionFromList(info);
-        }
-
-        throw new Error(err.message);
-      });
-    },
     fixImageExtensionFromList : function (info) {
       var that = this,
-        uriObj = createURI(info.imageURL),
+        uri = info.imageURL,
+        extension = getFileExtension(uri),
+        regExtension = new RegExp(extension + '$'),
         extensions = this.IMG_EXTENSIONS.filter(function removeCurrent(candidate) {
           // `this` type is "object", not "string".
           return String(this) !== candidate;
-        }, uriObj.fileExtension);
+        }, extension);
 
       return (function recursive() {
-        var imageURL;
-
-        uriObj.fileExtension = extensions.shift();
-
-        imageURL = uriObj.spec;
+        var fileExtension = extensions.shift(),
+          imageURL = uri.replace(regExtension, fileExtension);
 
         return downloadFile(imageURL, {
           referer : that.REFERRER
@@ -326,16 +278,7 @@
           throw new Error(chrome.i18n.getMessage('error_http404'));
         });
       }());
-     },
-    fixImageURLforUgoiraFromAPI : function (info) {
-      var that = this;
-      return this.getImageData(info.illustID).then(function (data) {
-        var medium_url = data.medium_url;
-        info.imageURL = that.getLargeThumbnailURL(medium_url);
-
-        return info;
-      });
-    },
+    },
     getLocalCookie : function (c_name) {
       var c_value = document.cookie;
       var c_start = c_value.indexOf(' ' + c_name + '=');
